@@ -7,6 +7,7 @@ import { useData } from "@/lib/data";
 import { Icon } from "@/components/ui";
 import { createClient } from "@/lib/supabase/client";
 import { GRADE_OPTS, computeGpaFrom, buildGradeList, resolvePlanCourses, GRAD_MIN_GPA, type GradeListItem } from "@/lib/catalog";
+import { pop, deansList } from "@/lib/celebrate";
 
 type GradeRow = { code: string; title: string | null; term: string | null; credits: number };
 
@@ -23,6 +24,8 @@ export default function GradesPage() {
   const [nTitle, setNTitle] = useState("");
   const [nCredits, setNCredits] = useState("3");
   const [nGrade, setNGrade] = useState("");
+  const [celebration, setCelebration] = useState<{ emoji: string; title: string; sub: string } | null>(null);
+  const prevTier = useRef<number | undefined>(undefined);
 
   const major = profile?.major || "Computer Science";
   const planCourses = useMemo(() => resolvePlanCourses(programCourses, major), [programCourses, major]);
@@ -72,8 +75,36 @@ export default function GradesPage() {
     ? `معدّلك ${gpa} على ${info.credits} ساعة محتسبة. ${g >= 3.75 ? "أنت على قائمة الشرف — واصلي التميّز." : g >= 2.0 ? `وضعك جيد ولست في خطر. تبعدين ${toDean} نقطة عن قائمة الشرف (٣٫٧٥).` : "معدّلك دون ٢٫٠ — أنت في خطر أكاديمي؛ ركّزي على رفع الدرجات هذا الفصل."}`
     : `You're carrying a ${gpa} GPA across ${info.credits} graded credits. ${g >= 3.75 ? "You're on the Dean's List — keep it up." : g >= 2.0 ? `You're in good standing and not at risk. You're ${toDean} points from the Dean's List (3.75).` : "Your GPA is below 2.0 — you're academically at risk; focus on lifting grades this term."}`;
 
+  // Cheerful celebration when standing improves into Good standing / Dean's List.
+  useEffect(() => {
+    const tier = !hasGrades ? 0 : g >= 3.75 ? 3 : g >= 2.0 ? 2 : 1;
+    const prev = prevTier.current;
+    prevTier.current = tier;
+    if (prev === undefined || tier <= prev || tier < 2) return; // only celebrate genuine improvement
+    if (tier === 3) {
+      deansList();
+      setCelebration({ emoji: "🌟", title: lang === "ar" ? "قائمة الشرف!" : "Dean's List!", sub: lang === "ar" ? "إنجاز رائع — واصلي التألّق ✨" : "Incredible — keep shining ✨" });
+    } else {
+      pop();
+      setCelebration({ emoji: "🎉", title: lang === "ar" ? "وضع جيد!" : "Good standing!", sub: lang === "ar" ? "أنتِ على المسار الصحيح 🌱" : "You're on the right track 🌱" });
+    }
+    const id = setTimeout(() => setCelebration(null), 3400);
+    return () => clearTimeout(id);
+  }, [g, hasGrades, lang]);
+
   return (
     <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", flexDirection: "column", gap: 18 }} className="fade-up">
+      {celebration && (
+        <div onClick={() => setCelebration(null)} style={{ position: "fixed", top: "calc(20px + env(safe-area-inset-top))", left: 0, right: 0, display: "flex", justifyContent: "center", zIndex: 60, pointerEvents: "none" }}>
+          <div className="celebrate-in" style={{ pointerEvents: "auto", display: "flex", alignItems: "center", gap: 13, background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, boxShadow: "0 18px 50px rgba(16,42,64,.28)", padding: "14px 20px", maxWidth: "calc(100vw - 32px)" }}>
+            <span style={{ fontSize: 32, lineHeight: 1 }} className="celebrate-emoji">{celebration.emoji}</span>
+            <div>
+              <div className="serif" style={{ fontSize: 19, fontWeight: 600, color: "var(--ink-strong)" }}>{celebration.title}</div>
+              <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 1 }}>{celebration.sub}</div>
+            </div>
+          </div>
+        </div>
+      )}
       <div style={{ background: "#102A40", borderRadius: 18, padding: 24, color: "#fff", display: "flex", gap: 28, flexWrap: "wrap", alignItems: "center" }}>
         <div>
           <div style={{ fontSize: 12.5, color: "#9fb3c2" }}>{t.cumGpa}</div>

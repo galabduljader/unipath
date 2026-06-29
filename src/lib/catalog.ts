@@ -366,6 +366,58 @@ export function fmtDue(d: string, lang: Lang): string {
   return (lang === "ar" ? mAr[mi] : mEn[mi]) + " " + parseInt(parts[2], 10);
 }
 
+// Friendly, colorful breakdown of a course list grouped by subject area —
+// turns a dull sheet into an at-a-glance, encouraging summary.
+const DEPT_META: Record<string, { en: string; ar: string; color: string; icon: string }> = {
+  CS: { en: "Computer Science", ar: "علوم الحاسوب", color: "#2C6E91", icon: "code" },
+  CPE: { en: "Computer Eng.", ar: "هندسة الحاسوب", color: "#2C6E91", icon: "memory" },
+  IS: { en: "Information Systems", ar: "نظم المعلومات", color: "#2C6E91", icon: "dns" },
+  MIS: { en: "Information Systems", ar: "نظم المعلومات", color: "#2C6E91", icon: "dns" },
+  EE: { en: "Electrical Eng.", ar: "الهندسة الكهربائية", color: "#B5762E", icon: "bolt" },
+  ME: { en: "Mechanical Eng.", ar: "الهندسة الميكانيكية", color: "#B5762E", icon: "settings" },
+  CE: { en: "Civil Eng.", ar: "الهندسة المدنية", color: "#B5762E", icon: "foundation" },
+  MATH: { en: "Mathematics", ar: "الرياضيات", color: "#7A5AA8", icon: "functions" },
+  STAT: { en: "Statistics", ar: "الإحصاء", color: "#7A5AA8", icon: "bar_chart" },
+  PHYS: { en: "Physics", ar: "الفيزياء", color: "#5B8C5A", icon: "science" },
+  CHEM: { en: "Chemistry", ar: "الكيمياء", color: "#5B8C5A", icon: "science" },
+  BIO: { en: "Biology", ar: "الأحياء", color: "#5B8C5A", icon: "biotech" },
+  ENGL: { en: "English", ar: "اللغة الإنجليزية", color: "#1E8378", icon: "menu_book" },
+  ARAB: { en: "Arabic", ar: "اللغة العربية", color: "#1E8378", icon: "translate" },
+  ISLM: { en: "Islamic Studies", ar: "الدراسات الإسلامية", color: "#156B61", icon: "mosque" },
+  HIST: { en: "History", ar: "التاريخ", color: "#B5762E", icon: "history_edu" },
+  PHIL: { en: "Philosophy", ar: "الفلسفة", color: "#7A5AA8", icon: "psychology" },
+  BUS: { en: "Business", ar: "الأعمال", color: "#2C6E91", icon: "business_center" },
+  ACCT: { en: "Accounting", ar: "المحاسبة", color: "#2C6E91", icon: "calculate" },
+  FIN: { en: "Finance", ar: "التمويل", color: "#2C6E91", icon: "payments" },
+  MKTG: { en: "Marketing", ar: "التسويق", color: "#C2566A", icon: "campaign" },
+  MGMT: { en: "Management", ar: "الإدارة", color: "#2C6E91", icon: "groups" },
+  ECON: { en: "Economics", ar: "الاقتصاد", color: "#2C6E91", icon: "trending_up" },
+  ARCH: { en: "Architecture", ar: "العمارة", color: "#B5762E", icon: "architecture" },
+  GD: { en: "Design", ar: "التصميم", color: "#C2566A", icon: "brush" },
+  NURS: { en: "Nursing", ar: "التمريض", color: "#C2566A", icon: "health_and_safety" },
+  LAW: { en: "Law", ar: "القانون", color: "#102A40", icon: "gavel" },
+  ELEC: { en: "Electives", ar: "مواد حرة", color: "#6BA6CF", icon: "auto_awesome" },
+  FREE: { en: "Electives", ar: "مواد حرة", color: "#6BA6CF", icon: "auto_awesome" },
+  HUM: { en: "Humanities", ar: "العلوم الإنسانية", color: "#7A5AA8", icon: "palette" },
+};
+
+export type DeptGroup = { prefix: string; label: string; color: string; icon: string; count: number; credits: number };
+export function departmentBreakdown(courses: { code: string; credits: number }[], lang: Lang): DeptGroup[] {
+  const groups: Record<string, { count: number; credits: number }> = {};
+  for (const c of courses) {
+    const p = c.code.split(" ")[0];
+    if (!groups[p]) groups[p] = { count: 0, credits: 0 };
+    groups[p].count++;
+    groups[p].credits += c.credits;
+  }
+  return Object.keys(groups)
+    .map((p) => {
+      const meta = DEPT_META[p] || { en: p, ar: p, color: "#6E7C86", icon: "school" };
+      return { prefix: p, label: lang === "ar" ? meta.ar : meta.en, color: meta.color, icon: meta.icon, count: groups[p].count, credits: groups[p].credits };
+    })
+    .sort((a, b) => b.credits - a.credits);
+}
+
 export function initialsOf(name: string): string {
   return (
     name.split(" ").filter((w) => w.length > 1).slice(0, 2).map((w) => w[0].toUpperCase()).join("") ||

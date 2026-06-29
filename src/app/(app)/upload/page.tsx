@@ -1,15 +1,16 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth";
 import { useData } from "@/lib/data";
 import { Icon } from "@/components/ui";
 import { createClient } from "@/lib/supabase/client";
-import { coursesForMajor } from "@/lib/catalog";
+import { coursesForMajor, departmentBreakdown } from "@/lib/catalog";
 import { PARSE_STAGES } from "@/lib/content";
 import { parseSheet, type ExtractedCourse } from "@/lib/parseSheet";
+import { pop } from "@/lib/celebrate";
 
 const card: React.CSSProperties = { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 18, padding: 30 };
 
@@ -32,6 +33,12 @@ export default function UploadPage() {
 
   const major = profile?.major || "Computer Science";
   const msg = (en: string, ar: string) => (lang === "ar" ? ar : en);
+
+  // joyful confetti the moment the simplified plan is revealed
+  useEffect(() => { if (step === 2) { const id = setTimeout(() => pop(), 250); return () => clearTimeout(id); } }, [step]);
+
+  const depts = useMemo(() => departmentBreakdown(extracted.map((c) => ({ code: c.code, credits: c.credits })), lang), [extracted, lang]);
+  const totalCredits = extracted.reduce((a, c) => a + c.credits, 0);
   const fmtSize = (b: number) => (b >= 1048576 ? (b / 1048576).toFixed(1) + " MB" : b >= 1024 ? Math.round(b / 1024) + " KB" : b + " B");
 
   function animateTo(target: number) {
@@ -73,13 +80,6 @@ export default function UploadPage() {
     setFileName(file.name); setFileSize(fmtSize(file.size)); setFileError("");
     runParse(file);
   }
-
-  const facts = [
-    { label: t.detectedProgram, value: major },
-    { label: t.totalCredits, value: String(extracted.reduce((a, c) => a + c.credits, 0)) },
-    { label: t.coursesFound, value: String(extracted.length) },
-    { label: t.prereqsMapped, value: fromFile ? msg("from your file", "من ملفك") : msg("sample", "نموذج") },
-  ];
 
   return (
     <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", gap: 18 }} className="fade-up">
@@ -133,23 +133,51 @@ export default function UploadPage() {
       )}
 
       {step === 2 && (
-        <div style={card}>
-          <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 5 }}>
-            <Icon name="auto_awesome" size={24} color="#1E8378" />
-            <div className="serif" style={{ fontSize: 23, fontWeight: 600, color: "var(--ink-strong)" }}>{t.reviewTitle}</div>
+        <div style={card} className="fade-up">
+          {/* joyful headline */}
+          <div style={{ textAlign: "center", marginBottom: 18 }}>
+            <div style={{ fontSize: 40, lineHeight: 1, marginBottom: 6 }}>✨</div>
+            <div className="serif" style={{ fontSize: 25, fontWeight: 600, color: "var(--ink-strong)" }}>
+              {msg("Ta-da! Your plan, made simple", "تـمّ! خطتك، ببساطة")}
+            </div>
+            <div style={{ fontSize: 13.5, color: "var(--muted)", marginTop: 6, maxWidth: 440, marginInline: "auto", lineHeight: 1.55 }}>
+              {fromFile
+                ? msg("We turned that long sheet into a clear, friendly map. Take a breath — you've got this. 🌱", "حوّلنا الكشف الطويل إلى خريطة واضحة وودودة. خُذي نفساً — أنتِ قادرة. 🌱")
+                : msg("Here's a clear, friendly map of your degree. Take a breath — you've got this. 🌱", "هذه خريطة واضحة وودودة لدرجتك. خُذي نفساً — أنتِ قادرة. 🌱")}
+            </div>
           </div>
-          <div style={{ fontSize: 13, color: "var(--muted)", marginBottom: 20 }}>
-            {fromFile ? msg("These are the courses we read from your sheet. Confirm the ones you've completed.", "هذه المواد التي قرأناها من كشفك. أكّدي التي أكملتها.") : t.reviewSub}
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))", gap: 12, marginBottom: 22 }}>
-            {facts.map((f, i) => (
-              <div key={i} style={{ background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: 12, padding: 14 }}>
-                <div style={{ fontSize: 11.5, color: "var(--muted)" }}>{f.label}</div>
-                <div className="serif" style={{ fontSize: 18, fontWeight: 600, color: "var(--ink-strong)", marginTop: 3 }}>{f.value}</div>
+
+          {/* big picture */}
+          <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap", marginBottom: 20 }}>
+            {[
+              { v: String(extracted.length), l: msg("courses", "مادة"), c: "#1E8378" },
+              { v: String(totalCredits), l: msg("credits", "ساعة"), c: "#2C6E91" },
+              { v: String(depts.length), l: msg("subject areas", "مجالات"), c: "#7A5AA8" },
+            ].map((s, i) => (
+              <div key={i} style={{ flex: 1, minWidth: 96, background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: 14, padding: "14px 12px", textAlign: "center" }}>
+                <div className="serif" style={{ fontSize: 28, fontWeight: 600, color: s.c, lineHeight: 1 }}>{s.v}</div>
+                <div style={{ fontSize: 11.5, color: "var(--muted)", marginTop: 4 }}>{s.l}</div>
               </div>
             ))}
           </div>
-          <div style={{ fontWeight: 600, fontSize: 13.5, color: "var(--ink-strong)", marginBottom: 10 }}>{t.markCompleted}</div>
+
+          {/* colorful subject breakdown */}
+          <div style={{ fontWeight: 600, fontSize: 13.5, color: "var(--ink-strong)", marginBottom: 10 }}>{msg("Your degree at a glance", "درجتك بلمحة")}</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(150px,1fr))", gap: 10, marginBottom: 22 }}>
+            {depts.map((d) => (
+              <div key={d.prefix} style={{ display: "flex", alignItems: "center", gap: 11, padding: "12px 13px", borderRadius: 13, border: "1px solid var(--border)", background: d.color + "14" }}>
+                <div style={{ width: 38, height: 38, borderRadius: 11, background: d.color + "22", color: d.color, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <Icon name={d.icon} size={21} />
+                </div>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontWeight: 600, fontSize: 13, color: "var(--ink-strong)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.label}</div>
+                  <div style={{ fontSize: 11.5, color: "var(--muted)" }}>{d.count} {msg("courses", "مادة")} · {d.credits} {t.cr}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ fontWeight: 600, fontSize: 13.5, color: "var(--ink-strong)", marginBottom: 10 }}>{msg("Tick what you've already done 👇", "علّمي ما أنجزتِه 👇")}</div>
           <div style={{ maxHeight: 260, overflowY: "auto", display: "flex", flexDirection: "column", gap: 7, border: "1px solid var(--border)", borderRadius: 12, padding: 10 }}>
             {extracted.map((c) => {
               const on = completed.has(c.code);
