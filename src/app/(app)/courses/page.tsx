@@ -7,6 +7,7 @@ import { useData } from "@/lib/data";
 import { Icon, useIsMobile } from "@/components/ui";
 import { computePlan, resolvePlanCourses, programTotalCredits } from "@/lib/catalog";
 import { eligibleCourses, lockedCourses } from "@/lib/content";
+import { JourneyMap } from "@/components/JourneyMap";
 
 const card: React.CSSProperties = { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 18, padding: 22 };
 
@@ -33,6 +34,11 @@ export default function CoursesPage() {
 
   return (
     <div style={{ maxWidth: 1140, margin: "0 auto", display: "flex", flexDirection: "column", gap: 18 }} className="fade-up">
+      {/* journey map — the gamified route to graduation */}
+      <div style={card}>
+        <JourneyMap planCourses={planCourses} completed={completed} gradTerm={plan.gradTerm} />
+      </div>
+
       <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
         {stats.map((s, i) => (
           <div key={i} style={{ flex: 1, minWidth: 160, background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 14, padding: "16px 18px", display: "flex", alignItems: "center", gap: 13 }}>

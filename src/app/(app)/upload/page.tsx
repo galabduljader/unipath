@@ -7,10 +7,11 @@ import { useAuth } from "@/lib/auth";
 import { useData } from "@/lib/data";
 import { Icon } from "@/components/ui";
 import { createClient } from "@/lib/supabase/client";
-import { coursesForMajor, departmentBreakdown } from "@/lib/catalog";
+import { coursesForMajor, departmentBreakdown, computePlan, programTotalCredits, type CourseTuple } from "@/lib/catalog";
 import { PARSE_STAGES } from "@/lib/content";
 import { parseSheet, type ExtractedCourse } from "@/lib/parseSheet";
 import { pop } from "@/lib/celebrate";
+import { JourneyMap } from "@/components/JourneyMap";
 
 const card: React.CSSProperties = { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 18, padding: 30 };
 
@@ -39,6 +40,11 @@ export default function UploadPage() {
 
   const depts = useMemo(() => departmentBreakdown(extracted.map((c) => ({ code: c.code, credits: c.credits })), lang), [extracted, lang]);
   const totalCredits = extracted.reduce((a, c) => a + c.credits, 0);
+
+  // journey map data from the parsed courses
+  const journeyTuples = useMemo<CourseTuple[]>(() => extracted.map((c) => [c.code, c.title, c.title, c.credits]), [extracted]);
+  const upTotal = useMemo(() => programTotalCredits(major, extracted), [major, extracted]);
+  const upPlan = useMemo(() => computePlan(journeyTuples, completed, lang, t, upTotal), [journeyTuples, completed, lang, t, upTotal]);
   const fmtSize = (b: number) => (b >= 1048576 ? (b / 1048576).toFixed(1) + " MB" : b >= 1024 ? Math.round(b / 1024) + " KB" : b + " B");
 
   function animateTo(target: number) {
@@ -190,7 +196,13 @@ export default function UploadPage() {
               );
             })}
           </div>
-          <button onClick={() => router.push("/dashboard")} style={{ marginTop: 20, width: "100%", background: "#102A40", color: "#fff", border: "none", borderRadius: 12, padding: 13, fontWeight: 600, fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+
+          {/* the journey map — your sheet, turned into a quest */}
+          <div style={{ marginTop: 24, paddingTop: 22, borderTop: "1px solid var(--border)" }}>
+            <JourneyMap planCourses={journeyTuples} completed={completed} gradTerm={upPlan.gradTerm} />
+          </div>
+
+          <button onClick={() => router.push("/dashboard")} style={{ marginTop: 24, width: "100%", background: "#102A40", color: "#fff", border: "none", borderRadius: 12, padding: 13, fontWeight: 600, fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
             <Icon name="check_circle" size={19} />{t.looksGood}
           </button>
         </div>

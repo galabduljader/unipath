@@ -418,6 +418,43 @@ export function departmentBreakdown(courses: { code: string; credits: number }[]
     .sort((a, b) => b.credits - a.credits);
 }
 
+// ===== Journey map: turn the plan into a game-like quest of stages =====
+// Prerequisite proxy: a course unlocks once all LOWER-numbered courses in the
+// same department are completed (100→200→300→400), with the degree as the treasure.
+export type JourneyState = "done" | "available" | "locked";
+export type JourneyNode = { code: string; title: string; credits: number; num: number; level: number; state: JourneyState; needs?: string };
+export type JourneyStage = { level: number; courses: JourneyNode[] };
+
+export function buildJourney(planCourses: CourseTuple[], completed: Set<string>): JourneyStage[] {
+  const numOf = (code: string) => { const m = code.match(/(\d{3})/); return m ? parseInt(m[1], 10) : 100; };
+  const base = planCourses.map((c) => {
+    const dept = c[0].split(" ")[0];
+    const num = numOf(c[0]);
+    return { code: c[0], title: c[1], credits: c[3], dept, num, level: Math.min(4, Math.max(1, Math.floor(num / 100))) };
+  });
+
+  const prereqMet = (n: { dept: string; num: number }) =>
+    base.every((m) => !(m.dept === n.dept && m.num < n.num && !completed.has(m.code)));
+  const blockerOf = (n: { dept: string; num: number }) => {
+    let blk: { code: string; num: number } | null = null;
+    for (const m of base) if (m.dept === n.dept && m.num < n.num && !completed.has(m.code) && (!blk || m.num > blk.num)) blk = m;
+    return blk?.code;
+  };
+
+  const nodes: JourneyNode[] = base.map((n) => {
+    if (completed.has(n.code)) return { code: n.code, title: n.title, credits: n.credits, num: n.num, level: n.level, state: "done" };
+    if (prereqMet(n)) return { code: n.code, title: n.title, credits: n.credits, num: n.num, level: n.level, state: "available" };
+    return { code: n.code, title: n.title, credits: n.credits, num: n.num, level: n.level, state: "locked", needs: blockerOf(n) };
+  });
+
+  const stages: JourneyStage[] = [];
+  for (const lvl of [1, 2, 3, 4]) {
+    const cs = nodes.filter((n) => n.level === lvl).sort((a, b) => a.num - b.num || a.code.localeCompare(b.code));
+    if (cs.length) stages.push({ level: lvl, courses: cs });
+  }
+  return stages;
+}
+
 export function initialsOf(name: string): string {
   return (
     name.split(" ").filter((w) => w.length > 1).slice(0, 2).map((w) => w[0].toUpperCase()).join("") ||
