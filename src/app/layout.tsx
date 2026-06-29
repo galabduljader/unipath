@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/i18n";
 import { AuthProvider } from "@/lib/auth";
+import { PWARegister } from "@/components/PWARegister";
 
 export const metadata: Metadata = {
   title: "UNI Path — Your degree, mapped.",
@@ -45,6 +46,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <PWARegister />
         <LanguageProvider>
           <AuthProvider>{children}</AuthProvider>
         </LanguageProvider>

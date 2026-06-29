@@ -97,7 +97,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
         {/* header */}
-        <header style={{ height: 64, flexShrink: 0, background: "#fff", borderBottom: "1px solid #E7E0D3", display: "flex", alignItems: "center", gap: 14, padding: "0 22px" }}>
+        <header style={{ minHeight: 64, flexShrink: 0, background: "#fff", borderBottom: "1px solid #E7E0D3", display: "flex", alignItems: "center", gap: 14, paddingInline: 16, paddingTop: "env(safe-area-inset-top)" }}>
           {isMobile && <Logo size={30} radius={8} textSize={15} />}
           <div style={{ flex: 1, minWidth: 0 }}>
             <div className="serif" style={{ fontSize: 20, fontWeight: 600, color: "#102A40", lineHeight: 1.1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{pageTitle}</div>
@@ -122,7 +122,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
         {/* mobile bottom nav */}
         {isMobile && (
-          <nav style={{ flexShrink: 0, background: "#fff", borderTop: "1px solid #E7E0D3", display: "flex", padding: "7px 4px 9px" }}>
+          <nav style={{ flexShrink: 0, background: "#fff", borderTop: "1px solid #E7E0D3", display: "flex", paddingTop: 7, paddingInline: 4, paddingBottom: "calc(9px + env(safe-area-inset-bottom))" }}>
             {mobileNav.map((n) => {
               const active = pathname === n.route;
               return (
