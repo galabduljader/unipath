@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# UNI Path — AI Student Progress Advisor
 
-## Getting Started
+A real, responsive web app (phone · tablet · laptop) that helps university students in Kuwait
+see what degree requirements remain, which courses they're eligible for next, and when they'll
+graduate. Built to match the UNI Path design — fully bilingual (English + Arabic / RTL).
 
-First, run the development server:
+## Stack
+- **Next.js 16** (App Router, Turbopack) + React 19 + TypeScript
+- **Supabase** — Postgres + Auth + Row Level Security + Realtime + Storage
+- **OpenRouter** — AI advisor chat (optional; falls back to a built-in advisor)
 
+## Getting started
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev          # http://localhost:3000
 ```
+> In this workspace another dev server already used port 3000, so it was launched with
+> `npm run dev -- --port 3007`. Use whichever port is free.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Demo accounts (already created & email-confirmed)
+| Role    | Email                   | Password      |
+|---------|-------------------------|---------------|
+| Student | `layla.m@coded.edu.kw`  | `password123` |
+| Admin   | `admin@coded.edu.kw`    | `password123` |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The login screen also has an **"Explore the demo account"** button (logs in as Layla).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Features
+- **Auth** — email/password sign in & sign up (Supabase Auth)
+- **Onboarding** — university/major → cohort → upload degree sheet (stored in Supabase Storage)
+  → AI "parse" → mark completed courses
+- **Dashboard** — credit progress, semester-by-semester timeline, requirement categories, eligible-next
+- **My Plan** — eligible-now and locked courses with prerequisites
+- **Grades & GPA** — editable grades that recalculate your real GPA live
+- **AI Advisor** — chat scoped to your degree plan (OpenRouter, streamed)
+- **Notifications** — in-app, live via Supabase Realtime
+- **Notes & Reminders** — to-dos and a saved notepad
+- **Admin** — user management table (search, filter, enable/disable) gated by role + RLS, with audit log
 
-## Learn More
+## Enabling real AI chat
+The chat works out of the box with a built-in rule-based advisor. For real LLM answers, add an
+[OpenRouter](https://openrouter.ai/keys) key to `.env.local`:
+```
+OPENROUTER_API_KEY=sk-or-...
+OPENROUTER_MODEL=anthropic/claude-3.5-sonnet
+```
+Then restart the dev server.
 
-To learn more about Next.js, take a look at the following resources:
+## New sign-ups & email confirmation
+Supabase projects ship with **"Confirm email"** ON by default. With it on, a brand-new sign-up must
+click an email link before signing in. To allow instant sign-ups during development, turn it off in
+the Supabase dashboard → **Authentication → Providers → Email → "Confirm email"**.
+The two demo accounts above are pre-confirmed and work either way.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project layout
+```
+src/
+  app/
+    login/                 auth (login + signup)
+    onboarding/            5-step setup wizard
+    (app)/                 authenticated shell + screens
+      dashboard, courses, grades, resources, notes, chat, upload, notifications, admin
+    api/chat/route.ts      OpenRouter streaming endpoint (+ fallback)
+  components/              AppShell, shared UI
+  lib/
+    supabase/              browser + server clients
+    auth.tsx               session + profile context
+    data.tsx               per-user data + Realtime
+    i18n.tsx               EN/AR dictionary + RTL
+    catalog.ts             course catalogs, plan & GPA math
+    content.ts             illustrative course/resource content
+  proxy.ts                 Next 16 session-refresh (formerly middleware)
+```
