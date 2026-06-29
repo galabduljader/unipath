@@ -90,7 +90,7 @@ export default function CalendarPage() {
   return (
     <div style={{ maxWidth: 1140, margin: "0 auto", display: "flex", gap: 18, flexWrap: "wrap", alignItems: "flex-start" }} className="fade-up">
       {/* calendar */}
-      <div style={{ flex: 2, minWidth: 300, background: "#fff", border: "1px solid #E7E0D3", borderRadius: 18, padding: 20 }}>
+      <div style={{ flex: 2, minWidth: 280, background: "#fff", border: "1px solid #E7E0D3", borderRadius: 18, padding: isMobile ? 13 : 20 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
           <div className="serif" style={{ fontSize: 20, fontWeight: 600, color: "#102A40" }}>{monthName} {yearLabel}</div>
           <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
@@ -100,7 +100,7 @@ export default function CalendarPage() {
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 6 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: isMobile ? 4 : 6 }}>
           {(ar ? DOW_AR : DOW_EN).map((d) => (
             <div key={d} style={{ textAlign: "center", fontSize: 11, fontWeight: 700, color: "#9aa6ad", padding: "2px 0", textTransform: "uppercase", letterSpacing: ".03em" }}>{d}</div>
           ))}
@@ -111,16 +111,27 @@ export default function CalendarPage() {
             const isToday = dIso === todayIso;
             const isSel = dIso === selected;
             return (
-              <button key={i} onClick={() => setSelected(dIso)} style={{ minHeight: isMobile ? 52 : 76, borderRadius: 10, border: `1px solid ${isSel ? "#1E8378" : "#EEE8DC"}`, background: isSel ? "#F2FAF8" : "#fff", padding: 6, display: "flex", flexDirection: "column", gap: 3, alignItems: "stretch", textAlign: "start" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontSize: 12, fontWeight: 700, width: 22, height: 22, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", background: isToday ? "#102A40" : "transparent", color: isToday ? "#fff" : "#42525C" }}>{dayNum(d)}</span>
+              <button key={i} onClick={() => setSelected(dIso)} style={{ minHeight: isMobile ? 46 : 76, borderRadius: 10, border: `1px solid ${isSel ? "#1E8378" : "#EEE8DC"}`, background: isSel ? "#F2FAF8" : "#fff", padding: isMobile ? 4 : 6, display: "flex", flexDirection: "column", gap: 3, alignItems: isMobile ? "center" : "stretch", textAlign: "start", overflow: "hidden" }}>
+                <div style={{ display: "flex", justifyContent: isMobile ? "center" : "space-between", alignItems: "center", width: "100%" }}>
+                  <span style={{ fontSize: isMobile ? 12.5 : 12, fontWeight: 700, width: isMobile ? 24 : 22, height: isMobile ? 24 : 22, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", background: isToday ? "#102A40" : "transparent", color: isToday ? "#fff" : "#42525C" }}>{dayNum(d)}</span>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 2, overflow: "hidden" }}>
-                  {evs.slice(0, isMobile ? 1 : 2).map((e) => (
-                    <div key={e.id} title={e.title} style={{ fontSize: 9.5, fontWeight: 600, color: TYPE_META[e.type].color, background: TYPE_META[e.type].bg, borderRadius: 4, padding: "1px 4px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{e.title}</div>
-                  ))}
-                  {evs.length > (isMobile ? 1 : 2) && <div style={{ fontSize: 9, color: "#9aa6ad" }}>+{dayNum(evs.length - (isMobile ? 1 : 2))}</div>}
-                </div>
+                {isMobile ? (
+                  // compact dots — no text to overflow tiny cells
+                  evs.length > 0 && (
+                    <div style={{ display: "flex", gap: 2, flexWrap: "wrap", justifyContent: "center", maxWidth: "100%" }}>
+                      {evs.slice(0, 4).map((e) => (
+                        <span key={e.id} style={{ width: 5, height: 5, borderRadius: "50%", background: TYPE_META[e.type].color }} />
+                      ))}
+                    </div>
+                  )
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 2, overflow: "hidden", width: "100%" }}>
+                    {evs.slice(0, 2).map((e) => (
+                      <div key={e.id} title={e.title} style={{ fontSize: 9.5, fontWeight: 600, color: TYPE_META[e.type].color, background: TYPE_META[e.type].bg, borderRadius: 4, padding: "1px 4px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{e.title}</div>
+                    ))}
+                    {evs.length > 2 && <div style={{ fontSize: 9, color: "#9aa6ad" }}>+{evs.length - 2}</div>}
+                  </div>
+                )}
               </button>
             );
           })}
