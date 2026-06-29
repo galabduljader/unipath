@@ -7,10 +7,10 @@ import { useI18n, langSwitchLabel } from "@/lib/i18n";
 import { Icon, Logo, useIsMobile } from "@/components/ui";
 
 const inputStyle: React.CSSProperties = {
-  width: "100%", border: "1px solid #E7E0D3", borderRadius: 11, padding: "12px 14px",
-  fontSize: 14, outline: "none", color: "#15324B", background: "#fff",
+  width: "100%", border: "1px solid var(--border)", borderRadius: 11, padding: "12px 14px",
+  fontSize: 14, outline: "none", color: "var(--text)", background: "var(--surface)",
 };
-const labelStyle: React.CSSProperties = { fontSize: 12.5, fontWeight: 600, color: "#42525C", marginBottom: 6, display: "block" };
+const labelStyle: React.CSSProperties = { fontSize: 12.5, fontWeight: 600, color: "var(--muted)", marginBottom: 6, display: "block" };
 
 export default function LoginPage() {
   const { t, lang, toggleLang } = useI18n();
@@ -72,7 +72,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", width: "100%", background: "#F4EEE3" }}>
+    <div style={{ display: "flex", minHeight: "100vh", width: "100%", background: "var(--bg)" }}>
       {/* brand panel */}
       {!isMobile && (
         <div style={{ width: "44%", maxWidth: 540, background: "#102A40", color: "#fff", padding: "48px 44px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
@@ -97,7 +97,7 @@ export default function LoginPage() {
         <div style={{ width: "100%", maxWidth: 404 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 22 }}>
             {isMobile ? <Logo size={34} radius={9} textSize={16} /> : <span />}
-            <button onClick={toggleLang} style={{ marginInlineStart: "auto", display: "flex", alignItems: "center", gap: 6, background: "#fff", border: "1px solid #E7E0D3", borderRadius: 9, padding: "7px 11px", color: "#15324B", fontWeight: 600, fontSize: 12.5 }}>
+            <button onClick={toggleLang} style={{ marginInlineStart: "auto", display: "flex", alignItems: "center", gap: 6, background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 9, padding: "7px 11px", color: "var(--text)", fontWeight: 600, fontSize: 12.5 }}>
               <Icon name="translate" size={17} />{langSwitchLabel(lang)}
             </button>
           </div>
@@ -110,8 +110,8 @@ export default function LoginPage() {
 
           {mode === "login" ? (
             <div className="fade-up">
-              <div className="serif" style={{ fontSize: 29, fontWeight: 600, color: "#102A40" }}>{t.welcomeBack}</div>
-              <div style={{ fontSize: 13.5, color: "#6E7C86", marginTop: 5, marginBottom: 22 }}>{t.loginSub}</div>
+              <div className="serif" style={{ fontSize: 29, fontWeight: 600, color: "var(--ink-strong)" }}>{t.welcomeBack}</div>
+              <div style={{ fontSize: 13.5, color: "var(--muted)", marginTop: 5, marginBottom: 22 }}>{t.loginSub}</div>
 
               <div style={{ marginBottom: 15 }}>
                 <label style={labelStyle}>{t.email}</label>
@@ -124,21 +124,21 @@ export default function LoginPage() {
               <button onClick={doLogin} disabled={busy} style={{ width: "100%", background: "#102A40", color: "#fff", border: "none", borderRadius: 11, padding: 13, fontWeight: 600, fontSize: 14.5, opacity: busy ? 0.7 : 1 }}>{t.signIn}</button>
 
               <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "18px 0" }}>
-                <div style={{ flex: 1, height: 1, background: "#E7E0D3" }} />
-                <span style={{ fontSize: 11.5, color: "#9aa6ad" }}>{t.demoHint}</span>
-                <div style={{ flex: 1, height: 1, background: "#E7E0D3" }} />
+                <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
+                <span style={{ fontSize: 11.5, color: "var(--faint)" }}>{t.demoHint}</span>
+                <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
               </div>
-              <button onClick={doDemo} disabled={busy} style={{ width: "100%", background: "#fff", color: "#102A40", border: "1px solid #E7E0D3", borderRadius: 11, padding: 12, fontWeight: 600, fontSize: 14 }}>{t.useDemo}</button>
+              <button onClick={doDemo} disabled={busy} style={{ width: "100%", background: "var(--surface)", color: "var(--ink-strong)", border: "1px solid var(--border)", borderRadius: 11, padding: 12, fontWeight: 600, fontSize: 14 }}>{t.useDemo}</button>
 
-              <div style={{ textAlign: "center", marginTop: 22, fontSize: 13.5, color: "#6E7C86" }}>
+              <div style={{ textAlign: "center", marginTop: 22, fontSize: 13.5, color: "var(--muted)" }}>
                 {t.noAccount}{" "}
                 <button onClick={() => { setMode("signup"); setError(""); }} style={{ background: "none", border: "none", color: "#1E8378", fontWeight: 700, fontSize: 13.5, padding: 0 }}>{t.signUp}</button>
               </div>
             </div>
           ) : (
             <div className="fade-up">
-              <div className="serif" style={{ fontSize: 29, fontWeight: 600, color: "#102A40" }}>{t.createAccount}</div>
-              <div style={{ fontSize: 13.5, color: "#6E7C86", marginTop: 5, marginBottom: 22 }}>{t.signupSub}</div>
+              <div className="serif" style={{ fontSize: 29, fontWeight: 600, color: "var(--ink-strong)" }}>{t.createAccount}</div>
+              <div style={{ fontSize: 13.5, color: "var(--muted)", marginTop: 5, marginBottom: 22 }}>{t.signupSub}</div>
 
               <div style={{ marginBottom: 13 }}>
                 <label style={labelStyle}>{t.username}</label>
@@ -164,7 +164,7 @@ export default function LoginPage() {
               </div>
               <button onClick={doSignup} disabled={busy} style={{ width: "100%", background: "#102A40", color: "#fff", border: "none", borderRadius: 11, padding: 13, fontWeight: 600, fontSize: 14.5, opacity: busy ? 0.7 : 1 }}>{t.signUp}</button>
 
-              <div style={{ textAlign: "center", marginTop: 22, fontSize: 13.5, color: "#6E7C86" }}>
+              <div style={{ textAlign: "center", marginTop: 22, fontSize: 13.5, color: "var(--muted)" }}>
                 {t.haveAccount}{" "}
                 <button onClick={() => { setMode("login"); setError(""); }} style={{ background: "none", border: "none", color: "#1E8378", fontWeight: 700, fontSize: 13.5, padding: 0 }}>{t.signIn}</button>
               </div>

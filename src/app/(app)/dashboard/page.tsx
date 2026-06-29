@@ -9,7 +9,7 @@ import { Icon } from "@/components/ui";
 import { computePlan, computeGpaFrom, resolvePlanCourses, computePace, programTotalCredits, advancedCredits, GRAD_MIN_GPA, ADVANCED_MIN_CREDITS, type PaceStatus } from "@/lib/catalog";
 import { eligibleCourses } from "@/lib/content";
 
-const card: React.CSSProperties = { background: "#fff", border: "1px solid #E7E0D3", borderRadius: 18, padding: 22 };
+const card: React.CSSProperties = { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 18, padding: 22 };
 
 export default function DashboardPage() {
   const { t, lang } = useI18n();
@@ -69,8 +69,8 @@ export default function DashboardPage() {
   return (
     <div style={{ maxWidth: 1140, margin: "0 auto", display: "flex", flexDirection: "column", gap: 18 }} className="fade-up">
       <div>
-        <div className="serif" style={{ fontSize: 30, fontWeight: 600, color: "#102A40", lineHeight: 1.1 }}>{t.welcome}, {firstName}</div>
-        <div style={{ color: "#6E7C86", marginTop: 4, fontSize: 14 }}>
+        <div className="serif" style={{ fontSize: 30, fontWeight: 600, color: "var(--ink-strong)", lineHeight: 1.1 }}>{t.welcome}, {firstName}</div>
+        <div style={{ color: "var(--muted)", marginTop: 4, fontSize: 14 }}>
           {profile?.major || "Computer Science"} · {profile?.university || "Kuwait University"} · {t.catalog} {profile?.cohort || "2023"} · GPA {gpa}
         </div>
       </div>
@@ -80,31 +80,31 @@ export default function DashboardPage() {
         <div style={{ flex: 1, minWidth: 280 }}>
           <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
             <div className="serif" style={{ fontSize: 54, fontWeight: 600, color: "#1E8378", lineHeight: 1 }}>{plan.doneCredits}</div>
-            <div style={{ fontSize: 17, color: "#6E7C86", fontWeight: 500 }}>/ {plan.reqCredits} {t.credits}</div>
+            <div style={{ fontSize: 17, color: "var(--muted)", fontWeight: 500 }}>/ {plan.reqCredits} {t.credits}</div>
           </div>
-          <div style={{ fontSize: 13, color: "#6E7C86", marginTop: 3 }}>{t.degreeProgress} — {plan.pct}% {t.complete}</div>
-          <div style={{ marginTop: 16, height: 14, borderRadius: 8, background: "#EEF1F0", overflow: "hidden" }}>
+          <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 3 }}>{t.degreeProgress} — {plan.pct}% {t.complete}</div>
+          <div style={{ marginTop: 16, height: 14, borderRadius: 8, background: "var(--track)", overflow: "hidden" }}>
             <div style={{ height: "100%", borderRadius: 8, background: "linear-gradient(90deg,#1E8378,#2A9D8F)", width: `${plan.pct}%`, transition: "width .6s ease" }} />
           </div>
           <div style={{ display: "flex", gap: 18, marginTop: 14, flexWrap: "wrap" }}>
-            <div><div style={{ fontWeight: 700, fontSize: 18, color: "#102A40" }}>{plan.remainingCredits}</div><div style={{ fontSize: 12, color: "#6E7C86" }}>{t.remaining}</div></div>
-            <div style={{ width: 1, background: "#E7E0D3" }} />
-            <div><div style={{ fontWeight: 700, fontSize: 18, color: "#102A40" }}>{plan.semestersLeft}</div><div style={{ fontSize: 12, color: "#6E7C86" }}>{t.semestersLeft}</div></div>
+            <div><div style={{ fontWeight: 700, fontSize: 18, color: "var(--ink-strong)" }}>{plan.remainingCredits}</div><div style={{ fontSize: 12, color: "var(--muted)" }}>{t.remaining}</div></div>
+            <div style={{ width: 1, background: "var(--border)" }} />
+            <div><div style={{ fontWeight: 700, fontSize: 18, color: "var(--ink-strong)" }}>{plan.semestersLeft}</div><div style={{ fontSize: 12, color: "var(--muted)" }}>{t.semestersLeft}</div></div>
           </div>
         </div>
-        <div style={{ width: 1, background: "#E7E0D3" }} />
+        <div style={{ width: 1, background: "var(--border)" }} />
         <div style={{ display: "flex", flexDirection: "column", gap: 14, justifyContent: "center", minWidth: 200 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 13 }}>
             <div style={{ width: 46, height: 46, borderRadius: 12, background: "#EAF1F7", display: "flex", alignItems: "center", justifyContent: "center", color: "#2C6E91" }}><Icon name="school" size={24} /></div>
-            <div><div style={{ fontSize: 12, color: "#6E7C86" }}>{t.expectedGrad}</div><div className="serif" style={{ fontSize: 22, fontWeight: 600, color: "#102A40" }}>{plan.gradTerm}</div></div>
+            <div><div style={{ fontSize: 12, color: "var(--muted)" }}>{t.expectedGrad}</div><div className="serif" style={{ fontSize: 22, fontWeight: 600, color: "var(--ink-strong)" }}>{plan.gradTerm}</div></div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 13 }}>
             <div style={{ width: 46, height: 46, borderRadius: 12, background: pm.bg, display: "flex", alignItems: "center", justifyContent: "center", color: pm.color }}><Icon name={pm.icon} size={24} /></div>
             <div>
-              <div style={{ fontSize: 12, color: "#6E7C86" }}>{t.pace}</div>
+              <div style={{ fontSize: 12, color: "var(--muted)" }}>{t.pace}</div>
               <div style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
                 <span style={{ background: pm.bg, color: pm.color, fontWeight: 700, fontSize: 12, padding: "3px 9px", borderRadius: 7 }}>{lang === "ar" ? pm.ar : pm.en}</span>
-                <span style={{ fontSize: 12.5, color: "#6E7C86" }}>{paceSub}</span>
+                <span style={{ fontSize: 12.5, color: "var(--muted)" }}>{paceSub}</span>
               </div>
             </div>
           </div>
@@ -126,13 +126,13 @@ export default function DashboardPage() {
       <div style={card}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
           <Icon name="timeline" size={22} color="#1E8378" />
-          <div className="serif" style={{ fontSize: 21, fontWeight: 600, color: "#102A40" }}>{t.pathTitle}</div>
+          <div className="serif" style={{ fontSize: 21, fontWeight: 600, color: "var(--ink-strong)" }}>{t.pathTitle}</div>
         </div>
-        <div style={{ fontSize: 13, color: "#6E7C86", marginBottom: 18 }}>{t.pathSub}</div>
-        <div style={{ display: "flex", gap: 14, alignItems: "center", marginBottom: 14, flexWrap: "wrap", fontSize: 12, color: "#6E7C86" }}>
+        <div style={{ fontSize: 13, color: "var(--muted)", marginBottom: 18 }}>{t.pathSub}</div>
+        <div style={{ display: "flex", gap: 14, alignItems: "center", marginBottom: 14, flexWrap: "wrap", fontSize: 12, color: "var(--muted)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ width: 11, height: 11, borderRadius: "50%", background: "#1E8378" }} />{t.lgCompleted}</div>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ width: 11, height: 11, borderRadius: "50%", background: "#6BA6CF" }} />{t.lgUpNext}</div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ width: 11, height: 11, borderRadius: "50%", border: "2px solid #C3B79F", background: "#fff" }} />{t.lgPlanned}</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ width: 11, height: 11, borderRadius: "50%", border: "2px solid #C3B79F", background: "var(--surface)" }} />{t.lgPlanned}</div>
         </div>
 
         <div style={{ overflowX: "auto", paddingBottom: 8 }}>
@@ -148,19 +148,19 @@ export default function DashboardPage() {
                       {sem.isDone && <Icon name="check" size={11} color="#fff" />}
                     </div>
                   </div>
-                  <div style={{ borderRadius: 13, padding: 13, borderWidth: sem.next ? 2 : 1, borderColor: sem.next ? "#6BA6CF" : sem.summer ? "#ECDFC4" : "#E7E0D3", borderStyle: sem.status === "planned" ? "dashed" : "solid", background: sem.summer ? summerBg : sem.isDone ? "#fff" : sem.next ? "#F3F8FB" : "#FBF9F4", minHeight: 150 }}>
+                  <div style={{ borderRadius: 13, padding: 13, borderWidth: sem.next ? 2 : 1, borderColor: sem.next ? "#6BA6CF" : sem.summer ? "#ECDFC4" : "var(--border)", borderStyle: sem.status === "planned" ? "dashed" : "solid", background: sem.summer ? summerBg : sem.isDone ? "#fff" : sem.next ? "#F3F8FB" : "var(--surface-2)", minHeight: 150 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 7 }}>
-                      <span style={{ fontWeight: 700, fontSize: 13, color: "#102A40", display: "flex", alignItems: "center", gap: 4 }}>
+                      <span style={{ fontWeight: 700, fontSize: 13, color: "var(--ink-strong)", display: "flex", alignItems: "center", gap: 4 }}>
                         {sem.summer && <Icon name="sunny" size={14} color="#C9892F" />}{sem.term}
                       </span>
-                      <span style={{ fontSize: 11, color: "#6E7C86" }}>{sem.credits} {t.cr}</span>
+                      <span style={{ fontSize: 11, color: "var(--muted)" }}>{sem.credits} {t.cr}</span>
                     </div>
                     <span style={{ fontSize: 10.5, fontWeight: 700, padding: "3px 8px", borderRadius: 6, color: sem.summer ? "#B5762E" : accent, background: sem.summer ? "#F6ECD7" : sem.isDone ? "#E6F2EF" : sem.next ? "#E7F0F7" : "#F1ECE0" }}>{sem.statusLabel}</span>
                     <div style={{ display: "flex", flexDirection: "column", gap: 4, marginTop: 9 }}>
                       {sem.courses.map((c) => (
-                        <div key={c.code} style={{ fontSize: 11.5, color: "#42525C", display: "flex", justifyContent: "space-between", gap: 6 }}>
+                        <div key={c.code} style={{ fontSize: 11.5, color: "var(--muted)", display: "flex", justifyContent: "space-between", gap: 6 }}>
                           <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontStyle: c.code === "__REM__" ? "italic" : "normal", color: c.code === "__REM__" ? "#9aa6ad" : "#42525C" }}>{c.code === "__REM__" ? (lang === "ar" ? "متطلبات متبقية" : "Remaining requirements") : c.code}</span>
-                          <span style={{ color: "#9aa6ad", flexShrink: 0 }}>{c.cr}</span>
+                          <span style={{ color: "var(--faint)", flexShrink: 0 }}>{c.cr}</span>
                         </div>
                       ))}
                     </div>
@@ -190,28 +190,28 @@ export default function DashboardPage() {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <Icon name="verified" size={22} color="#1E8378" />
-            <div className="serif" style={{ fontSize: 21, fontWeight: 600, color: "#102A40" }}>{lang === "ar" ? "متطلبات التخرج" : "Graduation requirements"}</div>
+            <div className="serif" style={{ fontSize: 21, fontWeight: 600, color: "var(--ink-strong)" }}>{lang === "ar" ? "متطلبات التخرج" : "Graduation requirements"}</div>
           </div>
-          <span style={{ background: eligible ? "#E6F2EF" : "#F4EEE3", color: eligible ? "#156B61" : "#6E7C86", fontWeight: 700, fontSize: 12, padding: "5px 12px", borderRadius: 8, display: "flex", alignItems: "center", gap: 6 }}>
+          <span style={{ background: eligible ? "#E6F2EF" : "var(--bg)", color: eligible ? "#156B61" : "#6E7C86", fontWeight: 700, fontSize: 12, padding: "5px 12px", borderRadius: 8, display: "flex", alignItems: "center", gap: 6 }}>
             <Icon name={eligible ? "check_circle" : "pending"} size={16} />
             {eligible ? (lang === "ar" ? "مستوفى للتخرج" : "Eligible to graduate") : (lang === "ar" ? "قيد التقدّم" : "In progress")}
           </span>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 12 }}>
           {gradReqs.map((r, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 15px", border: `1px solid ${r.met ? "#CDE6E0" : "#E7E0D3"}`, borderRadius: 13, background: r.met ? "#F2FAF8" : "#FBFAF6" }}>
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 15px", border: `1px solid ${r.met ? "#CDE6E0" : "var(--border)"}`, borderRadius: 13, background: r.met ? "#F2FAF8" : "var(--surface-2)" }}>
               <div style={{ width: 38, height: 38, borderRadius: 10, background: r.met ? "#E6F2EF" : "#F0EADE", color: r.met ? "#1E8378" : "#9aa6ad", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                 <Icon name={r.met ? "check_circle" : r.icon} size={21} />
               </div>
               <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: 12.5, color: "#6E7C86" }}>{r.label}</div>
+                <div style={{ fontSize: 12.5, color: "var(--muted)" }}>{r.label}</div>
                 <div style={{ fontWeight: 700, fontSize: 15, color: r.met ? "#156B61" : "#102A40" }}>{r.value}</div>
               </div>
             </div>
           ))}
         </div>
         {usingSample && (
-          <div style={{ marginTop: 12, fontSize: 12, color: "#9aa6ad", display: "flex", alignItems: "center", gap: 6 }}>
+          <div style={{ marginTop: 12, fontSize: 12, color: "var(--faint)", display: "flex", alignItems: "center", gap: 6 }}>
             <Icon name="info" size={15} />
             {lang === "ar"
               ? `الإجمالي ${total} ساعة هو الحد الأدنى لكليتك — ارفعي كشف تخصصك للحصول على تتبّع دقيق.`
@@ -223,15 +223,15 @@ export default function DashboardPage() {
       {/* two column */}
       <div style={{ display: "flex", gap: 18, flexWrap: "wrap" }}>
         <div style={{ ...card, flex: 1, minWidth: 300 }}>
-          <div className="serif" style={{ fontSize: 19, fontWeight: 600, color: "#102A40", marginBottom: 16 }}>{t.reqCategories}</div>
+          <div className="serif" style={{ fontSize: 19, fontWeight: 600, color: "var(--ink-strong)", marginBottom: 16 }}>{t.reqCategories}</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 15 }}>
             {plan.categories.map((cat, i) => (
               <div key={i}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
-                  <span style={{ fontSize: 13.5, fontWeight: 500, color: "#2b3a44" }}>{cat.label}</span>
-                  <span style={{ fontSize: 12, color: "#6E7C86" }}>{cat.done}/{cat.req} {t.cr}</span>
+                  <span style={{ fontSize: 13.5, fontWeight: 500, color: "var(--text)" }}>{cat.label}</span>
+                  <span style={{ fontSize: 12, color: "var(--muted)" }}>{cat.done}/{cat.req} {t.cr}</span>
                 </div>
-                <div style={{ height: 8, borderRadius: 5, background: "#EEF1F0", overflow: "hidden" }}>
+                <div style={{ height: 8, borderRadius: 5, background: "var(--track)", overflow: "hidden" }}>
                   <div style={{ height: "100%", borderRadius: 5, background: cat.color, width: `${cat.pctWidth}%`, transition: "width .6s ease" }} />
                 </div>
               </div>
@@ -240,14 +240,14 @@ export default function DashboardPage() {
         </div>
 
         <div style={{ ...card, flex: 1, minWidth: 300, display: "flex", flexDirection: "column" }}>
-          <div className="serif" style={{ fontSize: 19, fontWeight: 600, color: "#102A40" }}>{t.eligibleTitle}</div>
-          <div style={{ fontSize: 12.5, color: "#6E7C86", marginBottom: 14, marginTop: 4 }}>{t.eligibleSub}</div>
+          <div className="serif" style={{ fontSize: 19, fontWeight: 600, color: "var(--ink-strong)" }}>{t.eligibleTitle}</div>
+          <div style={{ fontSize: 12.5, color: "var(--muted)", marginBottom: 14, marginTop: 4 }}>{t.eligibleSub}</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 9, flex: 1 }}>
             {elig.map((c) => (
-              <div key={c.code} style={{ display: "flex", alignItems: "center", gap: 11, padding: "10px 12px", border: "1px solid #E7E0D3", borderRadius: 11 }}>
+              <div key={c.code} style={{ display: "flex", alignItems: "center", gap: 11, padding: "10px 12px", border: "1px solid var(--border)", borderRadius: 11 }}>
                 <div style={{ width: 38, height: 38, borderRadius: 9, background: "#E6F2EF", color: "#156B61", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 11, flexShrink: 0 }}>{c.cr}{t.crShort}</div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 600, fontSize: 13, color: "#102A40", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c.code} · {c.title}</div>
+                  <div style={{ fontWeight: 600, fontSize: 13, color: "var(--ink-strong)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c.code} · {c.title}</div>
                   <div style={{ fontSize: 11.5, color: "#1E8378", display: "flex", alignItems: "center", gap: 4 }}><Icon name="check_circle" size={13} />{t.prereqMet}</div>
                 </div>
               </div>

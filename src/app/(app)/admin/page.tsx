@@ -57,30 +57,30 @@ export default function AdminPage() {
     <div style={{ maxWidth: 1140, margin: "0 auto", display: "flex", flexDirection: "column", gap: 18 }} className="fade-up">
       <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
         {stats.map((s, i) => (
-          <div key={i} style={{ flex: 1, minWidth: 150, background: "#fff", border: "1px solid #E7E0D3", borderRadius: 14, padding: "16px 18px" }}>
-            <div style={{ fontSize: 12, color: "#6E7C86" }}>{s.label}</div>
-            <div className="serif" style={{ fontSize: 30, fontWeight: 600, color: "#102A40", marginTop: 3 }}>{s.value}</div>
+          <div key={i} style={{ flex: 1, minWidth: 150, background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 14, padding: "16px 18px" }}>
+            <div style={{ fontSize: 12, color: "var(--muted)" }}>{s.label}</div>
+            <div className="serif" style={{ fontSize: 30, fontWeight: 600, color: "var(--ink-strong)", marginTop: 3 }}>{s.value}</div>
           </div>
         ))}
       </div>
 
-      <div style={{ background: "#fff", border: "1px solid #E7E0D3", borderRadius: 18, overflow: "hidden" }}>
-        <div style={{ display: "flex", gap: 12, padding: "18px 20px", borderBottom: "1px solid #E7E0D3", flexWrap: "wrap", alignItems: "center" }}>
+      <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 18, overflow: "hidden" }}>
+        <div style={{ display: "flex", gap: 12, padding: "18px 20px", borderBottom: "1px solid var(--border)", flexWrap: "wrap", alignItems: "center" }}>
           <div style={{ position: "relative", flex: 1, minWidth: 200 }}>
-            <span className="msym" style={{ position: "absolute", insetInlineStart: 12, top: "50%", transform: "translateY(-50%)", fontSize: 19, color: "#9aa6ad" }}>search</span>
-            <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t.searchUsers} style={{ width: "100%", border: "1px solid #E7E0D3", borderRadius: 10, padding: "10px 14px", paddingInlineStart: 38, fontSize: 13.5, outline: "none", color: "#15324B", background: "#FBFAF6" }} />
+            <span className="msym" style={{ position: "absolute", insetInlineStart: 12, top: "50%", transform: "translateY(-50%)", fontSize: 19, color: "var(--faint)" }}>search</span>
+            <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t.searchUsers} style={{ width: "100%", border: "1px solid var(--border)", borderRadius: 10, padding: "10px 14px", paddingInlineStart: 38, fontSize: 13.5, outline: "none", color: "var(--text)", background: "var(--surface-2)" }} />
           </div>
           <div style={{ display: "flex", gap: 6 }}>
             {roleFilters.map((r) => {
               const active = roleFilter === r.key;
-              return <button key={r.key} onClick={() => setRoleFilter(r.key)} style={{ border: `1px solid ${active ? "#102A40" : "#E7E0D3"}`, background: active ? "#102A40" : "#fff", color: active ? "#fff" : "#42525C", borderRadius: 9, padding: "9px 14px", fontSize: 12.5, fontWeight: 600 }}>{r.label}</button>;
+              return <button key={r.key} onClick={() => setRoleFilter(r.key)} style={{ border: `1px solid ${active ? "#102A40" : "var(--border)"}`, background: active ? "#102A40" : "#fff", color: active ? "#fff" : "#42525C", borderRadius: 9, padding: "9px 14px", fontSize: 12.5, fontWeight: 600 }}>{r.label}</button>;
             })}
           </div>
         </div>
 
         <div style={{ overflowX: "auto" }}>
           <div style={{ minWidth: 680 }}>
-            <div style={{ display: "grid", gridTemplateColumns: "2.2fr 1fr 1.6fr 1fr 1.1fr", gap: 12, padding: "11px 20px", background: "#FBFAF6", borderBottom: "1px solid #E7E0D3", fontSize: 11.5, fontWeight: 700, color: "#6E7C86", textTransform: "uppercase", letterSpacing: ".04em" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "2.2fr 1fr 1.6fr 1fr 1.1fr", gap: 12, padding: "11px 20px", background: "var(--surface-2)", borderBottom: "1px solid var(--border)", fontSize: 11.5, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: ".04em" }}>
               <div>{t.colUser}</div><div>{t.role}</div><div>{t.program}</div><div>{t.joined}</div><div style={{ textAlign: "end" }}>{t.status}</div>
             </div>
             {filtered.map((u, idx) => (
@@ -88,13 +88,13 @@ export default function AdminPage() {
                 <div style={{ display: "flex", alignItems: "center", gap: 11, minWidth: 0 }}>
                   <div style={{ width: 36, height: 36, borderRadius: "50%", background: AV[idx % AV.length], color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 12, flexShrink: 0 }}>{initialsOf(u.username || u.email || "U")}</div>
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ fontWeight: 600, fontSize: 13.5, color: "#102A40", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{u.username || "—"}</div>
-                    <div style={{ fontSize: 11.5, color: "#9aa6ad", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{u.email}</div>
+                    <div style={{ fontWeight: 600, fontSize: 13.5, color: "var(--ink-strong)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{u.username || "—"}</div>
+                    <div style={{ fontSize: 11.5, color: "var(--faint)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{u.email}</div>
                   </div>
                 </div>
                 <div><span style={{ fontSize: 11.5, fontWeight: 700, padding: "3px 10px", borderRadius: 7, color: u.role === "admin" ? "#7A5AA8" : "#2C6E91", background: u.role === "admin" ? "#EEE7F4" : "#EAF1F7" }}>{u.role === "admin" ? t.admin : t.student}</span></div>
-                <div style={{ fontSize: 12.5, color: "#42525C", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{u.major || "—"}</div>
-                <div style={{ fontSize: 12.5, color: "#6E7C86" }}>{u.cohort || "—"}</div>
+                <div style={{ fontSize: 12.5, color: "var(--muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{u.major || "—"}</div>
+                <div style={{ fontSize: 12.5, color: "var(--muted)" }}>{u.cohort || "—"}</div>
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
                   <button onClick={() => toggleDisabled(u)} style={{ border: `1px solid ${u.disabled ? "#E7CFCF" : "#CDE6E0"}`, background: u.disabled ? "#FBF0F0" : "#F2FAF8", color: u.disabled ? "#B5564E" : "#156B61", borderRadius: 20, padding: "5px 12px", fontSize: 11.5, fontWeight: 600 }}>{u.disabled ? t.disabled : t.active}</button>
                 </div>
@@ -102,7 +102,7 @@ export default function AdminPage() {
             ))}
           </div>
         </div>
-        <div style={{ padding: "12px 20px", fontSize: 11.5, color: "#9aa6ad", display: "flex", alignItems: "center", gap: 6 }}><Icon name="history" size={15} />{t.auditNote}</div>
+        <div style={{ padding: "12px 20px", fontSize: 11.5, color: "var(--faint)", display: "flex", alignItems: "center", gap: 6 }}><Icon name="history" size={15} />{t.auditNote}</div>
       </div>
     </div>
   );

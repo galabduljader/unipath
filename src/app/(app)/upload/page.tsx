@@ -11,7 +11,7 @@ import { coursesForMajor } from "@/lib/catalog";
 import { PARSE_STAGES } from "@/lib/content";
 import { parseSheet, type ExtractedCourse } from "@/lib/parseSheet";
 
-const card: React.CSSProperties = { background: "#fff", border: "1px solid #E7E0D3", borderRadius: 18, padding: 30 };
+const card: React.CSSProperties = { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 18, padding: 30 };
 
 export default function UploadPage() {
   const { t, lang } = useI18n();
@@ -85,22 +85,22 @@ export default function UploadPage() {
     <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", gap: 18 }} className="fade-up">
       {step === 0 && (
         <div style={card}>
-          <div className="serif" style={{ fontSize: 24, fontWeight: 600, color: "#102A40" }}>{t.upTitle}</div>
-          <div style={{ fontSize: 13.5, color: "#6E7C86", marginTop: 5, marginBottom: 22 }}>{t.upSub}</div>
-          <div style={{ border: "2px dashed #C3D3DD", borderRadius: 16, background: "#F7FAFB", padding: "40px 24px", textAlign: "center" }}>
+          <div className="serif" style={{ fontSize: 24, fontWeight: 600, color: "var(--ink-strong)" }}>{t.upTitle}</div>
+          <div style={{ fontSize: 13.5, color: "var(--muted)", marginTop: 5, marginBottom: 22 }}>{t.upSub}</div>
+          <div style={{ border: "2px dashed #C3D3DD", borderRadius: 16, background: "var(--surface-2)", padding: "40px 24px", textAlign: "center" }}>
             <div style={{ width: 60, height: 60, borderRadius: 16, background: "#EAF1F7", color: "#2C6E91", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px" }}><Icon name="upload_file" size={30} /></div>
-            <div style={{ fontWeight: 600, fontSize: 15, color: "#102A40" }}>{t.dropHere}</div>
-            <div style={{ fontSize: 12.5, color: "#9aa6ad", marginTop: 5 }}>{t.constraints}</div>
+            <div style={{ fontWeight: 600, fontSize: 15, color: "var(--ink-strong)" }}>{t.dropHere}</div>
+            <div style={{ fontSize: 12.5, color: "var(--faint)", marginTop: 5 }}>{t.constraints}</div>
             <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 18, flexWrap: "wrap" }}>
               <input ref={fileInput} type="file" accept=".pdf,.doc,.docx" onChange={onPick} style={{ display: "none" }} />
               <button onClick={() => fileInput.current?.click()} style={{ background: "#1E8378", color: "#fff", border: "none", borderRadius: 10, padding: "11px 18px", fontWeight: 600, fontSize: 13.5, display: "flex", alignItems: "center", gap: 7 }}><Icon name="description" size={18} />{t.browse}</button>
-              <button onClick={() => { setFileName("CS_Degree_Plan_2023.pdf"); setFileSize("1.8 MB"); setFileError(""); runParse(null); }} style={{ background: "#fff", color: "#15324B", border: "1px solid #E7E0D3", borderRadius: 10, padding: "11px 18px", fontWeight: 600, fontSize: 13.5 }}>{t.useSample}</button>
+              <button onClick={() => { setFileName("CS_Degree_Plan_2023.pdf"); setFileSize("1.8 MB"); setFileError(""); runParse(null); }} style={{ background: "var(--surface)", color: "var(--text)", border: "1px solid var(--border)", borderRadius: 10, padding: "11px 18px", fontWeight: 600, fontSize: 13.5 }}>{t.useSample}</button>
             </div>
             {fileError && <div style={{ marginTop: 14, display: "inline-flex", alignItems: "center", gap: 7, background: "#FBECEC", border: "1px solid #E7CFCF", color: "#B5564E", borderRadius: 9, padding: "8px 12px", fontSize: 12.5 }}><Icon name="error" size={16} />{fileError}</div>}
           </div>
           <div style={{ marginTop: 18, display: "flex", gap: 18, flexWrap: "wrap" }}>
             {[{ icon: "fact_check", text: t.uStep1 }, { icon: "account_tree", text: t.uStep2 }, { icon: "event", text: t.uStep3 }].map((u, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 9, fontSize: 12.5, color: "#6E7C86" }}><Icon name={u.icon} size={18} color="#1E8378" />{u.text}</div>
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 9, fontSize: 12.5, color: "var(--muted)" }}><Icon name={u.icon} size={18} color="#1E8378" />{u.text}</div>
             ))}
           </div>
         </div>
@@ -108,14 +108,14 @@ export default function UploadPage() {
 
       {step === 1 && (
         <div style={card}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 15px", border: "1px solid #E7E0D3", borderRadius: 12, marginBottom: 24 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 15px", border: "1px solid var(--border)", borderRadius: 12, marginBottom: 24 }}>
             <Icon name="picture_as_pdf" size={26} color="#C9512F" />
-            <div style={{ flex: 1 }}><div style={{ fontWeight: 600, fontSize: 13.5, color: "#102A40" }}>{fileName}</div><div style={{ fontSize: 11.5, color: "#9aa6ad" }}>{fileSize}</div></div>
+            <div style={{ flex: 1 }}><div style={{ fontWeight: 600, fontSize: 13.5, color: "var(--ink-strong)" }}>{fileName}</div><div style={{ fontSize: 11.5, color: "var(--faint)" }}>{fileSize}</div></div>
             <div className="spin" style={{ width: 30, height: 30, border: "3px solid #E6F2EF", borderTopColor: "#1E8378", borderRadius: "50%" }} />
           </div>
-          <div className="serif" style={{ fontSize: 21, fontWeight: 600, color: "#102A40" }}>{t.parsing}</div>
-          <div style={{ fontSize: 13, color: "#6E7C86", marginTop: 4, marginBottom: 20 }}>{t.parseSub}</div>
-          <div style={{ height: 10, borderRadius: 6, background: "#EEF1F0", overflow: "hidden", marginBottom: 22 }}>
+          <div className="serif" style={{ fontSize: 21, fontWeight: 600, color: "var(--ink-strong)" }}>{t.parsing}</div>
+          <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 4, marginBottom: 20 }}>{t.parseSub}</div>
+          <div style={{ height: 10, borderRadius: 6, background: "var(--track)", overflow: "hidden", marginBottom: 22 }}>
             <div style={{ height: "100%", background: "linear-gradient(90deg,#1E8378,#2A9D8F)", borderRadius: 6, transition: "width .2s ease", width: `${progress}%` }} />
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -136,28 +136,28 @@ export default function UploadPage() {
         <div style={card}>
           <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 5 }}>
             <Icon name="auto_awesome" size={24} color="#1E8378" />
-            <div className="serif" style={{ fontSize: 23, fontWeight: 600, color: "#102A40" }}>{t.reviewTitle}</div>
+            <div className="serif" style={{ fontSize: 23, fontWeight: 600, color: "var(--ink-strong)" }}>{t.reviewTitle}</div>
           </div>
-          <div style={{ fontSize: 13, color: "#6E7C86", marginBottom: 20 }}>
+          <div style={{ fontSize: 13, color: "var(--muted)", marginBottom: 20 }}>
             {fromFile ? msg("These are the courses we read from your sheet. Confirm the ones you've completed.", "هذه المواد التي قرأناها من كشفك. أكّدي التي أكملتها.") : t.reviewSub}
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))", gap: 12, marginBottom: 22 }}>
             {facts.map((f, i) => (
-              <div key={i} style={{ background: "#F7FAFB", border: "1px solid #E7E0D3", borderRadius: 12, padding: 14 }}>
-                <div style={{ fontSize: 11.5, color: "#6E7C86" }}>{f.label}</div>
-                <div className="serif" style={{ fontSize: 18, fontWeight: 600, color: "#102A40", marginTop: 3 }}>{f.value}</div>
+              <div key={i} style={{ background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: 12, padding: 14 }}>
+                <div style={{ fontSize: 11.5, color: "var(--muted)" }}>{f.label}</div>
+                <div className="serif" style={{ fontSize: 18, fontWeight: 600, color: "var(--ink-strong)", marginTop: 3 }}>{f.value}</div>
               </div>
             ))}
           </div>
-          <div style={{ fontWeight: 600, fontSize: 13.5, color: "#102A40", marginBottom: 10 }}>{t.markCompleted}</div>
-          <div style={{ maxHeight: 260, overflowY: "auto", display: "flex", flexDirection: "column", gap: 7, border: "1px solid #E7E0D3", borderRadius: 12, padding: 10 }}>
+          <div style={{ fontWeight: 600, fontSize: 13.5, color: "var(--ink-strong)", marginBottom: 10 }}>{t.markCompleted}</div>
+          <div style={{ maxHeight: 260, overflowY: "auto", display: "flex", flexDirection: "column", gap: 7, border: "1px solid var(--border)", borderRadius: 12, padding: 10 }}>
             {extracted.map((c) => {
               const on = completed.has(c.code);
               return (
                 <button key={c.code} onClick={() => toggleCompleted(c.code)} style={{ display: "flex", alignItems: "center", gap: 11, padding: "9px 11px", border: `1px solid ${on ? "#CDE6E0" : "#EEE8DC"}`, borderRadius: 9, background: on ? "#F2FAF8" : "#fff", width: "100%" }}>
                   <Icon name={on ? "check_circle" : "radio_button_unchecked"} size={20} color={on ? "#1E8378" : "#cdd5d9"} />
-                  <span style={{ flex: 1, textAlign: "start", fontSize: 13, color: "#2b3a44" }}>{c.code} · {c.title}</span>
-                  <span style={{ fontSize: 11.5, color: "#9aa6ad" }}>{c.credits} {t.cr}</span>
+                  <span style={{ flex: 1, textAlign: "start", fontSize: 13, color: "var(--text)" }}>{c.code} · {c.title}</span>
+                  <span style={{ fontSize: 11.5, color: "var(--faint)" }}>{c.credits} {t.cr}</span>
                 </button>
               );
             })}

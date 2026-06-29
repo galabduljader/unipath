@@ -171,27 +171,27 @@ export default function ChatPage() {
 
   return (
     <div style={{ maxWidth: 820, margin: "0 auto", height: "100%", display: "flex", flexDirection: "column" }} className="fade-up">
-      <div style={{ background: "#fff", border: "1px solid #E7E0D3", borderRadius: 18, flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minHeight: 520 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "16px 20px", borderBottom: "1px solid #E7E0D3" }}>
+      <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 18, flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minHeight: 520 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "16px 20px", borderBottom: "1px solid var(--border)" }}>
           <div style={{ width: 42, height: 42, borderRadius: 12, background: "linear-gradient(135deg,#1E8378,#2C6E91)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}><Icon name="auto_awesome" size={23} /></div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 700, fontSize: 15, color: "#102A40" }}>{t.chatTitle}</div>
+            <div style={{ fontWeight: 700, fontSize: 15, color: "var(--ink-strong)" }}>{t.chatTitle}</div>
             <div style={{ fontSize: 12, color: "#1E8378", display: "flex", alignItems: "center", gap: 5 }}><span style={{ width: 7, height: 7, borderRadius: "50%", background: "#1E8378" }} />{t.chatScope}</div>
           </div>
         </div>
 
-        <div ref={scrollRef} style={{ flex: 1, overflowY: "auto", padding: 20, display: "flex", flexDirection: "column", gap: 14, background: "#FBFAF6" }}>
+        <div ref={scrollRef} style={{ flex: 1, overflowY: "auto", padding: 20, display: "flex", flexDirection: "column", gap: 14, background: "var(--surface-2)" }}>
           {display.map((m, i) => (
             <div key={i} style={{ display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start" }}>
               <div style={m.role === "user"
                 ? { maxWidth: "78%", background: "#102A40", color: "#fff", borderTopLeftRadius: 14, borderTopRightRadius: 14, borderBottomLeftRadius: 14, borderBottomRightRadius: 4, padding: "12px 15px", fontSize: 13.5, lineHeight: 1.5, whiteSpace: "pre-wrap" }
-                : { maxWidth: "82%", background: "#fff", border: "1px solid #E7E0D3", color: "#243640", borderTopLeftRadius: 14, borderTopRightRadius: 14, borderBottomLeftRadius: 4, borderBottomRightRadius: 14, padding: "12px 15px", fontSize: 13.5, lineHeight: 1.55, whiteSpace: "pre-wrap" }}>
+                : { maxWidth: "82%", background: "var(--surface)", border: "1px solid var(--border)", color: "var(--text)", borderTopLeftRadius: 14, borderTopRightRadius: 14, borderBottomLeftRadius: 4, borderBottomRightRadius: 14, padding: "12px 15px", fontSize: 13.5, lineHeight: 1.55, whiteSpace: "pre-wrap" }}>
                 {m.content}
               </div>
             </div>
           ))}
           {typing && (
-            <div style={{ alignSelf: "flex-start", background: "#fff", border: "1px solid #E7E0D3", borderTopLeftRadius: 14, borderTopRightRadius: 14, borderBottomLeftRadius: 4, borderBottomRightRadius: 14, padding: "13px 16px", display: "flex", gap: 5 }}>
+            <div style={{ alignSelf: "flex-start", background: "var(--surface)", border: "1px solid var(--border)", borderTopLeftRadius: 14, borderTopRightRadius: 14, borderBottomLeftRadius: 4, borderBottomRightRadius: 14, padding: "13px 16px", display: "flex", gap: 5 }}>
               {[0, 0.2, 0.4].map((d) => (
                 <span key={d} style={{ width: 7, height: 7, borderRadius: "50%", background: "#9aa6ad", animation: `blink 1.2s infinite ${d}s` }} />
               ))}
@@ -207,8 +207,8 @@ export default function ChatPage() {
           </div>
         )}
 
-        <div style={{ display: "flex", gap: 10, padding: "14px 16px", borderTop: "1px solid #E7E0D3", background: "#fff" }}>
-          <input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} placeholder={t.askPlaceholder} style={{ flex: 1, border: "1px solid #E7E0D3", borderRadius: 11, padding: "12px 14px", fontSize: 14, outline: "none", color: "#15324B", background: "#FBFAF6" }} />
+        <div style={{ display: "flex", gap: 10, padding: "14px 16px", borderTop: "1px solid var(--border)", background: "var(--surface)" }}>
+          <input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} placeholder={t.askPlaceholder} style={{ flex: 1, border: "1px solid var(--border)", borderRadius: 11, padding: "12px 14px", fontSize: 14, outline: "none", color: "var(--text)", background: "var(--surface-2)" }} />
           <button onClick={() => send()} style={{ width: 46, height: 46, borderRadius: 11, background: "#102A40", color: "#fff", border: "none", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Icon name={lang === "ar" ? "arrow_back" : "send"} size={21} /></button>
         </div>
       </div>

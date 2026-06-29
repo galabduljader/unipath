@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useI18n, langSwitchLabel } from "@/lib/i18n";
+import { useTheme } from "@/lib/theme";
 import { useAuth } from "@/lib/auth";
 import { useData } from "@/lib/data";
 import { Icon, Logo, useIsMobile } from "@/components/ui";
@@ -12,6 +13,7 @@ type NavDef = { key: string; route: string; label: string; icon: string };
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const { t, lang, toggleLang } = useI18n();
+  const { theme, toggleTheme } = useTheme();
   const { profile, signOut } = useAuth();
   const { unreadCount, notifications, markAllRead, openNotification } = useData();
   const isMobile = useIsMobile();
@@ -62,7 +64,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const go = (route: string) => { setShowNotif(false); router.push(route); };
 
   return (
-    <div style={{ display: "flex", height: "100dvh", width: "100%", overflow: "hidden", background: "#F4EEE3", color: "#15324B" }}>
+    <div style={{ display: "flex", height: "100dvh", width: "100%", overflow: "hidden", background: "var(--bg)", color: "var(--text)" }}>
       {/* sidebar */}
       {!isMobile && (
         <aside style={{ width: 256, flexShrink: 0, background: "#102A40", color: "#eaf1f6", display: "flex", flexDirection: "column", padding: "22px 16px" }}>
@@ -98,19 +100,22 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
         {/* header */}
-        <header style={{ minHeight: 64, flexShrink: 0, background: "#fff", borderBottom: "1px solid #E7E0D3", display: "flex", alignItems: "center", gap: 14, paddingInline: 16, paddingTop: "env(safe-area-inset-top)" }}>
+        <header style={{ minHeight: 64, flexShrink: 0, background: "var(--surface)", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: 14, paddingInline: 16, paddingTop: "env(safe-area-inset-top)" }}>
           {isMobile && (
-            <button onClick={() => setShowMenu(true)} aria-label="Menu" style={{ width: 40, height: 40, borderRadius: 10, background: "#F4EEE3", border: "1px solid #E7E0D3", display: "flex", alignItems: "center", justifyContent: "center", color: "#15324B", flexShrink: 0 }}>
+            <button onClick={() => setShowMenu(true)} aria-label="Menu" style={{ width: 40, height: 40, borderRadius: 10, background: "var(--bg)", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text)", flexShrink: 0 }}>
               <Icon name="menu" size={22} />
             </button>
           )}
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div className="serif" style={{ fontSize: 20, fontWeight: 600, color: "#102A40", lineHeight: 1.1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{pageTitle}</div>
+            <div className="serif" style={{ fontSize: 20, fontWeight: 600, color: "var(--ink-strong)", lineHeight: 1.1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{pageTitle}</div>
           </div>
-          <button onClick={toggleLang} style={{ display: "flex", alignItems: "center", gap: 6, background: "#F4EEE3", border: "1px solid #E7E0D3", borderRadius: 9, padding: "7px 11px", color: "#15324B", fontWeight: 600, fontSize: 12.5 }}>
+          <button onClick={toggleTheme} title={theme === "dark" ? "Light mode" : "Dark mode"} aria-label="Toggle theme" style={{ width: 40, height: 40, borderRadius: 10, background: "var(--bg)", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text)" }}>
+            <Icon name={theme === "dark" ? "light_mode" : "dark_mode"} size={20} />
+          </button>
+          <button onClick={toggleLang} style={{ display: "flex", alignItems: "center", gap: 6, background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 9, padding: "7px 11px", color: "var(--text)", fontWeight: 600, fontSize: 12.5 }}>
             <Icon name="translate" size={18} />{!isMobile && langSwitchLabel(lang)}
           </button>
-          <button onClick={() => setShowNotif((s) => !s)} style={{ position: "relative", width: 40, height: 40, borderRadius: 10, background: "#F4EEE3", border: "1px solid #E7E0D3", display: "flex", alignItems: "center", justifyContent: "center", color: "#15324B" }}>
+          <button onClick={() => setShowNotif((s) => !s)} style={{ position: "relative", width: 40, height: 40, borderRadius: 10, background: "var(--bg)", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text)" }}>
             <Icon name="notifications" size={21} />
             {unreadCount > 0 && (
               <span style={{ position: "absolute", top: 6, insetInlineEnd: 7, minWidth: 16, height: 16, background: "#C9512F", color: "#fff", borderRadius: 8, fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", border: "2px solid #fff", padding: "0 3px" }}>{unreadCount}</span>
@@ -127,7 +132,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
         {/* mobile bottom nav */}
         {isMobile && (
-          <nav style={{ flexShrink: 0, background: "#fff", borderTop: "1px solid #E7E0D3", display: "flex", paddingTop: 7, paddingInline: 4, paddingBottom: "calc(9px + env(safe-area-inset-bottom))" }}>
+          <nav style={{ flexShrink: 0, background: "var(--surface)", borderTop: "1px solid var(--border)", display: "flex", paddingTop: 7, paddingInline: 4, paddingBottom: "calc(9px + env(safe-area-inset-bottom))" }}>
             {mobileNav.map((n) => {
               const active = pathname === n.route;
               return (
@@ -180,32 +185,32 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       {/* notification dropdown */}
       {showNotif && (
         <div onClick={() => setShowNotif(false)} style={{ position: "fixed", inset: 0, background: "rgba(16,42,64,.18)", zIndex: 40 }}>
-          <div onClick={(e) => e.stopPropagation()} style={{ position: "absolute", top: 62, insetInlineEnd: 18, width: 360, maxWidth: "calc(100vw - 36px)", background: "#fff", border: "1px solid #E7E0D3", borderRadius: 16, boxShadow: "0 20px 50px rgba(16,42,64,.22)", overflow: "hidden" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "15px 18px", borderBottom: "1px solid #E7E0D3" }}>
-              <div style={{ fontWeight: 700, fontSize: 15, color: "#102A40" }}>{t.notifsTitle}</div>
+          <div onClick={(e) => e.stopPropagation()} style={{ position: "absolute", top: 62, insetInlineEnd: 18, width: 360, maxWidth: "calc(100vw - 36px)", background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, boxShadow: "0 20px 50px rgba(16,42,64,.22)", overflow: "hidden" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "15px 18px", borderBottom: "1px solid var(--border)" }}>
+              <div style={{ fontWeight: 700, fontSize: 15, color: "var(--ink-strong)" }}>{t.notifsTitle}</div>
               <button onClick={markAllRead} style={{ background: "none", border: "none", color: "#1E8378", fontWeight: 600, fontSize: 12 }}>{t.markAllRead}</button>
             </div>
             <div style={{ maxHeight: 380, overflowY: "auto" }}>
               {notifications.slice(0, 8).map((n) => {
-                const ic = notifIconStyle[n.icon] || ["#F4EEE3", "#6E7C86"];
+                const ic = notifIconStyle[n.icon] || ["var(--bg)", "#6E7C86"];
                 return (
                   <button key={n.id} onClick={() => { openNotification(n); if (n.link) go("/" + n.link); else setShowNotif(false); }} style={{ display: "flex", gap: 11, alignItems: "center", padding: "13px 16px", border: "none", borderBottom: "1px solid #F0EADE", background: !n.read ? "#F5FAFC" : "#fff", width: "100%" }}>
                     <div style={{ width: 36, height: 36, borderRadius: 10, background: ic[0], color: ic[1], display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                       <Icon name={n.icon} size={19} />
                     </div>
                     <div style={{ flex: 1, minWidth: 0, textAlign: "start" }}>
-                      <div style={{ fontWeight: 600, fontSize: 13, color: "#102A40" }}>{n.title}</div>
-                      <div style={{ fontSize: 11.5, color: "#9aa6ad", marginTop: 3 }}>{relTime(n.created_at, lang)}</div>
+                      <div style={{ fontWeight: 600, fontSize: 13, color: "var(--ink-strong)" }}>{n.title}</div>
+                      <div style={{ fontSize: 11.5, color: "var(--faint)", marginTop: 3 }}>{relTime(n.created_at, lang)}</div>
                     </div>
                     {!n.read && <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#1E8378", flexShrink: 0 }} />}
                   </button>
                 );
               })}
               {notifications.length === 0 && (
-                <div style={{ padding: 24, textAlign: "center", color: "#9aa6ad", fontSize: 13 }}>—</div>
+                <div style={{ padding: 24, textAlign: "center", color: "var(--faint)", fontSize: 13 }}>—</div>
               )}
             </div>
-            <button onClick={() => go("/notifications")} style={{ width: "100%", padding: 13, background: "#FBFAF6", border: "none", borderTop: "1px solid #E7E0D3", color: "#102A40", fontWeight: 600, fontSize: 13 }}>{t.viewAllNotifs}</button>
+            <button onClick={() => go("/notifications")} style={{ width: "100%", padding: 13, background: "var(--surface-2)", border: "none", borderTop: "1px solid var(--border)", color: "var(--ink-strong)", fontWeight: 600, fontSize: 13 }}>{t.viewAllNotifs}</button>
           </div>
         </div>
       )}

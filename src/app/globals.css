@@ -1,29 +1,49 @@
 @import "tailwindcss";
 
 /* ============ UNI PATH design tokens ============ */
+/* Light values match the original palette exactly, so light mode is unchanged. */
 :root {
-  --sand: #F4EEE3;
-  --sand-soft: #FBFAF6;
-  --navy: #102A40;
-  --ink: #15324B;
+  --bg: #F4EEE3;
+  --surface: #ffffff;
+  --surface-2: #FBFAF6;
+  --track: #EEF1F0;
+  --border: #E7E0D3;
+  --text: #15324B;
+  --ink-strong: #102A40;
+  --muted: #6E7C86;
+  --faint: #9aa6ad;
+  /* brand accents (constant across themes) */
   --teal: #1E8378;
   --teal-deep: #156B61;
   --blue: #6BA6CF;
   --blue-ink: #2C6E91;
-  --border: #E7E0D3;
-  --muted: #6E7C86;
-  --faint: #9aa6ad;
+  --navy: #102A40;
+  --sand: var(--bg);
+  --ink: var(--text);
+}
+
+[data-theme="dark"] {
+  --bg: #13151a;
+  --surface: #1e2228;
+  --surface-2: #24292f;
+  --track: #2b3139;
+  --border: #343b44;
+  --text: #e6ebf0;
+  --ink-strong: #f2f6f9;
+  --muted: #a7b1bb;
+  --faint: #7f8a95;
 }
 
 * { box-sizing: border-box; }
 html, body { padding: 0; margin: 0; }
 
 body {
-  background: var(--sand);
-  color: var(--ink);
+  background: var(--bg);
+  color: var(--text);
   font-family: 'Public Sans', 'IBM Plex Sans Arabic', system-ui, -apple-system, sans-serif;
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
+  transition: background-color .2s ease, color .2s ease;
 }
 
 [dir="rtl"] body { font-family: 'IBM Plex Sans Arabic', 'Public Sans', system-ui, sans-serif; }

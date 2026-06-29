@@ -11,10 +11,10 @@ import { PARSE_STAGES } from "@/lib/content";
 import { parseSheet, type ExtractedCourse } from "@/lib/parseSheet";
 
 const selStyle: React.CSSProperties = {
-  width: "100%", border: "1px solid #E7E0D3", borderRadius: 11, padding: "12px 14px",
-  fontSize: 14, outline: "none", color: "#15324B", background: "#FBFAF6",
+  width: "100%", border: "1px solid var(--border)", borderRadius: 11, padding: "12px 14px",
+  fontSize: 14, outline: "none", color: "var(--text)", background: "var(--surface-2)",
 };
-const labelStyle: React.CSSProperties = { fontSize: 12.5, fontWeight: 600, color: "#42525C", marginBottom: 7, display: "block" };
+const labelStyle: React.CSSProperties = { fontSize: 12.5, fontWeight: 600, color: "var(--muted)", marginBottom: 7, display: "block" };
 
 export default function OnboardingPage() {
   const { t, lang, toggleLang } = useI18n();
@@ -129,16 +129,16 @@ export default function OnboardingPage() {
   const canNext = step === 0 ? !!(university && major) : step === 1 ? !!cohort : true;
 
   return (
-    <div style={{ minHeight: "100vh", width: "100%", background: "#F4EEE3", overflowY: "auto", display: "flex", justifyContent: "center", padding: "26px 18px 40px" }}>
+    <div style={{ minHeight: "100vh", width: "100%", background: "var(--bg)", overflowY: "auto", display: "flex", justifyContent: "center", padding: "26px 18px 40px" }}>
       <div style={{ width: "100%", maxWidth: 660 }}>
         {/* header */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
           <Logo size={36} radius={10} textSize={17} />
           <div style={{ display: "flex", gap: 8 }}>
-            <button onClick={toggleLang} style={{ display: "flex", alignItems: "center", gap: 6, background: "#fff", border: "1px solid #E7E0D3", borderRadius: 9, padding: "7px 11px", color: "#15324B", fontWeight: 600, fontSize: 12.5 }}>
+            <button onClick={toggleLang} style={{ display: "flex", alignItems: "center", gap: 6, background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 9, padding: "7px 11px", color: "var(--text)", fontWeight: 600, fontSize: 12.5 }}>
               <Icon name="translate" size={17} />{langSwitchLabel(lang)}
             </button>
-            <button onClick={async () => { await signOut(); router.replace("/login"); }} style={{ background: "#fff", border: "1px solid #E7E0D3", borderRadius: 9, padding: "7px 11px", color: "#6E7C86", fontWeight: 600, fontSize: 12.5 }}>{t.signOut}</button>
+            <button onClick={async () => { await signOut(); router.replace("/login"); }} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 9, padding: "7px 11px", color: "var(--muted)", fontWeight: 600, fontSize: 12.5 }}>{t.signOut}</button>
           </div>
         </div>
 
@@ -146,7 +146,7 @@ export default function OnboardingPage() {
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 22 }}>
           {groups.map((label, i) => (
             <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 7, textAlign: "center" }}>
-              <div style={{ width: 30, height: 30, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, flexShrink: 0, ...(i < curGroup ? { background: "#1E8378", color: "#fff" } : i === curGroup ? { background: "#102A40", color: "#fff" } : { background: "#EDE6D8", color: "#9aa6ad" }) }}>
+              <div style={{ width: 30, height: 30, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, flexShrink: 0, ...(i < curGroup ? { background: "#1E8378", color: "#fff" } : i === curGroup ? { background: "#102A40", color: "#fff" } : { background: "#EDE6D8", color: "var(--faint)" }) }}>
                 {i < curGroup ? <Icon name="check" size={17} /> : i + 1}
               </div>
               <div style={{ fontSize: 12.5, fontWeight: i === curGroup ? 700 : 500, color: i <= curGroup ? "#102A40" : "#9aa6ad" }}>{label}</div>
@@ -155,11 +155,11 @@ export default function OnboardingPage() {
         </div>
 
         {/* card */}
-        <div style={{ background: "#fff", border: "1px solid #E7E0D3", borderRadius: 18, padding: 30 }}>
+        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 18, padding: 30 }}>
           {step === 0 && (
             <div className="fade-up">
-              <div className="serif" style={{ fontSize: 24, fontWeight: 600, color: "#102A40" }}>{t.obProfileTitle}</div>
-              <div style={{ fontSize: 13.5, color: "#6E7C86", marginTop: 5, marginBottom: 24 }}>{t.obProfileSub}</div>
+              <div className="serif" style={{ fontSize: 24, fontWeight: 600, color: "var(--ink-strong)" }}>{t.obProfileTitle}</div>
+              <div style={{ fontSize: 13.5, color: "var(--muted)", marginTop: 5, marginBottom: 24 }}>{t.obProfileSub}</div>
               <div style={{ marginBottom: 18 }}>
                 <label style={labelStyle}>{t.chooseUniversity}</label>
                 <select value={university} onChange={(e) => setUniversity(e.target.value)} style={selStyle}>
@@ -179,13 +179,13 @@ export default function OnboardingPage() {
 
           {step === 1 && (
             <div className="fade-up">
-              <div className="serif" style={{ fontSize: 24, fontWeight: 600, color: "#102A40" }}>{t.obCohortTitle}</div>
-              <div style={{ fontSize: 13.5, color: "#6E7C86", marginTop: 5, marginBottom: 22 }}>{t.obCohortSub}</div>
+              <div className="serif" style={{ fontSize: 24, fontWeight: 600, color: "var(--ink-strong)" }}>{t.obCohortTitle}</div>
+              <div style={{ fontSize: 13.5, color: "var(--muted)", marginTop: 5, marginBottom: 22 }}>{t.obCohortSub}</div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12 }}>
                 {COHORTS.map((c) => (
-                  <button key={c} onClick={() => setCohort(c)} style={{ border: `2px solid ${cohort === c ? "#1E8378" : "#E7E0D3"}`, background: cohort === c ? "#E6F2EF" : "#fff", borderRadius: 13, padding: "18px 14px", textAlign: "center" }}>
+                  <button key={c} onClick={() => setCohort(c)} style={{ border: `2px solid ${cohort === c ? "#1E8378" : "var(--border)"}`, background: cohort === c ? "#E6F2EF" : "#fff", borderRadius: 13, padding: "18px 14px", textAlign: "center" }}>
                     <div className="serif" style={{ fontSize: 24, fontWeight: 600, color: cohort === c ? "#156B61" : "#102A40" }}>{c}</div>
-                    <div style={{ fontSize: 11, color: "#9aa6ad", marginTop: 2 }}>{t.cohortHint}</div>
+                    <div style={{ fontSize: 11, color: "var(--faint)", marginTop: 2 }}>{t.cohortHint}</div>
                   </button>
                 ))}
               </div>
@@ -194,20 +194,20 @@ export default function OnboardingPage() {
 
           {step === 2 && (
             <div className="fade-up">
-              <div className="serif" style={{ fontSize: 24, fontWeight: 600, color: "#102A40" }}>{t.obUploadTitle}</div>
-              <div style={{ fontSize: 13.5, color: "#6E7C86", marginTop: 5, marginBottom: 22 }}>{t.obUploadSub}</div>
-              <div style={{ border: "2px dashed #C3D3DD", borderRadius: 16, background: "#F7FAFB", padding: "36px 24px", textAlign: "center" }}>
+              <div className="serif" style={{ fontSize: 24, fontWeight: 600, color: "var(--ink-strong)" }}>{t.obUploadTitle}</div>
+              <div style={{ fontSize: 13.5, color: "var(--muted)", marginTop: 5, marginBottom: 22 }}>{t.obUploadSub}</div>
+              <div style={{ border: "2px dashed #C3D3DD", borderRadius: 16, background: "var(--surface-2)", padding: "36px 24px", textAlign: "center" }}>
                 <div style={{ width: 58, height: 58, borderRadius: 15, background: "#EAF1F7", color: "#2C6E91", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px" }}>
                   <Icon name="upload_file" size={29} />
                 </div>
-                <div style={{ fontWeight: 600, fontSize: 15, color: "#102A40" }}>{t.dropHere}</div>
-                <div style={{ fontSize: 12.5, color: "#9aa6ad", marginTop: 5 }}>{t.constraints}</div>
+                <div style={{ fontWeight: 600, fontSize: 15, color: "var(--ink-strong)" }}>{t.dropHere}</div>
+                <div style={{ fontSize: 12.5, color: "var(--faint)", marginTop: 5 }}>{t.constraints}</div>
                 <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 18, flexWrap: "wrap" }}>
                   <input ref={fileInput} type="file" accept=".pdf,.doc,.docx" onChange={onPick} style={{ display: "none" }} />
                   <button onClick={() => fileInput.current?.click()} style={{ background: "#1E8378", color: "#fff", border: "none", borderRadius: 10, padding: "11px 18px", fontWeight: 600, fontSize: 13.5, display: "flex", alignItems: "center", gap: 7 }}>
                     <Icon name="description" size={18} />{t.browse}
                   </button>
-                  <button onClick={() => { setFileName("CS_Degree_Plan_2023.pdf"); setFileSize("1.8 MB"); setFileError(""); runParse(null); }} style={{ background: "#fff", color: "#15324B", border: "1px solid #E7E0D3", borderRadius: 10, padding: "11px 18px", fontWeight: 600, fontSize: 13.5 }}>{t.useSample}</button>
+                  <button onClick={() => { setFileName("CS_Degree_Plan_2023.pdf"); setFileSize("1.8 MB"); setFileError(""); runParse(null); }} style={{ background: "var(--surface)", color: "var(--text)", border: "1px solid var(--border)", borderRadius: 10, padding: "11px 18px", fontWeight: 600, fontSize: 13.5 }}>{t.useSample}</button>
                 </div>
                 {fileError && (
                   <div style={{ marginTop: 14, display: "inline-flex", alignItems: "center", gap: 7, background: "#FBECEC", border: "1px solid #E7CFCF", color: "#B5564E", borderRadius: 9, padding: "8px 12px", fontSize: 12.5 }}>
@@ -220,17 +220,17 @@ export default function OnboardingPage() {
 
           {step === 3 && (
             <div className="fade-up">
-              <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 15px", border: "1px solid #E7E0D3", borderRadius: 12, marginBottom: 24 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 15px", border: "1px solid var(--border)", borderRadius: 12, marginBottom: 24 }}>
                 <Icon name="picture_as_pdf" size={26} color="#C9512F" />
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 600, fontSize: 13.5, color: "#102A40" }}>{fileName}</div>
-                  <div style={{ fontSize: 11.5, color: "#9aa6ad" }}>{fileSize}</div>
+                  <div style={{ fontWeight: 600, fontSize: 13.5, color: "var(--ink-strong)" }}>{fileName}</div>
+                  <div style={{ fontSize: 11.5, color: "var(--faint)" }}>{fileSize}</div>
                 </div>
                 <div className="spin" style={{ width: 30, height: 30, border: "3px solid #E6F2EF", borderTopColor: "#1E8378", borderRadius: "50%" }} />
               </div>
-              <div className="serif" style={{ fontSize: 21, fontWeight: 600, color: "#102A40" }}>{t.parsing}</div>
-              <div style={{ fontSize: 13, color: "#6E7C86", marginTop: 4, marginBottom: 20 }}>{t.parseSub}</div>
-              <div style={{ height: 10, borderRadius: 6, background: "#EEF1F0", overflow: "hidden", marginBottom: 22 }}>
+              <div className="serif" style={{ fontSize: 21, fontWeight: 600, color: "var(--ink-strong)" }}>{t.parsing}</div>
+              <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 4, marginBottom: 20 }}>{t.parseSub}</div>
+              <div style={{ height: 10, borderRadius: 6, background: "var(--track)", overflow: "hidden", marginBottom: 22 }}>
                 <div style={{ height: "100%", background: "linear-gradient(90deg,#1E8378,#2A9D8F)", borderRadius: 6, transition: "width .15s ease", width: `${progress}%` }} />
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -251,23 +251,23 @@ export default function OnboardingPage() {
             <div className="fade-up">
               <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
                 <Icon name="fact_check" size={23} color="#1E8378" />
-                <div className="serif" style={{ fontSize: 23, fontWeight: 600, color: "#102A40" }}>{t.obCoursesTitle}</div>
+                <div className="serif" style={{ fontSize: 23, fontWeight: 600, color: "var(--ink-strong)" }}>{t.obCoursesTitle}</div>
               </div>
-              <div style={{ fontSize: 13, color: "#6E7C86", marginTop: 5, marginBottom: 14 }}>{t.obCoursesSub}</div>
+              <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 5, marginBottom: 14 }}>{t.obCoursesSub}</div>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 12, flexWrap: "wrap" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "#EAF1F7", color: "#2C6E91", border: "1px solid #D5E3EC", borderRadius: 9, padding: "7px 12px", fontSize: 12.5, fontWeight: 600 }}>
                   <Icon name="school" size={16} />{major}
                 </span>
                 <span style={{ fontSize: 12.5, fontWeight: 700, color: "#156B61" }}>{obCountLabel}</span>
               </div>
-              <div style={{ maxHeight: 300, overflowY: "auto", display: "flex", flexDirection: "column", gap: 7, border: "1px solid #E7E0D3", borderRadius: 12, padding: 10 }}>
+              <div style={{ maxHeight: 300, overflowY: "auto", display: "flex", flexDirection: "column", gap: 7, border: "1px solid var(--border)", borderRadius: 12, padding: 10 }}>
                 {reviewCourses.map((c) => {
                   const on = done.has(c.code);
                   return (
                     <button key={c.code} onClick={() => toggleDone(c.code)} style={{ display: "flex", alignItems: "center", gap: 11, padding: "9px 11px", border: `1px solid ${on ? "#CDE6E0" : "#EEE8DC"}`, borderRadius: 9, background: on ? "#F2FAF8" : "#fff", width: "100%" }}>
                       <Icon name={on ? "check_circle" : "radio_button_unchecked"} size={20} color={on ? "#1E8378" : "#cdd5d9"} />
-                      <span style={{ flex: 1, textAlign: "start", fontSize: 13, color: "#2b3a44" }}>{c.code} · {c.title}</span>
-                      <span style={{ fontSize: 11.5, color: "#9aa6ad" }}>{c.credits} {t.cr}</span>
+                      <span style={{ flex: 1, textAlign: "start", fontSize: 13, color: "var(--text)" }}>{c.code} · {c.title}</span>
+                      <span style={{ fontSize: 11.5, color: "var(--faint)" }}>{c.credits} {t.cr}</span>
                     </button>
                   );
                 })}
@@ -279,7 +279,7 @@ export default function OnboardingPage() {
         {/* nav buttons */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 18 }}>
           {step === 1 || step === 2 || step === 4 ? (
-            <button onClick={() => setStep(step === 4 ? 2 : step - 1)} style={{ background: "#fff", color: "#42525C", border: "1px solid #E7E0D3", borderRadius: 11, padding: "12px 20px", fontWeight: 600, fontSize: 14, display: "flex", alignItems: "center", gap: 6 }}>
+            <button onClick={() => setStep(step === 4 ? 2 : step - 1)} style={{ background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: 11, padding: "12px 20px", fontWeight: 600, fontSize: 14, display: "flex", alignItems: "center", gap: 6 }}>
               <Icon name={lang === "ar" ? "arrow_forward" : "arrow_back"} size={18} />{t.back}
             </button>
           ) : <span />}

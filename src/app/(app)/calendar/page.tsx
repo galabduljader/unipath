@@ -12,7 +12,7 @@ const TYPE_META: Record<EventType, { color: string; bg: string; en: string; ar: 
   quiz: { color: "#7A5AA8", bg: "#EEE7F4", en: "Quiz", ar: "كويز", icon: "quiz" },
   project: { color: "#1E8378", bg: "#E6F2EF", en: "Project", ar: "مشروع", icon: "folder_special" },
   class: { color: "#B5762E", bg: "#F6ECD7", en: "Class", ar: "محاضرة", icon: "school" },
-  other: { color: "#6E7C86", bg: "#F4EEE3", en: "Other", ar: "آخر", icon: "event" },
+  other: { color: "var(--muted)", bg: "var(--bg)", en: "Other", ar: "آخر", icon: "event" },
 };
 
 const MONTHS_EN = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -82,14 +82,14 @@ export default function CalendarPage() {
   const upcoming = sortedAll.filter((e) => e.event_date >= todayIso);
   const past = sortedAll.filter((e) => e.event_date < todayIso).reverse();
 
-  const inputStyle: React.CSSProperties = { border: "1px solid #E7E0D3", borderRadius: 10, padding: "10px 12px", fontSize: 13.5, outline: "none", color: "#15324B", background: "#FBFAF6" };
+  const inputStyle: React.CSSProperties = { border: "1px solid var(--border)", borderRadius: 10, padding: "10px 12px", fontSize: 13.5, outline: "none", color: "var(--text)", background: "var(--surface-2)" };
 
   // ---- shared: add-event form ----
   const addForm = (
-    <div style={{ background: "#fff", border: "1px solid #E7E0D3", borderRadius: 18, padding: 18 }}>
+    <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 18, padding: 18 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
         <Icon name="add_circle" size={20} color="#1E8378" />
-        <div className="serif" style={{ fontSize: 17, fontWeight: 600, color: "#102A40" }}>{ar ? "إضافة حدث" : "Add event"}</div>
+        <div className="serif" style={{ fontSize: 17, fontWeight: 600, color: "var(--ink-strong)" }}>{ar ? "إضافة حدث" : "Add event"}</div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
         <input ref={titleRef} value={title} onChange={(e) => setTitle(e.target.value)} onKeyDown={(e) => e.key === "Enter" && add()} placeholder={ar ? "العنوان (مثل: اختبار CS 350)" : "Title (e.g. CS 350 midterm)"} style={inputStyle} />
@@ -113,14 +113,14 @@ export default function CalendarPage() {
     return (
       <div style={{ maxWidth: 640, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }} className="fade-up">
         {addForm}
-        <div style={{ background: "#fff", border: "1px solid #E7E0D3", borderRadius: 18, padding: 18 }}>
-          <div className="serif" style={{ fontSize: 18, fontWeight: 600, color: "#102A40", marginBottom: 4 }}>{ar ? "أحداثك" : "Your events"}</div>
-          <div style={{ fontSize: 12.5, color: "#6E7C86", marginBottom: 14 }}>{ar ? "القادمة والسابقة، مرتّبة بالتاريخ." : "Upcoming and past, sorted by date."}</div>
+        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 18, padding: 18 }}>
+          <div className="serif" style={{ fontSize: 18, fontWeight: 600, color: "var(--ink-strong)", marginBottom: 4 }}>{ar ? "أحداثك" : "Your events"}</div>
+          <div style={{ fontSize: 12.5, color: "var(--muted)", marginBottom: 14 }}>{ar ? "القادمة والسابقة، مرتّبة بالتاريخ." : "Upcoming and past, sorted by date."}</div>
           {sortedAll.length === 0 ? (
-            <div style={{ textAlign: "center", padding: 26, color: "#9aa6ad", fontSize: 13 }}>{ar ? "لا أحداث بعد — أضِف أول حدث أعلاه." : "No events yet — add your first one above."}</div>
+            <div style={{ textAlign: "center", padding: 26, color: "var(--faint)", fontSize: 13 }}>{ar ? "لا أحداث بعد — أضِف أول حدث أعلاه." : "No events yet — add your first one above."}</div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {upcoming.length > 0 && <div style={{ fontSize: 11, fontWeight: 700, color: "#9aa6ad", textTransform: "uppercase", letterSpacing: ".04em", marginTop: 2 }}>{ar ? "القادمة" : "Upcoming"}</div>}
+              {upcoming.length > 0 && <div style={{ fontSize: 11, fontWeight: 700, color: "var(--faint)", textTransform: "uppercase", letterSpacing: ".04em", marginTop: 2 }}>{ar ? "القادمة" : "Upcoming"}</div>}
               {upcoming.map((e) => <EventRow key={e.id} e={e} ar={ar} dateLabel={dateLabel(e.event_date)} onDel={() => delEvent(e.id)} />)}
               {past.length > 0 && <div style={{ fontSize: 11, fontWeight: 700, color: "#c2b9ac", textTransform: "uppercase", letterSpacing: ".04em", marginTop: 10 }}>{ar ? "السابقة" : "Past"}</div>}
               {past.map((e) => <EventRow key={e.id} e={e} ar={ar} dateLabel={dateLabel(e.event_date)} onDel={() => delEvent(e.id)} faded />)}
@@ -135,18 +135,18 @@ export default function CalendarPage() {
   const selEvents = (byDate.get(selected) ?? []).sort((a, b) => (a.event_time || "").localeCompare(b.event_time || ""));
   return (
     <div style={{ maxWidth: 1140, margin: "0 auto", display: "flex", gap: 18, flexWrap: "wrap", alignItems: "flex-start" }} className="fade-up">
-      <div style={{ flex: 2, minWidth: 360, background: "#fff", border: "1px solid #E7E0D3", borderRadius: 18, padding: 20 }}>
+      <div style={{ flex: 2, minWidth: 360, background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 18, padding: 20 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-          <div className="serif" style={{ fontSize: 20, fontWeight: 600, color: "#102A40" }}>{monthName} {yearLabel}</div>
+          <div className="serif" style={{ fontSize: 20, fontWeight: 600, color: "var(--ink-strong)" }}>{monthName} {yearLabel}</div>
           <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-            <button onClick={goToday} style={{ background: "#F4EEE3", border: "1px solid #E7E0D3", borderRadius: 9, padding: "7px 12px", fontSize: 12.5, fontWeight: 600, color: "#42525C" }}>{ar ? "اليوم" : "Today"}</button>
-            <button onClick={() => shift(-1)} style={{ width: 34, height: 34, borderRadius: 9, background: "#F4EEE3", border: "1px solid #E7E0D3", display: "flex", alignItems: "center", justifyContent: "center", color: "#42525C" }}><Icon name={ar ? "chevron_right" : "chevron_left"} size={20} /></button>
-            <button onClick={() => shift(1)} style={{ width: 34, height: 34, borderRadius: 9, background: "#F4EEE3", border: "1px solid #E7E0D3", display: "flex", alignItems: "center", justifyContent: "center", color: "#42525C" }}><Icon name={ar ? "chevron_left" : "chevron_right"} size={20} /></button>
+            <button onClick={goToday} style={{ background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 9, padding: "7px 12px", fontSize: 12.5, fontWeight: 600, color: "var(--muted)" }}>{ar ? "اليوم" : "Today"}</button>
+            <button onClick={() => shift(-1)} style={{ width: 34, height: 34, borderRadius: 9, background: "var(--bg)", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--muted)" }}><Icon name={ar ? "chevron_right" : "chevron_left"} size={20} /></button>
+            <button onClick={() => shift(1)} style={{ width: 34, height: 34, borderRadius: 9, background: "var(--bg)", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--muted)" }}><Icon name={ar ? "chevron_left" : "chevron_right"} size={20} /></button>
           </div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 6 }}>
           {(ar ? DOW_AR : DOW_EN).map((d) => (
-            <div key={d} style={{ textAlign: "center", fontSize: 11, fontWeight: 700, color: "#9aa6ad", padding: "2px 0", textTransform: "uppercase", letterSpacing: ".03em" }}>{d}</div>
+            <div key={d} style={{ textAlign: "center", fontSize: 11, fontWeight: 700, color: "var(--faint)", padding: "2px 0", textTransform: "uppercase", letterSpacing: ".03em" }}>{d}</div>
           ))}
           {cells.map((d, i) => {
             if (d === null) return <div key={i} />;
@@ -161,7 +161,7 @@ export default function CalendarPage() {
                   {evs.slice(0, 2).map((e) => (
                     <div key={e.id} title={e.title} style={{ fontSize: 9.5, fontWeight: 600, color: TYPE_META[e.type].color, background: TYPE_META[e.type].bg, borderRadius: 4, padding: "1px 4px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{e.title}</div>
                   ))}
-                  {evs.length > 2 && <div style={{ fontSize: 9, color: "#9aa6ad" }}>+{evs.length - 2}</div>}
+                  {evs.length > 2 && <div style={{ fontSize: 9, color: "var(--faint)" }}>+{evs.length - 2}</div>}
                 </div>
               </button>
             );
@@ -169,7 +169,7 @@ export default function CalendarPage() {
         </div>
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 14 }}>
           {(Object.keys(TYPE_META) as EventType[]).map((k) => (
-            <div key={k} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11.5, color: "#6E7C86" }}>
+            <div key={k} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11.5, color: "var(--muted)" }}>
               <span style={{ width: 9, height: 9, borderRadius: 3, background: TYPE_META[k].color }} />{ar ? TYPE_META[k].ar : TYPE_META[k].en}
             </div>
           ))}
@@ -178,20 +178,20 @@ export default function CalendarPage() {
 
       <div style={{ flex: 1, minWidth: 280, display: "flex", flexDirection: "column", gap: 18 }}>
         {addForm}
-        <div style={{ background: "#fff", border: "1px solid #E7E0D3", borderRadius: 18, padding: 18 }}>
-          <div className="serif" style={{ fontSize: 16, fontWeight: 600, color: "#102A40", marginBottom: 4 }}>{dateLabel(selected)}</div>
+        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 18, padding: 18 }}>
+          <div className="serif" style={{ fontSize: 16, fontWeight: 600, color: "var(--ink-strong)", marginBottom: 4 }}>{dateLabel(selected)}</div>
           {selEvents.length === 0 ? (
-            <div style={{ fontSize: 12.5, color: "#9aa6ad", padding: "8px 0" }}>{ar ? "لا أحداث في هذا اليوم." : "No events on this day."}</div>
+            <div style={{ fontSize: 12.5, color: "var(--faint)", padding: "8px 0" }}>{ar ? "لا أحداث في هذا اليوم." : "No events on this day."}</div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {selEvents.map((e) => <EventRow key={e.id} e={e} ar={ar} onDel={() => delEvent(e.id)} />)}
             </div>
           )}
         </div>
-        <div style={{ background: "#fff", border: "1px solid #E7E0D3", borderRadius: 18, padding: 18 }}>
-          <div className="serif" style={{ fontSize: 16, fontWeight: 600, color: "#102A40", marginBottom: 12 }}>{ar ? "القادمة" : "Upcoming"}</div>
+        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 18, padding: 18 }}>
+          <div className="serif" style={{ fontSize: 16, fontWeight: 600, color: "var(--ink-strong)", marginBottom: 12 }}>{ar ? "القادمة" : "Upcoming"}</div>
           {upcoming.length === 0 ? (
-            <div style={{ fontSize: 12.5, color: "#9aa6ad", padding: "8px 0" }}>{ar ? "لا أحداث قادمة." : "Nothing coming up."}</div>
+            <div style={{ fontSize: 12.5, color: "var(--faint)", padding: "8px 0" }}>{ar ? "لا أحداث قادمة." : "Nothing coming up."}</div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {upcoming.slice(0, 6).map((e) => <EventRow key={e.id} e={e} ar={ar} dateLabel={dateLabel(e.event_date)} onDel={() => delEvent(e.id)} />)}
@@ -206,11 +206,11 @@ export default function CalendarPage() {
 function EventRow({ e, ar, dateLabel, onDel, faded }: { e: CalEvent; ar: boolean; dateLabel?: string; onDel: () => void; faded?: boolean }) {
   const meta = TYPE_META[e.type];
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 11px", border: "1px solid #EEE8DC", borderRadius: 11, background: "#FBFAF6", opacity: faded ? 0.6 : 1 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 11px", border: "1px solid #EEE8DC", borderRadius: 11, background: "var(--surface-2)", opacity: faded ? 0.6 : 1 }}>
       <div style={{ width: 32, height: 32, borderRadius: 9, background: meta.bg, color: meta.color, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Icon name={meta.icon} size={17} /></div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontWeight: 600, fontSize: 13, color: "#102A40", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{e.title}</div>
-        <div style={{ fontSize: 11.5, color: "#9aa6ad", display: "flex", gap: 7, flexWrap: "wrap" }}>
+        <div style={{ fontWeight: 600, fontSize: 13, color: "var(--ink-strong)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{e.title}</div>
+        <div style={{ fontSize: 11.5, color: "var(--faint)", display: "flex", gap: 7, flexWrap: "wrap" }}>
           <span style={{ color: meta.color, fontWeight: 600 }}>{ar ? meta.ar : meta.en}</span>
           {dateLabel && <span>· {dateLabel}</span>}
           {e.event_time && <span>· {e.event_time}</span>}

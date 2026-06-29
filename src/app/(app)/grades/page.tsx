@@ -111,40 +111,40 @@ export default function GradesPage() {
         <div style={{ fontSize: 13, color: "#2b4b5e", lineHeight: 1.5 }}>{insight}</div>
       </div>
 
-      <div style={{ background: "#fff", border: "1px solid #E7E0D3", borderRadius: 18, overflow: "hidden" }}>
-        <div style={{ padding: "16px 20px", borderBottom: "1px solid #E7E0D3" }}>
-          <div className="serif" style={{ fontSize: 19, fontWeight: 600, color: "#102A40" }}>{t.yourGrades}</div>
-          <div style={{ fontSize: 12.5, color: "#6E7C86" }}>{lang === "ar" ? "أضِف المواد التي أخذتها وحدّد درجاتها." : "Add the courses you've taken and set their grades."}</div>
+      <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 18, overflow: "hidden" }}>
+        <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border)" }}>
+          <div className="serif" style={{ fontSize: 19, fontWeight: 600, color: "var(--ink-strong)" }}>{t.yourGrades}</div>
+          <div style={{ fontSize: 12.5, color: "var(--muted)" }}>{lang === "ar" ? "أضِف المواد التي أخذتها وحدّد درجاتها." : "Add the courses you've taken and set their grades."}</div>
         </div>
 
         {/* add a course you took */}
-        <div style={{ padding: "14px 20px", borderBottom: "1px solid #E7E0D3", background: "#FBFAF6", display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-          <input value={nCode} onChange={(e) => setNCode(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addCourse()} placeholder={lang === "ar" ? "الرمز (CS 350)" : "Code (CS 350)"} style={{ width: 120, border: "1px solid #E7E0D3", borderRadius: 9, padding: "9px 11px", fontSize: 13, outline: "none", background: "#fff", color: "#15324B" }} />
-          <input value={nTitle} onChange={(e) => setNTitle(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addCourse()} placeholder={lang === "ar" ? "اسم المادة (اختياري)" : "Course title (optional)"} style={{ flex: 1, minWidth: 150, border: "1px solid #E7E0D3", borderRadius: 9, padding: "9px 11px", fontSize: 13, outline: "none", background: "#fff", color: "#15324B" }} />
-          <input value={nCredits} onChange={(e) => setNCredits(e.target.value.replace(/\D/g, "").slice(0, 1))} placeholder={lang === "ar" ? "ساعات" : "Cr"} title={lang === "ar" ? "الساعات" : "Credits"} style={{ width: 64, border: "1px solid #E7E0D3", borderRadius: 9, padding: "9px 11px", fontSize: 13, outline: "none", background: "#fff", color: "#15324B" }} />
-          <select value={nGrade} onChange={(e) => setNGrade(e.target.value)} style={{ width: 90, border: "1px solid #E7E0D3", borderRadius: 9, padding: "9px 11px", fontSize: 13, fontWeight: 700, outline: "none", background: "#fff", color: nGrade ? "#102A40" : "#9aa6ad" }}>
+        <div style={{ padding: "14px 20px", borderBottom: "1px solid var(--border)", background: "var(--surface-2)", display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+          <input value={nCode} onChange={(e) => setNCode(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addCourse()} placeholder={lang === "ar" ? "الرمز (CS 350)" : "Code (CS 350)"} style={{ width: 120, border: "1px solid var(--border)", borderRadius: 9, padding: "9px 11px", fontSize: 13, outline: "none", background: "var(--surface)", color: "var(--text)" }} />
+          <input value={nTitle} onChange={(e) => setNTitle(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addCourse()} placeholder={lang === "ar" ? "اسم المادة (اختياري)" : "Course title (optional)"} style={{ flex: 1, minWidth: 150, border: "1px solid var(--border)", borderRadius: 9, padding: "9px 11px", fontSize: 13, outline: "none", background: "var(--surface)", color: "var(--text)" }} />
+          <input value={nCredits} onChange={(e) => setNCredits(e.target.value.replace(/\D/g, "").slice(0, 1))} placeholder={lang === "ar" ? "ساعات" : "Cr"} title={lang === "ar" ? "الساعات" : "Credits"} style={{ width: 64, border: "1px solid var(--border)", borderRadius: 9, padding: "9px 11px", fontSize: 13, outline: "none", background: "var(--surface)", color: "var(--text)" }} />
+          <select value={nGrade} onChange={(e) => setNGrade(e.target.value)} style={{ width: 90, border: "1px solid var(--border)", borderRadius: 9, padding: "9px 11px", fontSize: 13, fontWeight: 700, outline: "none", background: "var(--surface)", color: nGrade ? "#102A40" : "#9aa6ad" }}>
             <option value="">{lang === "ar" ? "الدرجة" : "Grade"}</option>
             {GRADE_OPTS.map((o) => <option key={o} value={o}>{o}</option>)}
           </select>
           <button onClick={addCourse} style={{ background: "#1E8378", color: "#fff", border: "none", borderRadius: 9, padding: "9px 15px", fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", gap: 5 }}><Icon name="add" size={17} />{lang === "ar" ? "أضف" : "Add"}</button>
         </div>
         {list.length === 0 ? (
-          <div style={{ padding: 36, textAlign: "center", color: "#9aa6ad", fontSize: 13 }}>
+          <div style={{ padding: 36, textAlign: "center", color: "var(--faint)", fontSize: 13 }}>
             {lang === "ar" ? "لم تُضف أي مواد بعد — استخدم النموذج أعلاه لإضافة المواد التي أخذتها." : "No courses yet — use the form above to add the courses you've taken."}
           </div>
         ) : (
           <div style={{ overflowX: "auto" }}>
             <div style={{ minWidth: 560 }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1.6fr .9fr .5fr .7fr", gap: 12, padding: "11px 20px", background: "#FBFAF6", borderBottom: "1px solid #E7E0D3", fontSize: 11.5, fontWeight: 700, color: "#6E7C86", textTransform: "uppercase", letterSpacing: ".04em" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1.6fr .9fr .5fr .7fr", gap: 12, padding: "11px 20px", background: "var(--surface-2)", borderBottom: "1px solid var(--border)", fontSize: 11.5, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: ".04em" }}>
                 <div>{t.colCourse}</div><div>{t.term}</div><div>{t.cr}</div><div style={{ textAlign: "end" }}>{t.grade}</div>
               </div>
               {list.map((c) => (
                 <div key={c.code} style={{ display: "grid", gridTemplateColumns: "1.6fr .9fr .5fr .7fr", gap: 12, padding: "10px 20px", borderBottom: "1px solid #F0EADE", alignItems: "center" }}>
-                  <div style={{ minWidth: 0 }}><div style={{ fontWeight: 600, fontSize: 13, color: "#102A40" }}>{c.code}</div><div style={{ fontSize: 12, color: "#9aa6ad", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c.title}</div></div>
-                  <div style={{ fontSize: 12.5, color: "#6E7C86" }}>{c.term || "—"}</div>
-                  <div style={{ fontSize: 12.5, color: "#42525C" }}>{c.credits}</div>
+                  <div style={{ minWidth: 0 }}><div style={{ fontWeight: 600, fontSize: 13, color: "var(--ink-strong)" }}>{c.code}</div><div style={{ fontSize: 12, color: "var(--faint)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c.title}</div></div>
+                  <div style={{ fontSize: 12.5, color: "var(--muted)" }}>{c.term || "—"}</div>
+                  <div style={{ fontSize: 12.5, color: "var(--muted)" }}>{c.credits}</div>
                   <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                    <select value={grades[c.code] ?? ""} onChange={(e) => setGrade(c.code, e.target.value)} style={{ border: "1px solid #E7E0D3", borderRadius: 9, padding: "7px 10px", fontSize: 13, fontWeight: 700, color: grades[c.code] ? "#102A40" : "#9aa6ad", background: "#FBFAF6", outline: "none" }}>
+                    <select value={grades[c.code] ?? ""} onChange={(e) => setGrade(c.code, e.target.value)} style={{ border: "1px solid var(--border)", borderRadius: 9, padding: "7px 10px", fontSize: 13, fontWeight: 700, color: grades[c.code] ? "#102A40" : "#9aa6ad", background: "var(--surface-2)", outline: "none" }}>
                       <option value="">—</option>
                       {GRADE_OPTS.map((o) => <option key={o} value={o}>{o}</option>)}
                     </select>
