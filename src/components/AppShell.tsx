@@ -18,6 +18,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [showNotif, setShowNotif] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
 
   const isAdmin = profile?.role === "admin";
   const name = profile?.username || "Student";
@@ -98,7 +99,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
         {/* header */}
         <header style={{ minHeight: 64, flexShrink: 0, background: "#fff", borderBottom: "1px solid #E7E0D3", display: "flex", alignItems: "center", gap: 14, paddingInline: 16, paddingTop: "env(safe-area-inset-top)" }}>
-          {isMobile && <Logo size={30} radius={8} textSize={15} />}
+          {isMobile && (
+            <button onClick={() => setShowMenu(true)} aria-label="Menu" style={{ width: 40, height: 40, borderRadius: 10, background: "#F4EEE3", border: "1px solid #E7E0D3", display: "flex", alignItems: "center", justifyContent: "center", color: "#15324B", flexShrink: 0 }}>
+              <Icon name="menu" size={22} />
+            </button>
+          )}
           <div style={{ flex: 1, minWidth: 0 }}>
             <div className="serif" style={{ fontSize: 20, fontWeight: 600, color: "#102A40", lineHeight: 1.1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{pageTitle}</div>
           </div>
@@ -135,6 +140,42 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </nav>
         )}
       </div>
+
+      {/* mobile full-navigation drawer */}
+      {showMenu && (
+        <div onClick={() => setShowMenu(false)} style={{ position: "fixed", inset: 0, background: "rgba(16,42,64,.4)", zIndex: 50 }}>
+          <aside onClick={(e) => e.stopPropagation()} style={{ position: "absolute", insetInlineStart: 0, top: 0, bottom: 0, width: 270, maxWidth: "82vw", background: "#102A40", color: "#eaf1f6", display: "flex", flexDirection: "column", padding: "calc(18px + env(safe-area-inset-top)) 16px 16px", boxShadow: "0 0 50px rgba(0,0,0,.4)" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 4px 18px" }}>
+              <Logo size={34} radius={9} textSize={16} light />
+              <button onClick={() => setShowMenu(false)} aria-label="Close" style={{ background: "none", border: "none", color: "#9fb3c2", display: "flex", padding: 4 }}><Icon name="close" size={22} /></button>
+            </div>
+            <nav style={{ display: "flex", flexDirection: "column", gap: 3, flex: 1, overflowY: "auto" }}>
+              {navDefs.map((n) => {
+                const active = pathname === n.route;
+                return (
+                  <button key={n.key} onClick={() => { setShowMenu(false); router.push(n.route); }} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 12px", border: "none", borderRadius: 10, fontSize: 14, fontWeight: active ? 600 : 500, textAlign: "start", color: active ? "#fff" : "#cdd9e2", background: active ? "rgba(30,131,120,.9)" : "transparent" }}>
+                    <Icon name={n.icon} size={21} color={active ? "#fff" : "#7e97a8"} />
+                    <span style={{ flex: 1, textAlign: "start" }}>{n.label}</span>
+                    {n.key === "notifications" && unreadCount > 0 && (
+                      <span style={{ background: "#1E8378", color: "#fff", fontSize: 11, fontWeight: 700, minWidth: 19, height: 19, padding: "0 5px", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center" }}>{unreadCount}</span>
+                    )}
+                  </button>
+                );
+              })}
+            </nav>
+            <div style={{ borderTop: "1px solid rgba(255,255,255,.1)", paddingTop: 14, marginTop: 10, display: "flex", alignItems: "center", gap: 11 }}>
+              <div style={{ width: 38, height: 38, borderRadius: "50%", background: "#1E8378", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 14 }}>{initials}</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontWeight: 600, fontSize: 13, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{name}</div>
+                <div style={{ fontSize: 11.5, color: "#9fb3c2", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{profile?.university || "—"}</div>
+              </div>
+              <button onClick={async () => { setShowMenu(false); await signOut(); router.replace("/login"); }} title={t.signOut} style={{ background: "none", border: "none", color: "#7e97a8", display: "flex", padding: 6, flexShrink: 0 }}>
+                <Icon name="logout" size={20} />
+              </button>
+            </div>
+          </aside>
+        </div>
+      )}
 
       {/* notification dropdown */}
       {showNotif && (
