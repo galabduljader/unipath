@@ -11,7 +11,7 @@ import { coursesForMajor, departmentBreakdown, computePlan, programTotalCredits,
 import { PARSE_STAGES } from "@/lib/content";
 import { parseSheet, type ExtractedCourse } from "@/lib/parseSheet";
 import { pop } from "@/lib/celebrate";
-import { JourneyMap } from "@/components/JourneyMap";
+import { MajorMap } from "@/components/MajorMap";
 
 const card: React.CSSProperties = { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 18, padding: 30 };
 
@@ -167,22 +167,6 @@ export default function UploadPage() {
             ))}
           </div>
 
-          {/* colorful subject breakdown */}
-          <div style={{ fontWeight: 600, fontSize: 13.5, color: "var(--ink-strong)", marginBottom: 10 }}>{msg("Your degree at a glance", "درجتك بلمحة")}</div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(150px,1fr))", gap: 10, marginBottom: 22 }}>
-            {depts.map((d) => (
-              <div key={d.prefix} style={{ display: "flex", alignItems: "center", gap: 11, padding: "12px 13px", borderRadius: 13, border: "1px solid var(--border)", background: d.color + "14" }}>
-                <div style={{ width: 38, height: 38, borderRadius: 11, background: d.color + "22", color: d.color, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <Icon name={d.icon} size={21} />
-                </div>
-                <div style={{ minWidth: 0 }}>
-                  <div style={{ fontWeight: 600, fontSize: 13, color: "var(--ink-strong)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.label}</div>
-                  <div style={{ fontSize: 11.5, color: "var(--muted)" }}>{d.count} {msg("courses", "مادة")} · {d.credits} {t.cr}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-
           <div style={{ fontWeight: 600, fontSize: 13.5, color: "var(--ink-strong)", marginBottom: 10 }}>{msg("Tick what you've already done 👇", "علّمي ما أنجزتِه 👇")}</div>
           <div style={{ maxHeight: 260, overflowY: "auto", display: "flex", flexDirection: "column", gap: 7, border: "1px solid var(--border)", borderRadius: 12, padding: 10 }}>
             {extracted.map((c) => {
@@ -197,9 +181,9 @@ export default function UploadPage() {
             })}
           </div>
 
-          {/* the journey map — your sheet, turned into a quest */}
+          {/* the creative major map — your sheet, turned into a friendly poster */}
           <div style={{ marginTop: 24, paddingTop: 22, borderTop: "1px solid var(--border)" }}>
-            <JourneyMap planCourses={journeyTuples} completed={completed} gradTerm={upPlan.gradTerm} />
+            <MajorMap major={major} planCourses={journeyTuples} completed={completed} gradTerm={upPlan.gradTerm} total={upTotal} />
           </div>
 
           <button onClick={() => router.push("/dashboard")} style={{ marginTop: 24, width: "100%", background: "#102A40", color: "#fff", border: "none", borderRadius: 12, padding: 13, fontWeight: 600, fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>

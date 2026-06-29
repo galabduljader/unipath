@@ -401,6 +401,12 @@ const DEPT_META: Record<string, { en: string; ar: string; color: string; icon: s
   HUM: { en: "Humanities", ar: "العلوم الإنسانية", color: "#7A5AA8", icon: "palette" },
 };
 
+export function deptOf(code: string, lang: Lang): { label: string; color: string; icon: string } {
+  const p = code.split(" ")[0];
+  const m = DEPT_META[p] || { en: p, ar: p, color: "#6E7C86", icon: "school" };
+  return { label: lang === "ar" ? m.ar : m.en, color: m.color, icon: m.icon };
+}
+
 export type DeptGroup = { prefix: string; label: string; color: string; icon: string; count: number; credits: number };
 export function departmentBreakdown(courses: { code: string; credits: number }[], lang: Lang): DeptGroup[] {
   const groups: Record<string, { count: number; credits: number }> = {};
