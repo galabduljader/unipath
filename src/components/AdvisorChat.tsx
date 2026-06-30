@@ -7,7 +7,7 @@ import { useData } from "@/lib/data";
 import { Icon } from "@/components/ui";
 import { createClient } from "@/lib/supabase/client";
 import { computePlan, computeGpaFrom, resolvePlanCourses, programTotalCredits } from "@/lib/catalog";
-import { suggestedPrompts } from "@/lib/content";
+import { suggestedPrompts, followUpPrompts } from "@/lib/content";
 
 type ChatMsg = { role: "user" | "assistant"; content: string };
 
@@ -101,6 +101,10 @@ export function AdvisorChat({ onClose }: { onClose?: () => void }) {
   const display = messages.length ? messages : [{ role: "assistant" as const, content: greeting }];
   const showSuggestions = messages.length === 0 && !typing;
   const suggestions = suggestedPrompts(lang);
+  // contextual quick-replies after each answer
+  const lastUserQ = useMemo(() => [...messages].reverse().find((m) => m.role === "user")?.content ?? "", [messages]);
+  const showFollowUps = messages.length > 0 && !typing && messages[messages.length - 1].role === "assistant";
+  const followUps = useMemo(() => followUpPrompts(lang, lastUserQ), [lang, lastUserQ]);
 
   function persist(m: ChatMsg) {
     if (user) supabase.from("chat_messages").insert({ user_id: user.id, role: m.role, content: m.content }).then(() => {});
@@ -200,6 +204,19 @@ export function AdvisorChat({ onClose }: { onClose?: () => void }) {
           {suggestions.map((s) => (
             <button key={s} onClick={() => send(s)} style={{ background: "#EAF1F7", color: "#2C6E91", border: "1px solid #D5E3EC", borderRadius: 20, padding: "7px 12px", fontSize: 12, fontWeight: 500 }}>{s}</button>
           ))}
+        </div>
+      )}
+
+      {showFollowUps && (
+        <div style={{ padding: "10px 14px 0" }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: "var(--faint)", marginBottom: 7, paddingInlineStart: 2 }}>{lang === "ar" ? "يمكنك أيضاً أن تسألي:" : "You can also ask:"}</div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            {followUps.map((s) => (
+              <button key={s} onClick={() => send(s)} style={{ display: "flex", alignItems: "center", gap: 5, background: "#EAF1F7", color: "#2C6E91", border: "1px solid #D5E3EC", borderRadius: 20, padding: "7px 12px", fontSize: 12, fontWeight: 500 }}>
+                <Icon name="arrow_outward" size={14} />{s}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 

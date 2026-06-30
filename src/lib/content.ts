@@ -75,3 +75,28 @@ export function suggestedPrompts(lang: Lang) {
     ? ["متى سأتخرّج؟", "ماذا آخذ الفصل القادم؟", "كم تبقّى من المواد الاختيارية؟", "هل أستطيع أخذ تعلّم الآلة؟"]
     : ["When will I graduate?", "What can I take next term?", "How many electives are left?", "Can I take Machine Learning yet?"];
 }
+
+// Contextual quick-replies shown after each advisor answer — offers next steps
+// that differ from whatever the student just asked about.
+export function followUpPrompts(lang: Lang, lastQuestion: string): string[] {
+  const ar = lang === "ar";
+  const l = (lastQuestion || "").toLowerCase();
+  const topic =
+    /gpa|grade|معدل|درجات/.test(l) ? "gpa" :
+    /tutor|مدرس|مدرّس/.test(l) ? "tutor" :
+    /video|resource|watch|فيديو|مصدر|مصادر/.test(l) ? "video" :
+    /graduat|تخرج|متى/.test(l) ? "grad" :
+    /machine|تعلّم|تعلم الال/.test(l) ? "ml" :
+    /elective|اختياري/.test(l) ? "elective" :
+    /next|take|قادم|آخذ|متاح/.test(l) ? "next" : "";
+  const pool = [
+    { k: "next", en: "What should I take next term?", ar: "ماذا آخذ الفصل القادم؟" },
+    { k: "grad", en: "When will I graduate?", ar: "متى سأتخرّج؟" },
+    { k: "gpa", en: "How can I raise my GPA?", ar: "كيف أرفع معدّلي؟" },
+    { k: "elective", en: "How many electives are left?", ar: "كم تبقّى من المواد الاختيارية؟" },
+    { k: "ml", en: "Can I take Machine Learning yet?", ar: "هل أستطيع أخذ تعلّم الآلة؟" },
+    { k: "video", en: "Show me videos to study", ar: "أعطني فيديوهات للمراجعة" },
+    { k: "tutor", en: "Which tutors should I book?", ar: "من تنصحني من المدرّسين؟" },
+  ];
+  return pool.filter((p) => p.k !== topic).slice(0, 3).map((p) => (ar ? p.ar : p.en));
+}
