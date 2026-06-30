@@ -1,12 +1,16 @@
 // UNI Path service worker — enables installability (PWA) + light offline support.
 // Deliberately conservative: only handles page navigations and Next static assets.
 // Never touches Supabase / API / RSC data requests.
-const CACHE = "unipath-v2";
+const CACHE = "unipath-v3";
 const APP_SHELL = ["/", "/manifest.webmanifest", "/icon-192.png", "/icon-512.png", "/apple-touch-icon.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((c) => c.addAll(APP_SHELL)).catch(() => {}));
   self.skipWaiting();
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data === "SKIP_WAITING") self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {

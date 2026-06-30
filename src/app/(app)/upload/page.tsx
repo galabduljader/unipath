@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/auth";
 import { useData } from "@/lib/data";
 import { Icon } from "@/components/ui";
 import { createClient } from "@/lib/supabase/client";
-import { coursesForMajor, departmentBreakdown, computePlan, programTotalCredits, type CourseTuple } from "@/lib/catalog";
+import { coursesForMajor, computePlan, programTotalCredits, type CourseTuple } from "@/lib/catalog";
 import { PARSE_STAGES } from "@/lib/content";
 import { parseSheet, type ExtractedCourse } from "@/lib/parseSheet";
 import { pop } from "@/lib/celebrate";
@@ -37,9 +37,6 @@ export default function UploadPage() {
 
   // joyful confetti the moment the simplified plan is revealed
   useEffect(() => { if (step === 2) { const id = setTimeout(() => pop(), 250); return () => clearTimeout(id); } }, [step]);
-
-  const depts = useMemo(() => departmentBreakdown(extracted.map((c) => ({ code: c.code, credits: c.credits })), lang), [extracted, lang]);
-  const totalCredits = extracted.reduce((a, c) => a + c.credits, 0);
 
   // journey map data from the parsed courses
   const journeyTuples = useMemo<CourseTuple[]>(() => extracted.map((c) => [c.code, c.title, c.title, c.credits]), [extracted]);
@@ -139,56 +136,43 @@ export default function UploadPage() {
       )}
 
       {step === 2 && (
-        <div style={card} className="fade-up">
+        <div className="fade-up" style={{ display: "flex", flexDirection: "column", gap: 18 }}>
           {/* joyful headline */}
-          <div style={{ textAlign: "center", marginBottom: 18 }}>
+          <div style={{ textAlign: "center" }}>
             <div style={{ fontSize: 40, lineHeight: 1, marginBottom: 6 }}>✨</div>
             <div className="serif" style={{ fontSize: 25, fontWeight: 600, color: "var(--ink-strong)" }}>
-              {msg("Ta-da! Your plan, made simple", "تـمّ! خطتك، ببساطة")}
+              {msg("Ta-da! Your major map is ready", "تـمّ! خريطة تخصّصك جاهزة")}
             </div>
-            <div style={{ fontSize: 13.5, color: "var(--muted)", marginTop: 6, maxWidth: 440, marginInline: "auto", lineHeight: 1.55 }}>
+            <div style={{ fontSize: 13.5, color: "var(--muted)", marginTop: 6, maxWidth: 460, marginInline: "auto", lineHeight: 1.55 }}>
               {fromFile
-                ? msg("We turned that long sheet into a clear, friendly map. Take a breath — you've got this. 🌱", "حوّلنا الكشف الطويل إلى خريطة واضحة وودودة. خُذي نفساً — أنتِ قادرة. 🌱")
+                ? msg("We turned that long, confusing sheet into a clear, friendly map. Take a breath — you've got this. 🌱", "حوّلنا الكشف الطويل والمربك إلى خريطة واضحة وودودة. خُذي نفساً — أنتِ قادرة. 🌱")
                 : msg("Here's a clear, friendly map of your degree. Take a breath — you've got this. 🌱", "هذه خريطة واضحة وودودة لدرجتك. خُذي نفساً — أنتِ قادرة. 🌱")}
             </div>
           </div>
 
-          {/* big picture */}
-          <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap", marginBottom: 20 }}>
-            {[
-              { v: String(extracted.length), l: msg("courses", "مادة"), c: "#1E8378" },
-              { v: String(totalCredits), l: msg("credits", "ساعة"), c: "#2C6E91" },
-              { v: String(depts.length), l: msg("subject areas", "مجالات"), c: "#7A5AA8" },
-            ].map((s, i) => (
-              <div key={i} style={{ flex: 1, minWidth: 96, background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: 14, padding: "14px 12px", textAlign: "center" }}>
-                <div className="serif" style={{ fontSize: 28, fontWeight: 600, color: s.c, lineHeight: 1 }}>{s.v}</div>
-                <div style={{ fontSize: 11.5, color: "var(--muted)", marginTop: 4 }}>{s.l}</div>
-              </div>
-            ))}
-          </div>
+          {/* the creative major map — the immediate result of uploading */}
+          <MajorMap major={major} planCourses={journeyTuples} completed={completed} gradTerm={upPlan.gradTerm} total={upTotal} />
 
-          <div style={{ fontWeight: 600, fontSize: 13.5, color: "var(--ink-strong)", marginBottom: 10 }}>{msg("Tick what you've already done 👇", "علّمي ما أنجزتِه 👇")}</div>
-          <div style={{ maxHeight: 260, overflowY: "auto", display: "flex", flexDirection: "column", gap: 7, border: "1px solid var(--border)", borderRadius: 12, padding: 10 }}>
-            {extracted.map((c) => {
-              const on = completed.has(c.code);
-              return (
-                <button key={c.code} onClick={() => toggleCompleted(c.code)} style={{ display: "flex", alignItems: "center", gap: 11, padding: "9px 11px", border: `1px solid ${on ? "#CDE6E0" : "#EEE8DC"}`, borderRadius: 9, background: on ? "#F2FAF8" : "#fff", width: "100%" }}>
-                  <Icon name={on ? "check_circle" : "radio_button_unchecked"} size={20} color={on ? "#1E8378" : "#cdd5d9"} />
-                  <span style={{ flex: 1, textAlign: "start", fontSize: 13, color: "var(--text)" }}>{c.code} · {c.title}</span>
-                  <span style={{ fontSize: 11.5, color: "var(--faint)" }}>{c.credits} {t.cr}</span>
-                </button>
-              );
-            })}
+          {/* refine: tick what you've done — updates the map above live */}
+          <div style={card}>
+            <div style={{ fontWeight: 600, fontSize: 13.5, color: "var(--ink-strong)", marginBottom: 4 }}>{msg("Tick what you've already done 👇", "علّمي ما أنجزتِه 👇")}</div>
+            <div style={{ fontSize: 12, color: "var(--muted)", marginBottom: 12 }}>{msg("Your map above fills in as you check them off.", "تمتلئ خريطتك بالأعلى كلما علّمتِ المواد.")}</div>
+            <div style={{ maxHeight: 240, overflowY: "auto", display: "flex", flexDirection: "column", gap: 7, border: "1px solid var(--border)", borderRadius: 12, padding: 10 }}>
+              {extracted.map((c) => {
+                const on = completed.has(c.code);
+                return (
+                  <button key={c.code} onClick={() => toggleCompleted(c.code)} style={{ display: "flex", alignItems: "center", gap: 11, padding: "9px 11px", border: `1px solid ${on ? "#CDE6E0" : "#EEE8DC"}`, borderRadius: 9, background: on ? "#F2FAF8" : "var(--surface)", width: "100%" }}>
+                    <Icon name={on ? "check_circle" : "radio_button_unchecked"} size={20} color={on ? "#1E8378" : "#cdd5d9"} />
+                    <span style={{ flex: 1, textAlign: "start", fontSize: 13, color: "var(--text)" }}>{c.code} · {c.title}</span>
+                    <span style={{ fontSize: 11.5, color: "var(--faint)" }}>{c.credits} {t.cr}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <button onClick={() => router.push("/dashboard")} style={{ marginTop: 16, width: "100%", background: "#102A40", color: "#fff", border: "none", borderRadius: 12, padding: 13, fontWeight: 600, fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+              <Icon name="check_circle" size={19} />{t.looksGood}
+            </button>
           </div>
-
-          {/* the creative major map — your sheet, turned into a friendly poster */}
-          <div style={{ marginTop: 24, paddingTop: 22, borderTop: "1px solid var(--border)" }}>
-            <MajorMap major={major} planCourses={journeyTuples} completed={completed} gradTerm={upPlan.gradTerm} total={upTotal} />
-          </div>
-
-          <button onClick={() => router.push("/dashboard")} style={{ marginTop: 24, width: "100%", background: "#102A40", color: "#fff", border: "none", borderRadius: 12, padding: 13, fontWeight: 600, fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-            <Icon name="check_circle" size={19} />{t.looksGood}
-          </button>
         </div>
       )}
     </div>
