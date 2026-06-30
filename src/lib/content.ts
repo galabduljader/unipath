@@ -25,15 +25,24 @@ export function lockedCourses(lang: Lang) {
 
 export function videos(lang: Lang) {
   const ar = lang === "ar";
+  // Real, public, long-stable YouTube courses (full-length, free).
   const defs = [
-    { course: "CS 350", en: "Algorithms, Part I", ar: "الخوارزميات — الجزء الأول", source: "MIT OpenCourseWare", len: ar ? "٢٤ محاضرة" : "24 lectures", tone: "#2C6E91" },
-    { course: "CS 340", en: "Operating Systems Course", ar: "دورة نظم التشغيل", source: "Neso Academy", len: "5h 12m", tone: "#1E8378" },
-    { course: "CS 360", en: "Databases — Full Course", ar: "قواعد البيانات — دورة كاملة", source: "freeCodeCamp", len: "8h 04m", tone: "#2C6E91" },
-    { course: "CS 240", en: "Object-Oriented Programming", ar: "البرمجة الكائنية", source: "CS50 — Harvard", len: "1h 45m", tone: "#C2566A" },
-    { course: "STAT 320", en: "Statistics Fundamentals", ar: "أساسيات الإحصاء", source: "StatQuest", len: "3h 20m", tone: "#B5762E" },
-    { course: "CS 440", en: "Machine Learning Specialization", ar: "تخصص تعلّم الآلة", source: "DeepLearning.AI", len: ar ? "٦ أسابيع" : "6 weeks", tone: "#2C6E91" },
+    { course: "CS 350", en: "Algorithms & Data Structures — Full Course", ar: "الخوارزميات وهياكل البيانات — دورة كاملة", source: "freeCodeCamp", len: ar ? "٨ ساعات" : "8 hours", id: "RBSGKlAvoiM" },
+    { course: "CS 340", en: "Operating Systems — Full Course", ar: "نظم التشغيل — دورة كاملة", source: "freeCodeCamp", len: ar ? "٣ ساعات" : "3 hours", id: "mXw9ruZaxzQ" },
+    { course: "CS 360", en: "Databases & SQL — Full Course", ar: "قواعد البيانات و SQL — دورة كاملة", source: "freeCodeCamp", len: "4h 20m", id: "HXV3zeQKqGY" },
+    { course: "CS 240", en: "Programming with Python (CS50)", ar: "البرمجة بلغة بايثون (CS50)", source: "Harvard CS50", len: ar ? "١٥ ساعة" : "15 hours", id: "nLRL_NcnK-4" },
+    { course: "STAT 320", en: "Statistics — Full University Course", ar: "الإحصاء — دورة جامعية كاملة", source: "freeCodeCamp", len: "8h 16m", id: "xxpc-HPKN28" },
+    { course: "CS 440", en: "Machine Learning for Everybody", ar: "تعلّم الآلة للجميع", source: "freeCodeCamp", len: "3h 53m", id: "i_LwzRVP7bg" },
   ];
-  return defs.map((v) => ({ course: v.course, title: ar ? v.ar : v.en, source: v.source, length: v.len, tone: v.tone }));
+  return defs.map((v) => ({
+    course: v.course,
+    title: ar ? v.ar : v.en,
+    source: v.source,
+    length: v.len,
+    id: v.id,
+    url: `https://www.youtube.com/watch?v=${v.id}`,
+    thumb: `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`,
+  }));
 }
 
 export function tutors(lang: Lang) {

@@ -23,17 +23,19 @@ export default function ResourcesPage() {
         <div style={{ fontSize: 13, color: "var(--muted)", marginBottom: 14 }}>{t.videoSourcesSub}</div>
         <div style={{ display: "grid", gridTemplateColumns: grid, gap: 14 }}>
           {vids.map((v, i) => (
-            <div key={i} style={{ border: "1px solid var(--border)", borderRadius: 14, overflow: "hidden", background: "var(--surface)" }}>
-              <div style={{ height: 118, background: `repeating-linear-gradient(135deg, ${v.tone}22 0 9px, ${v.tone}10 9px 18px)`, position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <a key={i} href={v.url} target="_blank" rel="noopener noreferrer" style={{ border: "1px solid var(--border)", borderRadius: 14, overflow: "hidden", background: "var(--surface)", textDecoration: "none", display: "block" }}>
+              <div style={{ height: 130, position: "relative", display: "flex", alignItems: "center", justifyContent: "center", background: "#0c1722" }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={v.thumb} alt={v.title} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: 0.92 }} />
                 <span style={{ position: "absolute", top: 9, insetInlineStart: 9, background: "#102A40", color: "#fff", fontSize: 10.5, fontWeight: 700, padding: "3px 8px", borderRadius: 6 }}>{v.course}</span>
-                <div style={{ width: 46, height: 46, borderRadius: "50%", background: "rgba(255,255,255,.92)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 14px rgba(16,42,64,.18)" }}><Icon name="play_arrow" size={26} color="#1E8378" /></div>
-                <span style={{ position: "absolute", bottom: 9, insetInlineEnd: 9, background: "rgba(16,42,64,.82)", color: "#fff", fontSize: 10.5, fontWeight: 600, padding: "3px 8px", borderRadius: 6 }}>{v.length}</span>
+                <div style={{ position: "absolute", width: 50, height: 50, borderRadius: "50%", background: "rgba(255,255,255,.94)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 14px rgba(0,0,0,.3)" }}><Icon name="play_arrow" size={28} color="#C9281C" /></div>
+                <span style={{ position: "absolute", bottom: 9, insetInlineEnd: 9, background: "rgba(16,42,64,.85)", color: "#fff", fontSize: 10.5, fontWeight: 600, padding: "3px 8px", borderRadius: 6 }}>{v.length}</span>
               </div>
               <div style={{ padding: "13px 15px" }}>
                 <div style={{ fontWeight: 600, fontSize: 14, color: "var(--ink-strong)", lineHeight: 1.3 }}>{v.title}</div>
-                <div style={{ fontSize: 12, color: "var(--faint)", marginTop: 4, display: "flex", alignItems: "center", gap: 5 }}><Icon name="smart_display" size={14} />{v.source}</div>
+                <div style={{ fontSize: 12, color: "var(--faint)", marginTop: 4, display: "flex", alignItems: "center", gap: 5 }}><Icon name="smart_display" size={14} color="#C9281C" />{v.source} · YouTube</div>
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </div>
