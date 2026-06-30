@@ -7,6 +7,7 @@ import { useTheme } from "@/lib/theme";
 import { useAuth } from "@/lib/auth";
 import { useData } from "@/lib/data";
 import { Icon, Logo, useIsMobile } from "@/components/ui";
+import { AdvisorChat } from "@/components/AdvisorChat";
 import { initialsOf, computePlan, programTotalCredits, resolvePlanCourses } from "@/lib/catalog";
 
 type NavDef = { key: string; route: string; label: string; icon: string };
@@ -22,6 +23,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const ar = lang === "ar";
   const [showNotif, setShowNotif] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [showAdvisor, setShowAdvisor] = useState(false);
 
   const isAdmin = profile?.role === "admin";
   const name = profile?.username || "Student";
@@ -42,7 +44,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     { key: "grades", route: "/grades", label: ar ? "درجاتي" : "Grades", icon: "grade" },
     { key: "resources", route: "/resources", label: ar ? "المصادر" : "Resources", icon: "smart_display" },
     { key: "notes", route: "/notes", label: ar ? "ملاحظاتي" : "Notes", icon: "edit_note" },
-    { key: "chat", route: "/chat", label: ar ? "المرشد الذكي" : "AI Advisor", icon: "auto_awesome" },
   ];
   // secondary (used less often)
   const secondaryNav: NavDef[] = [
@@ -64,7 +65,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   };
   const pageTitle = titles[pathname] ?? "UNI Path";
 
-  const mobileNav = ["dashboard", "courses", "calendar", "grades", "chat"].map((k) => mainNav.find((n) => n.key === k)!).filter(Boolean);
+  const mobileNav = ["dashboard", "courses", "calendar", "grades", "notes"].map((k) => mainNav.find((n) => n.key === k)!).filter(Boolean);
 
   const notifIconStyle: Record<string, [string, string]> = {
     school: ["#E6F2EF", "#1E8378"], event_available: ["#EAF1F7", "#2C6E91"],
@@ -225,6 +226,54 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               )}
             </div>
             <button onClick={() => go("/notifications")} style={{ width: "100%", padding: 13, background: "var(--surface-2)", border: "none", borderTop: "1px solid var(--border)", color: "var(--ink-strong)", fontWeight: 600, fontSize: 13 }}>{t.viewAllNotifs}</button>
+          </div>
+        </div>
+      )}
+
+      {/* floating AI advisor — available on every page */}
+      {pathname !== "/chat" && !showAdvisor && (
+        <button
+          onClick={() => setShowAdvisor(true)}
+          aria-label={ar ? "المرشد الذكي" : "AI Advisor"}
+          className="advisor-fab"
+          style={{
+            position: "fixed",
+            insetInlineEnd: isMobile ? 16 : 24,
+            bottom: isMobile ? "calc(76px + env(safe-area-inset-bottom))" : 26,
+            width: 58,
+            height: 58,
+            borderRadius: 29,
+            border: "none",
+            background: "linear-gradient(135deg, #1E8378, #2C6E91)",
+            color: "#fff",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 10px 26px rgba(30,131,120,.45)",
+            zIndex: 60,
+            cursor: "pointer",
+          }}
+        >
+          <Icon name="auto_awesome" size={27} />
+        </button>
+      )}
+
+      {/* advisor popup */}
+      {showAdvisor && (
+        <div
+          onClick={() => setShowAdvisor(false)}
+          style={{ position: "fixed", inset: 0, background: "rgba(16,42,64,.32)", zIndex: 70, display: "flex", alignItems: isMobile ? "stretch" : "flex-end", justifyContent: isMobile ? "stretch" : "flex-end", padding: isMobile ? 0 : 22 }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="fade-up"
+            style={
+              isMobile
+                ? { width: "100%", height: "100%", paddingTop: "env(safe-area-inset-top)", paddingBottom: "env(safe-area-inset-bottom)", background: "var(--bg)" }
+                : { width: 400, maxWidth: "calc(100vw - 44px)", height: 620, maxHeight: "calc(100vh - 44px)", borderRadius: 18, overflow: "hidden", boxShadow: "0 24px 60px rgba(16,42,64,.32)" }
+            }
+          >
+            <AdvisorChat onClose={() => setShowAdvisor(false)} />
           </div>
         </div>
       )}
