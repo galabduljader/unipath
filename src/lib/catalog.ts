@@ -55,7 +55,7 @@ export const GRADE_OPTS = ["A","A-","B+","B","B-","C+","C","C-","D+","D","F"];
 
 const PREF_MAP: Record<string, [string, string]> = { CS:["Computer Science","علوم الحاسوب"], CPE:["Computer Engineering","هندسة الحاسوب"], EE:["Electrical Eng.","الهندسة الكهربائية"], ME:["Mechanical Eng.","الهندسة الميكانيكية"], CE:["Civil Eng.","الهندسة المدنية"], IS:["Information Systems","نظم المعلومات"], MATH:["Mathematics","الرياضيات"], STAT:["Statistics","الإحصاء"], PHYS:["Physics","الفيزياء"], CHEM:["Chemistry","الكيمياء"], BIO:["Biology","الأحياء"], ENGL:["English","اللغة الإنجليزية"], ARAB:["Arabic","اللغة العربية"], ISLM:["Islamic Studies","الدراسات الإسلامية"], HIST:["History","التاريخ"], PHIL:["Philosophy","الفلسفة"], ELEC:["Free Electives","مواد حرة"], BUS:["Business","الأعمال"], ACCT:["Accounting","المحاسبة"], FIN:["Finance","التمويل"], MKTG:["Marketing","التسويق"], MGMT:["Management","الإدارة"], ECON:["Economics","الاقتصاد"], ARCH:["Architecture","العمارة"], GD:["Design","التصميم"], NURS:["Nursing","التمريض"], LAW:["Law","القانون"] };
 
-const CAT_COLORS = ["#2C6E91","#1E8378","#7A5AA8","#C2566A","#B5762E","#5B8C5A","#3E7CB1"];
+const CAT_COLORS = ["#2C6E91","#1E8378","#2C6E91","#C2566A","#B5762E","#5B8C5A","#3E7CB1"];
 
 export function coursesForMajor(major: string): CourseTuple[] {
   return MAJOR_COURSES[major] || MAJOR_COURSES["Computer Science"];
@@ -376,8 +376,8 @@ const DEPT_META: Record<string, { en: string; ar: string; color: string; icon: s
   EE: { en: "Electrical Eng.", ar: "الهندسة الكهربائية", color: "#B5762E", icon: "bolt" },
   ME: { en: "Mechanical Eng.", ar: "الهندسة الميكانيكية", color: "#B5762E", icon: "settings" },
   CE: { en: "Civil Eng.", ar: "الهندسة المدنية", color: "#B5762E", icon: "foundation" },
-  MATH: { en: "Mathematics", ar: "الرياضيات", color: "#7A5AA8", icon: "functions" },
-  STAT: { en: "Statistics", ar: "الإحصاء", color: "#7A5AA8", icon: "bar_chart" },
+  MATH: { en: "Mathematics", ar: "الرياضيات", color: "#3E7CB1", icon: "functions" },
+  STAT: { en: "Statistics", ar: "الإحصاء", color: "#3E7CB1", icon: "bar_chart" },
   PHYS: { en: "Physics", ar: "الفيزياء", color: "#5B8C5A", icon: "science" },
   CHEM: { en: "Chemistry", ar: "الكيمياء", color: "#5B8C5A", icon: "science" },
   BIO: { en: "Biology", ar: "الأحياء", color: "#5B8C5A", icon: "biotech" },
@@ -385,7 +385,7 @@ const DEPT_META: Record<string, { en: string; ar: string; color: string; icon: s
   ARAB: { en: "Arabic", ar: "اللغة العربية", color: "#1E8378", icon: "translate" },
   ISLM: { en: "Islamic Studies", ar: "الدراسات الإسلامية", color: "#156B61", icon: "mosque" },
   HIST: { en: "History", ar: "التاريخ", color: "#B5762E", icon: "history_edu" },
-  PHIL: { en: "Philosophy", ar: "الفلسفة", color: "#7A5AA8", icon: "psychology" },
+  PHIL: { en: "Philosophy", ar: "الفلسفة", color: "#156B61", icon: "psychology" },
   BUS: { en: "Business", ar: "الأعمال", color: "#2C6E91", icon: "business_center" },
   ACCT: { en: "Accounting", ar: "المحاسبة", color: "#2C6E91", icon: "calculate" },
   FIN: { en: "Finance", ar: "التمويل", color: "#2C6E91", icon: "payments" },
@@ -398,7 +398,7 @@ const DEPT_META: Record<string, { en: string; ar: string; color: string; icon: s
   LAW: { en: "Law", ar: "القانون", color: "#102A40", icon: "gavel" },
   ELEC: { en: "Electives", ar: "مواد حرة", color: "#6BA6CF", icon: "auto_awesome" },
   FREE: { en: "Electives", ar: "مواد حرة", color: "#6BA6CF", icon: "auto_awesome" },
-  HUM: { en: "Humanities", ar: "العلوم الإنسانية", color: "#7A5AA8", icon: "palette" },
+  HUM: { en: "Humanities", ar: "العلوم الإنسانية", color: "#3E7CB1", icon: "palette" },
 };
 
 export function deptOf(code: string, lang: Lang): { label: string; color: string; icon: string } {

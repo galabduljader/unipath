@@ -59,7 +59,7 @@ export default function NotesPage() {
       <div style={{ flex: 1, minWidth: 300, background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 18, padding: 20 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 3 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-            <Icon name="edit_note" size={21} color="#7A5AA8" />
+            <Icon name="edit_note" size={21} color="#2C6E91" />
             <div className="serif" style={{ fontSize: 19, fontWeight: 600, color: "var(--ink-strong)" }}>{t.notepad}</div>
           </div>
           <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11.5, color: "#1E8378", fontWeight: 600 }}><Icon name="cloud_done" size={15} />{t.saved}</span>

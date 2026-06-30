@@ -61,13 +61,13 @@ export function MajorMap({
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {/* ===== hero ===== */}
-      <div style={{ position: "relative", background: "linear-gradient(135deg, #EEE7F4, #EAF1F7)", border: "1px solid var(--border)", borderRadius: 18, padding: "22px 20px", overflow: "hidden", textAlign: "center" }}>
+      <div style={{ position: "relative", background: "linear-gradient(135deg, #E6F2EF, #EAF1F7)", border: "1px solid var(--border)", borderRadius: 18, padding: "22px 20px", overflow: "hidden", textAlign: "center" }}>
         <span style={{ position: "absolute", top: 14, insetInlineStart: 18, fontSize: 18, opacity: .8 }}>✦</span>
         <span style={{ position: "absolute", top: 30, insetInlineEnd: 26, fontSize: 22, opacity: .7 }}>⭐</span>
         <span style={{ position: "absolute", bottom: 16, insetInlineStart: 40, fontSize: 14, opacity: .6 }}>✦</span>
-        <div className="serif" style={{ fontSize: 30, fontWeight: 600, color: "#5B3FA8", lineHeight: 1.05 }}>{ar ? "خريطة تخصّصي" : "My Major Map"}</div>
-        <div style={{ display: "inline-block", marginTop: 8, background: "#7A5AA8", color: "#fff", fontWeight: 600, fontSize: 13, padding: "5px 13px", borderRadius: 20 }}>{major}</div>
-        <div style={{ fontSize: 13.5, color: "#5a4d6e", marginTop: 10, maxWidth: 420, marginInline: "auto", lineHeight: 1.5 }}>{pick(profile.tagline, lang)} 💜</div>
+        <div className="serif" style={{ fontSize: 30, fontWeight: 600, color: "#156B61", lineHeight: 1.05 }}>{ar ? "خريطة تخصّصي" : "My Major Map"}</div>
+        <div style={{ display: "inline-block", marginTop: 8, background: "#2C6E91", color: "#fff", fontWeight: 600, fontSize: 13, padding: "5px 13px", borderRadius: 20 }}>{major}</div>
+        <div style={{ fontSize: 13.5, color: "#2b4b5e", marginTop: 10, maxWidth: 420, marginInline: "auto", lineHeight: 1.5 }}>{pick(profile.tagline, lang)} 🌱</div>
       </div>
 
       {/* ===== what is + progress (side by side on desktop) ===== */}
@@ -82,7 +82,7 @@ export function MajorMap({
         <div style={{ flex: 1, minWidth: 200, background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, padding: 16, display: "flex", alignItems: "center", gap: 16 }}>
           <svg width="64" height="64" viewBox="0 0 64 64" style={{ flexShrink: 0 }}>
             <circle cx="32" cy="32" r="26" fill="none" stroke="var(--track)" strokeWidth="8" />
-            <circle cx="32" cy="32" r="26" fill="none" stroke="#7A5AA8" strokeWidth="8" strokeLinecap="round" strokeDasharray={`${(pct / 100) * ringC} ${ringC}`} transform="rotate(-90 32 32)" />
+            <circle cx="32" cy="32" r="26" fill="none" stroke="#2C6E91" strokeWidth="8" strokeLinecap="round" strokeDasharray={`${(pct / 100) * ringC} ${ringC}`} transform="rotate(-90 32 32)" />
             <text x="32" y="37" textAnchor="middle" fontSize="15" fontWeight="700" fill="var(--ink-strong)">{pct}%</text>
           </svg>
           <div>
@@ -112,7 +112,7 @@ export function MajorMap({
               <div style={{ width: isMobile ? "100%" : 92, flexShrink: 0 }}>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 7 }}>
                   <span style={{ fontSize: 11, fontWeight: 700, color: "var(--faint)" }}>{ar ? "السنة" : "YEAR"}</span>
-                  <span className="serif" style={{ fontSize: 30, fontWeight: 600, color: allDone ? "#1E8378" : "#7A5AA8", lineHeight: 1 }}>{ar ? ["", "١", "٢", "٣", "٤"][stage.level] : stage.level}</span>
+                  <span className="serif" style={{ fontSize: 30, fontWeight: 600, color: allDone ? "#1E8378" : "#2C6E91", lineHeight: 1 }}>{ar ? ["", "١", "٢", "٣", "٤"][stage.level] : stage.level}</span>
                   {allDone && <Icon name="check_circle" size={16} color="#1E8378" />}
                 </div>
                 <div style={{ fontSize: 10.5, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: ".03em", marginTop: 2, maxWidth: 100 }}>{pick(phase, lang)}</div>
@@ -179,11 +179,11 @@ export function MajorMap({
 
       {/* ===== skills / careers / tools ===== */}
       <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16 }}>
-        <Section title={ar ? "مهارات سأكتسبها" : "Skills I'll gain"} accent="#7A5AA8">
+        <Section title={ar ? "مهارات سأكتسبها" : "Skills I'll gain"} accent="#156B61">
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
             {profile.skills.map((s, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "var(--text)" }}>
-                <Icon name={s.icon} size={18} color="#7A5AA8" />{pick(s, lang)}
+                <Icon name={s.icon} size={18} color="#156B61" />{pick(s, lang)}
               </div>
             ))}
           </div>
@@ -215,10 +215,10 @@ export function MajorMap({
           <div style={{ display: "flex", alignItems: "center", gap: 7, fontWeight: 700, fontSize: 13, color: "#9A7B2E", marginBottom: 6 }}><Icon name="auto_awesome" size={17} color="#C9A227" />{ar ? "معلومة ممتعة" : "Fun fact"}</div>
           <div style={{ fontSize: 13, color: "#7a6a3e", lineHeight: 1.5 }}>{pick(profile.funFact, lang)}</div>
         </div>
-        <div style={{ flex: 1, minWidth: 220, background: "#EEE7F4", border: "1px solid #ddd0e8", borderRadius: 16, padding: 16 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 7, fontWeight: 700, fontSize: 13, color: "#6B4FA0", marginBottom: 6 }}><Icon name="favorite" size={16} color="#7A5AA8" />{ar ? "تذكّر" : "Remember"}</div>
-          <div style={{ fontSize: 13, color: "#5a4d6e", lineHeight: 1.5 }}>
-            {ar ? "لا بأس أن تسير بوتيرتك. كل خطوة تقرّبك من هدفك 💜" : "It's okay to go at your own pace. Every step brings you closer to your goal. 💜"}
+        <div style={{ flex: 1, minWidth: 220, background: "#EAF1F7", border: "1px solid #D5E3EC", borderRadius: 16, padding: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 7, fontWeight: 700, fontSize: 13, color: "#156B61", marginBottom: 6 }}><Icon name="favorite" size={16} color="#2C6E91" />{ar ? "تذكّر" : "Remember"}</div>
+          <div style={{ fontSize: 13, color: "#2b4b5e", lineHeight: 1.5 }}>
+            {ar ? "لا بأس أن تسير بوتيرتك. كل خطوة تقرّبك من هدفك 🌱" : "It's okay to go at your own pace. Every step brings you closer to your goal. 🌱"}
           </div>
         </div>
       </div>

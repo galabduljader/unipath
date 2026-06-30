@@ -13,9 +13,9 @@ export default function ResourcesPage() {
 
   return (
     <div style={{ maxWidth: 1080, margin: "0 auto", display: "flex", flexDirection: "column", gap: 22 }} className="fade-up">
-      <div style={{ display: "flex", gap: 11, alignItems: "center", background: "#EEE7F4", border: "1px solid #ddd0e8", borderRadius: 13, padding: "13px 16px" }}>
-        <Icon name="auto_awesome" size={20} color="#7A5AA8" style={{ flexShrink: 0 }} />
-        <div style={{ fontSize: 13, color: "#4a3d5e" }}>{t.resourcesIntro}</div>
+      <div style={{ display: "flex", gap: 11, alignItems: "center", background: "#EAF1F7", border: "1px solid #D5E3EC", borderRadius: 13, padding: "13px 16px" }}>
+        <Icon name="auto_awesome" size={20} color="#2C6E91" style={{ flexShrink: 0 }} />
+        <div style={{ fontSize: 13, color: "#2b4b5e" }}>{t.resourcesIntro}</div>
       </div>
 
       <div>

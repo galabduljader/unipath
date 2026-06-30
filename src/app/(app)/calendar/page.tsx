@@ -9,7 +9,7 @@ import { toArabicDigits } from "@/lib/catalog";
 const TYPE_META: Record<EventType, { color: string; bg: string; en: string; ar: string; icon: string }> = {
   exam: { color: "#C2566A", bg: "#FBECEF", en: "Exam", ar: "اختبار", icon: "history_edu" },
   assignment: { color: "#2C6E91", bg: "#EAF1F7", en: "Assignment", ar: "واجب", icon: "assignment" },
-  quiz: { color: "#7A5AA8", bg: "#EEE7F4", en: "Quiz", ar: "كويز", icon: "quiz" },
+  quiz: { color: "#2C6E91", bg: "#EAF1F7", en: "Quiz", ar: "كويز", icon: "quiz" },
   project: { color: "#1E8378", bg: "#E6F2EF", en: "Project", ar: "مشروع", icon: "folder_special" },
   class: { color: "#B5762E", bg: "#F6ECD7", en: "Class", ar: "محاضرة", icon: "school" },
   other: { color: "var(--muted)", bg: "var(--bg)", en: "Other", ar: "آخر", icon: "event" },

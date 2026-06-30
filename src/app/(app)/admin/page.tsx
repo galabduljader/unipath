@@ -8,7 +8,7 @@ import { Icon } from "@/components/ui";
 import { createClient } from "@/lib/supabase/client";
 import { initialsOf } from "@/lib/catalog";
 
-const AV = ["#1E8378", "#2C6E91", "#7A5AA8", "#C2566A", "#B5762E", "#102A40"];
+const AV = ["#1E8378", "#2C6E91", "#2C6E91", "#C2566A", "#B5762E", "#102A40"];
 
 export default function AdminPage() {
   const { t } = useI18n();
@@ -92,7 +92,7 @@ export default function AdminPage() {
                     <div style={{ fontSize: 11.5, color: "var(--faint)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{u.email}</div>
                   </div>
                 </div>
-                <div><span style={{ fontSize: 11.5, fontWeight: 700, padding: "3px 10px", borderRadius: 7, color: u.role === "admin" ? "#7A5AA8" : "#2C6E91", background: u.role === "admin" ? "#EEE7F4" : "#EAF1F7" }}>{u.role === "admin" ? t.admin : t.student}</span></div>
+                <div><span style={{ fontSize: 11.5, fontWeight: 700, padding: "3px 10px", borderRadius: 7, color: u.role === "admin" ? "#2C6E91" : "#2C6E91", background: u.role === "admin" ? "#EAF1F7" : "#EAF1F7" }}>{u.role === "admin" ? t.admin : t.student}</span></div>
                 <div style={{ fontSize: 12.5, color: "var(--muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{u.major || "—"}</div>
                 <div style={{ fontSize: 12.5, color: "var(--muted)" }}>{u.cohort || "—"}</div>
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>

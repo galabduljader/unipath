@@ -8,7 +8,7 @@ import { relTime } from "@/components/AppShell";
 
 const ICONS: Record<string, [string, string]> = {
   school: ["#E6F2EF", "#1E8378"], event_available: ["#EAF1F7", "#2C6E91"],
-  campaign: ["#F4EAE0", "#B5762E"], auto_awesome: ["#EEE7F4", "#7A5AA8"],
+  campaign: ["#F4EAE0", "#B5762E"], auto_awesome: ["#EAF1F7", "#2C6E91"],
 };
 
 export default function NotificationsPage() {
