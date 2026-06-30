@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useI18n, langSwitchLabel } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
 import { useAuth } from "@/lib/auth";
 import { useData } from "@/lib/data";
 import { Icon, Logo, useIsMobile } from "@/components/ui";
-import { initialsOf } from "@/lib/catalog";
+import { initialsOf, computePlan, programTotalCredits, resolvePlanCourses } from "@/lib/catalog";
 
 type NavDef = { key: string; route: string; label: string; icon: string };
 
@@ -15,92 +15,122 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const { t, lang, toggleLang } = useI18n();
   const { theme, toggleTheme } = useTheme();
   const { profile, signOut } = useAuth();
-  const { unreadCount, notifications, markAllRead, openNotification } = useData();
+  const { unreadCount, notifications, markAllRead, openNotification, completed, programCourses } = useData();
   const isMobile = useIsMobile();
   const pathname = usePathname();
   const router = useRouter();
+  const ar = lang === "ar";
   const [showNotif, setShowNotif] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
 
   const isAdmin = profile?.role === "admin";
   const name = profile?.username || "Student";
+  const firstName = name.split(" ")[0];
   const initials = initialsOf(name);
 
-  const navDefs: NavDef[] = [
-    { key: "dashboard", route: "/dashboard", label: lang === "ar" ? "لوحة التحكم" : "Dashboard", icon: "space_dashboard" },
-    { key: "courses", route: "/courses", label: lang === "ar" ? "خطة الدراسة" : "My Plan", icon: "menu_book" },
-    { key: "grades", route: "/grades", label: t.navGrades, icon: "grade" },
-    { key: "resources", route: "/resources", label: t.navResources, icon: "smart_display" },
-    { key: "notes", route: "/notes", label: t.navNotes, icon: "edit_note" },
-    { key: "calendar", route: "/calendar", label: lang === "ar" ? "التقويم" : "Calendar", icon: "calendar_month" },
-    { key: "chat", route: "/chat", label: lang === "ar" ? "المرشد الذكي" : "AI Advisor", icon: "auto_awesome" },
-    { key: "upload", route: "/upload", label: lang === "ar" ? "رفع الخطة" : "Upload Sheet", icon: "upload_file" },
-    { key: "notifications", route: "/notifications", label: lang === "ar" ? "الإشعارات" : "Notifications", icon: "notifications" },
+  // progress to graduation (the "come back" hook)
+  const major = profile?.major || "Computer Science";
+  const planCourses = useMemo(() => resolvePlanCourses(programCourses, major), [programCourses, major]);
+  const total = useMemo(() => programTotalCredits(major, programCourses), [major, programCourses]);
+  const plan = useMemo(() => computePlan(planCourses, completed, lang, t, total), [planCourses, completed, lang, t, total]);
+
+  // everyday nav (trimmed + simple)
+  const mainNav: NavDef[] = [
+    { key: "dashboard", route: "/dashboard", label: ar ? "الرئيسية" : "Home", icon: "space_dashboard" },
+    { key: "courses", route: "/courses", label: ar ? "خطتي" : "My Plan", icon: "map" },
+    { key: "calendar", route: "/calendar", label: ar ? "التقويم" : "Calendar", icon: "calendar_month" },
+    { key: "grades", route: "/grades", label: ar ? "درجاتي" : "Grades", icon: "grade" },
+    { key: "resources", route: "/resources", label: ar ? "المصادر" : "Resources", icon: "smart_display" },
+    { key: "notes", route: "/notes", label: ar ? "ملاحظاتي" : "Notes", icon: "edit_note" },
+    { key: "chat", route: "/chat", label: ar ? "المرشد الذكي" : "AI Advisor", icon: "auto_awesome" },
   ];
-  if (isAdmin) navDefs.push({ key: "admin", route: "/admin", label: lang === "ar" ? "الإدارة" : "Admin", icon: "admin_panel_settings" });
+  // secondary (used less often)
+  const secondaryNav: NavDef[] = [
+    { key: "upload", route: "/upload", label: ar ? "رفع الكشف" : "Upload sheet", icon: "upload_file" },
+  ];
+  if (isAdmin) secondaryNav.push({ key: "admin", route: "/admin", label: ar ? "الإدارة" : "Admin", icon: "admin_panel_settings" });
 
   const titles: Record<string, string> = {
-    "/dashboard": lang === "ar" ? "لوحة التحكم" : "Dashboard",
-    "/courses": lang === "ar" ? "خطة الدراسة" : "My Plan",
+    "/dashboard": ar ? "لوحة التحكم" : "Dashboard",
+    "/courses": ar ? "خطة الدراسة" : "My Plan",
     "/grades": t.title_grades,
     "/resources": t.title_resources,
     "/notes": t.title_notes,
-    "/calendar": lang === "ar" ? "التقويم" : "Calendar",
+    "/calendar": ar ? "التقويم" : "Calendar",
     "/upload": t.title_upload,
-    "/chat": lang === "ar" ? "المرشد الذكي" : "AI Advisor",
-    "/notifications": lang === "ar" ? "الإشعارات" : "Notifications",
+    "/chat": ar ? "المرشد الذكي" : "AI Advisor",
+    "/notifications": ar ? "الإشعارات" : "Notifications",
     "/admin": t.title_admin,
   };
   const pageTitle = titles[pathname] ?? "UNI Path";
 
-  const mobKeys = ["dashboard", "courses", "calendar", "grades", "chat"];
-  const mobileNav = mobKeys.map((k) => navDefs.find((n) => n.key === k)!).filter(Boolean);
+  const mobileNav = ["dashboard", "courses", "calendar", "grades", "chat"].map((k) => mainNav.find((n) => n.key === k)!).filter(Boolean);
 
   const notifIconStyle: Record<string, [string, string]> = {
     school: ["#E6F2EF", "#1E8378"], event_available: ["#EAF1F7", "#2C6E91"],
     campaign: ["#F4EAE0", "#B5762E"], auto_awesome: ["#EAF1F7", "#2C6E91"],
   };
 
-  const go = (route: string) => { setShowNotif(false); router.push(route); };
+  const go = (route: string) => { setShowNotif(false); setShowMenu(false); router.push(route); };
+
+  // shared sidebar inner (used by desktop sidebar + mobile drawer)
+  const navButton = (n: NavDef, small = false) => {
+    const active = pathname === n.route;
+    return (
+      <button key={n.key} onClick={() => go(n.route)} style={{ display: "flex", alignItems: "center", gap: 12, padding: small ? "9px 12px" : "11px 12px", border: "none", borderRadius: 11, fontSize: small ? 13 : 14, fontWeight: active ? 600 : 500, textAlign: "start", color: active ? "#fff" : small ? "#9fb3c2" : "#cdd9e2", background: active ? "rgba(30,131,120,.92)" : "transparent" }}>
+        <Icon name={n.icon} size={small ? 19 : 21} color={active ? "#fff" : "#7e97a8"} />
+        <span style={{ flex: 1, textAlign: "start" }}>{n.label}</span>
+      </button>
+    );
+  };
+
+  const progressWidget = (
+    <button onClick={() => go("/dashboard")} style={{ width: "100%", textAlign: "start", background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.09)", borderRadius: 13, padding: "12px 13px", marginBottom: 14, cursor: "pointer" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+        <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#9fb3c2", fontWeight: 600 }}>🎓 {ar ? "رحلتي" : "My journey"}</span>
+        <span style={{ fontWeight: 700, fontSize: 15, color: "#fff" }}>{plan.pct}%</span>
+      </div>
+      <div style={{ height: 7, borderRadius: 5, background: "rgba(255,255,255,.13)", overflow: "hidden" }}>
+        <div style={{ height: "100%", width: `${plan.pct}%`, background: "linear-gradient(90deg,#1E8378,#6BD3A8)", borderRadius: 5, transition: "width .6s ease" }} />
+      </div>
+      <div style={{ fontSize: 11, color: "#9fb3c2", marginTop: 7 }}>{plan.doneCredits}/{total} {ar ? "ساعة" : "cr"} · {ar ? "التخرّج" : "grad"} {plan.gradTerm}</div>
+    </button>
+  );
+
+  const userFooter = (
+    <div style={{ borderTop: "1px solid rgba(255,255,255,.1)", paddingTop: 14, marginTop: 10, display: "flex", alignItems: "center", gap: 11 }}>
+      <div style={{ width: 38, height: 38, borderRadius: "50%", background: "#1E8378", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 14 }}>{initials}</div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontWeight: 600, fontSize: 13, color: "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{ar ? `أهلاً ${firstName} 👋` : `Hi ${firstName} 👋`}</div>
+        <div style={{ fontSize: 11.5, color: "#9fb3c2", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{profile?.university || "—"}</div>
+      </div>
+      <button onClick={async () => { await signOut(); router.replace("/login"); }} title={t.signOut} style={{ background: "none", border: "none", color: "#7e97a8", display: "flex", padding: 6, flexShrink: 0 }}>
+        <Icon name="logout" size={20} />
+      </button>
+    </div>
+  );
 
   return (
     <div style={{ display: "flex", height: "100dvh", width: "100%", overflow: "hidden", background: "var(--bg)", color: "var(--text)" }}>
-      {/* sidebar */}
+      {/* desktop sidebar */}
       {!isMobile && (
-        <aside style={{ width: 256, flexShrink: 0, background: "#102A40", color: "#eaf1f6", display: "flex", flexDirection: "column", padding: "22px 16px" }}>
-          <div style={{ padding: "6px 8px 22px" }}>
-            <Logo size={36} radius={10} textSize={17} light />
+        <aside style={{ width: 248, flexShrink: 0, background: "#102A40", color: "#eaf1f6", display: "flex", flexDirection: "column", padding: "20px 14px" }}>
+          <div style={{ padding: "6px 8px 18px" }}>
+            <Logo size={34} radius={10} textSize={17} light />
           </div>
-          <nav style={{ display: "flex", flexDirection: "column", gap: 3, flex: 1, overflowY: "auto" }}>
-            {navDefs.map((n) => {
-              const active = pathname === n.route;
-              return (
-                <button key={n.key} onClick={() => go(n.route)} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", border: "none", borderRadius: 10, fontSize: 13.5, fontWeight: active ? 600 : 500, textAlign: "start", color: active ? "#fff" : "#cdd9e2", background: active ? "rgba(30,131,120,.9)" : "transparent" }}>
-                  <Icon name={n.icon} size={21} color={active ? "#fff" : "#7e97a8"} />
-                  <span style={{ flex: 1, textAlign: "start" }}>{n.label}</span>
-                  {n.key === "notifications" && unreadCount > 0 && (
-                    <span style={{ background: "#1E8378", color: "#fff", fontSize: 11, fontWeight: 700, minWidth: 19, height: 19, padding: "0 5px", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center" }}>{unreadCount}</span>
-                  )}
-                </button>
-              );
-            })}
+          {progressWidget}
+          <nav style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1, overflowY: "auto" }}>
+            {mainNav.map((n) => navButton(n))}
+            <div style={{ height: 1, background: "rgba(255,255,255,.08)", margin: "12px 8px" }} />
+            {secondaryNav.map((n) => navButton(n, true))}
           </nav>
-          <div style={{ borderTop: "1px solid rgba(255,255,255,.1)", paddingTop: 14, marginTop: 10, display: "flex", alignItems: "center", gap: 11 }}>
-            <div style={{ width: 38, height: 38, borderRadius: "50%", background: "#1E8378", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 14 }}>{initials}</div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontWeight: 600, fontSize: 13, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{name}</div>
-              <div style={{ fontSize: 11.5, color: "#9fb3c2", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{profile?.university || "—"}</div>
-            </div>
-            <button onClick={async () => { await signOut(); router.replace("/login"); }} title={t.signOut} style={{ background: "none", border: "none", color: "#7e97a8", display: "flex", padding: 6, flexShrink: 0 }}>
-              <Icon name="logout" size={20} />
-            </button>
-          </div>
+          {userFooter}
         </aside>
       )}
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
         {/* header */}
-        <header style={{ minHeight: 64, flexShrink: 0, background: "var(--surface)", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: 14, paddingInline: 16, paddingTop: "env(safe-area-inset-top)" }}>
+        <header style={{ minHeight: 64, flexShrink: 0, background: "var(--surface)", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: 12, paddingInline: 16, paddingTop: "env(safe-area-inset-top)" }}>
           {isMobile && (
             <button onClick={() => setShowMenu(true)} aria-label="Menu" style={{ width: 40, height: 40, borderRadius: 10, background: "var(--bg)", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text)", flexShrink: 0 }}>
               <Icon name="menu" size={22} />
@@ -115,7 +145,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <button onClick={toggleLang} style={{ display: "flex", alignItems: "center", gap: 6, background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 9, padding: "7px 11px", color: "var(--text)", fontWeight: 600, fontSize: 12.5 }}>
             <Icon name="translate" size={18} />{!isMobile && langSwitchLabel(lang)}
           </button>
-          <button onClick={() => setShowNotif((s) => !s)} style={{ position: "relative", width: 40, height: 40, borderRadius: 10, background: "var(--bg)", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text)" }}>
+          <button onClick={() => setShowNotif((s) => !s)} aria-label="Notifications" style={{ position: "relative", width: 40, height: 40, borderRadius: 10, background: "var(--bg)", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text)" }}>
             <Icon name="notifications" size={21} />
             {unreadCount > 0 && (
               <span style={{ position: "absolute", top: 6, insetInlineEnd: 7, minWidth: 16, height: 16, background: "#C9512F", color: "#fff", borderRadius: 8, fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", border: "2px solid #fff", padding: "0 3px" }}>{unreadCount}</span>
@@ -149,35 +179,19 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       {/* mobile full-navigation drawer */}
       {showMenu && (
         <div onClick={() => setShowMenu(false)} style={{ position: "fixed", inset: 0, background: "rgba(16,42,64,.4)", zIndex: 50 }}>
-          <aside onClick={(e) => e.stopPropagation()} style={{ position: "absolute", insetInlineStart: 0, top: 0, bottom: 0, width: 270, maxWidth: "82vw", background: "#102A40", color: "#eaf1f6", display: "flex", flexDirection: "column", padding: "calc(18px + env(safe-area-inset-top)) 16px 16px", boxShadow: "0 0 50px rgba(0,0,0,.4)" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 4px 18px" }}>
-              <Logo size={34} radius={9} textSize={16} light />
+          <aside onClick={(e) => e.stopPropagation()} style={{ position: "absolute", insetInlineStart: 0, top: 0, bottom: 0, width: 270, maxWidth: "82vw", background: "#102A40", color: "#eaf1f6", display: "flex", flexDirection: "column", padding: "calc(18px + env(safe-area-inset-top)) 14px 16px", boxShadow: "0 0 50px rgba(0,0,0,.4)" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 4px 16px" }}>
+              <Logo size={32} radius={9} textSize={16} light />
               <button onClick={() => setShowMenu(false)} aria-label="Close" style={{ background: "none", border: "none", color: "#9fb3c2", display: "flex", padding: 4 }}><Icon name="close" size={22} /></button>
             </div>
-            <nav style={{ display: "flex", flexDirection: "column", gap: 3, flex: 1, overflowY: "auto" }}>
-              {navDefs.map((n) => {
-                const active = pathname === n.route;
-                return (
-                  <button key={n.key} onClick={() => { setShowMenu(false); router.push(n.route); }} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 12px", border: "none", borderRadius: 10, fontSize: 14, fontWeight: active ? 600 : 500, textAlign: "start", color: active ? "#fff" : "#cdd9e2", background: active ? "rgba(30,131,120,.9)" : "transparent" }}>
-                    <Icon name={n.icon} size={21} color={active ? "#fff" : "#7e97a8"} />
-                    <span style={{ flex: 1, textAlign: "start" }}>{n.label}</span>
-                    {n.key === "notifications" && unreadCount > 0 && (
-                      <span style={{ background: "#1E8378", color: "#fff", fontSize: 11, fontWeight: 700, minWidth: 19, height: 19, padding: "0 5px", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center" }}>{unreadCount}</span>
-                    )}
-                  </button>
-                );
-              })}
+            {progressWidget}
+            <nav style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1, overflowY: "auto" }}>
+              {mainNav.map((n) => navButton(n))}
+              <div style={{ height: 1, background: "rgba(255,255,255,.08)", margin: "12px 8px" }} />
+              {secondaryNav.map((n) => navButton(n, true))}
+              {navButton({ key: "notifications", route: "/notifications", label: ar ? "الإشعارات" : "Notifications", icon: "notifications" }, true)}
             </nav>
-            <div style={{ borderTop: "1px solid rgba(255,255,255,.1)", paddingTop: 14, marginTop: 10, display: "flex", alignItems: "center", gap: 11 }}>
-              <div style={{ width: 38, height: 38, borderRadius: "50%", background: "#1E8378", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 14 }}>{initials}</div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontWeight: 600, fontSize: 13, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{name}</div>
-                <div style={{ fontSize: 11.5, color: "#9fb3c2", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{profile?.university || "—"}</div>
-              </div>
-              <button onClick={async () => { setShowMenu(false); await signOut(); router.replace("/login"); }} title={t.signOut} style={{ background: "none", border: "none", color: "#7e97a8", display: "flex", padding: 6, flexShrink: 0 }}>
-                <Icon name="logout" size={20} />
-              </button>
-            </div>
+            {userFooter}
           </aside>
         </div>
       )}
@@ -192,9 +206,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </div>
             <div style={{ maxHeight: 380, overflowY: "auto" }}>
               {notifications.slice(0, 8).map((n) => {
-                const ic = notifIconStyle[n.icon] || ["var(--bg)", "#6E7C86"];
+                const ic = notifIconStyle[n.icon] || ["#F4EEE3", "#6E7C86"];
                 return (
-                  <button key={n.id} onClick={() => { openNotification(n); if (n.link) go("/" + n.link); else setShowNotif(false); }} style={{ display: "flex", gap: 11, alignItems: "center", padding: "13px 16px", border: "none", borderBottom: "1px solid #F0EADE", background: !n.read ? "#F5FAFC" : "#fff", width: "100%" }}>
+                  <button key={n.id} onClick={() => { openNotification(n); if (n.link) go("/" + n.link); else setShowNotif(false); }} style={{ display: "flex", gap: 11, alignItems: "center", padding: "13px 16px", border: "none", borderBottom: "1px solid var(--border)", background: !n.read ? "rgba(30,131,120,.06)" : "var(--surface)", width: "100%" }}>
                     <div style={{ width: 36, height: 36, borderRadius: 10, background: ic[0], color: ic[1], display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                       <Icon name={n.icon} size={19} />
                     </div>
