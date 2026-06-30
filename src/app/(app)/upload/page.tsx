@@ -169,7 +169,10 @@ export default function UploadPage() {
                 );
               })}
             </div>
-            <button onClick={() => router.push("/dashboard")} style={{ marginTop: 16, width: "100%", background: "#102A40", color: "#fff", border: "none", borderRadius: 12, padding: 13, fontWeight: 600, fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+            <button onClick={() => router.push("/courses")} style={{ marginTop: 16, width: "100%", background: "linear-gradient(135deg,#1E8378,#2C6E91)", color: "#fff", border: "none", borderRadius: 12, padding: 13, fontWeight: 700, fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+              <Icon name="account_tree" size={19} />{msg("Explore my interactive map", "استكشف خريطتي التفاعلية")}
+            </button>
+            <button onClick={() => router.push("/dashboard")} style={{ marginTop: 9, width: "100%", background: "var(--surface-2)", color: "var(--ink-strong)", border: "1px solid var(--border)", borderRadius: 12, padding: 13, fontWeight: 600, fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
               <Icon name="check_circle" size={19} />{t.looksGood}
             </button>
           </div>

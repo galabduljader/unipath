@@ -19,6 +19,10 @@ export type Reminder = {
   id: string; text: string; due: string | null; course: string | null; done: boolean;
 };
 export type ProgramCourse = { code: string; title: string; credits: number };
+export type SavedScenario = {
+  id: string; name: string; per_term: number; summers: boolean;
+  sems: { offset: number; codes: string[] }[];
+};
 export type EventType = "exam" | "assignment" | "quiz" | "project" | "class" | "other";
 export type CalEvent = {
   id: string; title: string; type: EventType; event_date: string;
@@ -34,6 +38,7 @@ type DataCtx = {
   notes: string;
   programCourses: ProgramCourse[];
   events: CalEvent[];
+  scenarios: SavedScenario[];
   unreadCount: number;
   toggleCompleted: (code: string) => void;
   setCompletedBulk: (codes: string[]) => Promise<void>;
@@ -48,6 +53,8 @@ type DataCtx = {
   setProgramCourses: (courses: ProgramCourse[]) => Promise<void>;
   addEvent: (e: { title: string; type: EventType; event_date: string; event_time?: string; course?: string; notes?: string }) => Promise<void>;
   delEvent: (id: string) => Promise<void>;
+  saveScenario: (s: { name: string; per_term: number; summers: boolean; sems: { offset: number; codes: string[] }[] }) => Promise<void>;
+  delScenario: (id: string) => Promise<void>;
 };
 
 const Ctx = createContext<DataCtx | null>(null);
@@ -63,6 +70,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const [notes, setNotes] = useState("");
   const [programCourses, setProgramCoursesState] = useState<ProgramCourse[]>([]);
   const [events, setEvents] = useState<CalEvent[]>([]);
+  const [scenarios, setScenarios] = useState<SavedScenario[]>([]);
   const notesTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // initial load
@@ -70,7 +78,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     if (!user) return;
     let active = true;
     (async () => {
-      const [cc, gr, nf, rm, nt, pc, ev] = await Promise.all([
+      const [cc, gr, nf, rm, nt, pc, ev, sc] = await Promise.all([
         supabase.from("completed_courses").select("code").eq("user_id", user.id),
         supabase.from("grades").select("code, grade").eq("user_id", user.id),
         supabase.from("notifications").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
@@ -78,6 +86,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         supabase.from("notes").select("content").eq("user_id", user.id).maybeSingle(),
         supabase.from("program_courses").select("code, title, credits").eq("user_id", user.id).order("sort"),
         supabase.from("events").select("*").eq("user_id", user.id).order("event_date"),
+        supabase.from("plan_scenarios").select("id, name, per_term, summers, sems").eq("user_id", user.id).order("created_at", { ascending: false }),
       ]);
       if (!active) return;
       setCompleted(new Set((cc.data ?? []).map((r) => r.code as string)));
@@ -89,6 +98,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       setNotes((nt.data?.content as string) ?? "");
       setProgramCoursesState((pc.data as ProgramCourse[]) ?? []);
       setEvents((ev.data as CalEvent[]) ?? []);
+      setScenarios((sc.data as SavedScenario[]) ?? []);
       setReady(true);
     })();
     return () => { active = false; };
@@ -269,15 +279,36 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     [supabase]
   );
 
+  const saveScenario = useCallback(
+    async (s: { name: string; per_term: number; summers: boolean; sems: { offset: number; codes: string[] }[] }) => {
+      if (!user) return;
+      const { data } = await supabase
+        .from("plan_scenarios")
+        .insert({ user_id: user.id, name: s.name, per_term: s.per_term, summers: s.summers, sems: s.sems })
+        .select("id, name, per_term, summers, sems")
+        .single();
+      if (data) setScenarios((prev) => [data as SavedScenario, ...prev]);
+    },
+    [user, supabase]
+  );
+
+  const delScenario = useCallback(
+    async (id: string) => {
+      setScenarios((prev) => prev.filter((s) => s.id !== id));
+      await supabase.from("plan_scenarios").delete().eq("id", id);
+    },
+    [supabase]
+  );
+
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
     <Ctx.Provider
       value={{
-        ready, completed, grades, notifications, reminders, notes, programCourses, events, unreadCount,
+        ready, completed, grades, notifications, reminders, notes, programCourses, events, scenarios, unreadCount,
         toggleCompleted, setCompletedBulk, setGrade, recordTakenCourse, markAllRead, openNotification,
         addReminder, toggleReminder, delReminder, saveNotes,
-        setProgramCourses, addEvent, delEvent,
+        setProgramCourses, addEvent, delEvent, saveScenario, delScenario,
       }}
     >
       {children}
