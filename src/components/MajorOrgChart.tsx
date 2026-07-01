@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { useData } from "@/lib/data";
-import { Icon } from "@/components/ui";
+import { Icon, useIsMobile } from "@/components/ui";
 import type { CourseTuple } from "@/lib/catalog";
 import { toArabicDigits } from "@/lib/catalog";
 import { buildGraph } from "@/lib/graph";
@@ -51,10 +51,12 @@ function renderNode(d: Row, ar: boolean, num: (n: number) => string): string {
 export function MajorOrgChart({ planCourses, total, gradTerm, major }: { planCourses: CourseTuple[]; total: number; gradTerm: string; major: string }) {
   const { lang } = useI18n();
   const { completed } = useData();
+  const isMobile = useIsMobile();
   const ar = lang === "ar";
   const num = (n: number) => (ar ? toArabicDigits(n) : String(n));
   const nodes = useMemo(() => buildGraph(planCourses, completed), [planCourses, completed]);
   const [sel, setSel] = useState<string | null>(null);
+  const [allExpanded, setAllExpanded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const chartRef = useRef<any>(null);
@@ -94,12 +96,12 @@ export function MajorOrgChart({ planCourses, total, gradTerm, major }: { planCou
       chartRef.current
         .container(containerRef.current)
         .data(data)
-        .nodeWidth(() => 220)
-        .nodeHeight(() => 92)
-        .childrenMargin(() => 46)
-        .siblingsMargin(() => 16)
+        .nodeWidth(() => (isMobile ? 172 : 220))
+        .nodeHeight(() => (isMobile ? 90 : 92))
+        .childrenMargin(() => (isMobile ? 38 : 46))
+        .siblingsMargin(() => (isMobile ? 12 : 16))
         .compactMarginBetween(() => 22)
-        .initialExpandLevel(2)
+        .initialExpandLevel(isMobile ? 1 : 2)
         .setActiveNodeCentered(true)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .onNodeClick((node: any) => { const id = node?.data?.id; if (id && id !== "ROOT") setSel(id); })
@@ -115,7 +117,21 @@ export function MajorOrgChart({ planCourses, total, gradTerm, major }: { planCou
     })();
     return () => { disposed = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, ar]);
+  }, [data, ar, isMobile]);
+
+  // re-lay-out (re-centered) when the container resizes: rotation, breakpoint,
+  // sidebar collapse, window resize — keeps the tree neatly centered.
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    let raf = 0;
+    const ro = new ResizeObserver(() => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => { try { chartRef.current?.render(); } catch { /* noop */ } });
+    });
+    ro.observe(el);
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); };
+  }, []);
 
   return (
     <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 20, overflow: "hidden" }}>
@@ -133,8 +149,51 @@ export function MajorOrgChart({ planCourses, total, gradTerm, major }: { planCou
       <div style={{ fontSize: 12, color: "var(--muted)", padding: "9px 16px", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: 6 }}>
         <Icon name="touch_app" size={15} color="#2C6E91" />{ar ? "انقر مادة للتفاصيل · اسحب للتنقّل · + للتوسيع" : "Tap a course for details · drag to pan · + to expand"}
       </div>
-      <div ref={containerRef} style={{ width: "100%", height: "min(72vh, 620px)", minHeight: 440, background: "var(--surface-2)" }} />
+
+      {/* framed, responsive canvas */}
+      <div style={{ position: "relative", padding: isMobile ? 10 : 14 }}>
+        <div style={{ position: "absolute", top: isMobile ? 20 : 24, insetInlineEnd: isMobile ? 20 : 24, zIndex: 5, display: "flex", gap: 6 }}>
+          <CanvasBtn icon="center_focus_strong" label={ar ? "إعادة التوسيط" : "Re-center"} onClick={() => { try { chartRef.current?.render(); } catch { /* noop */ } }} />
+          <CanvasBtn
+            icon={allExpanded ? "unfold_less" : "unfold_more"}
+            label={allExpanded ? (ar ? "طيّ الكل" : "Collapse all") : (ar ? "توسيع الكل" : "Expand all")}
+            onClick={() => {
+              try {
+                if (allExpanded) chartRef.current?.collapseAll(); else chartRef.current?.expandAll();
+                setAllExpanded((v) => !v);
+              } catch { /* noop */ }
+            }}
+          />
+        </div>
+        <div
+          ref={containerRef}
+          style={{
+            width: "100%",
+            height: isMobile ? "min(64vh, 500px)" : "min(72vh, 640px)",
+            minHeight: isMobile ? 340 : 460,
+            borderRadius: 14,
+            border: "1px solid var(--border)",
+            overflow: "hidden",
+            background: "var(--surface-2)",
+            backgroundImage: "radial-gradient(var(--border) 1px, transparent 1px)",
+            backgroundSize: "22px 22px",
+          }}
+        />
+      </div>
       {sel && <CourseDetailSheet code={sel} nodes={nodes} onClose={() => setSel(null)} onPick={setSel} />}
     </div>
+  );
+}
+
+function CanvasBtn({ icon, label, onClick }: { icon: string; label: string; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      aria-label={label}
+      title={label}
+      style={{ width: 34, height: 34, borderRadius: 9, border: "1px solid var(--border)", background: "var(--surface)", color: "var(--muted)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 1px 4px rgba(16,42,64,.12)" }}
+    >
+      <Icon name={icon} size={19} />
+    </button>
   );
 }
