@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/auth";
 import { useData } from "@/lib/data";
 import { Icon, Logo, useIsMobile } from "@/components/ui";
 import { AdvisorChat } from "@/components/AdvisorChat";
+import { AdvisorCtx } from "@/lib/advisorContext";
 import { initialsOf, computePlan, programTotalCredits, resolvePlanCourses } from "@/lib/catalog";
 
 type NavDef = { key: string; route: string; label: string; icon: string };
@@ -24,6 +25,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [showNotif, setShowNotif] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [showAdvisor, setShowAdvisor] = useState(false);
+  const [advisorQ, setAdvisorQ] = useState<string | undefined>(undefined);
+  const openAdvisor = (question?: string) => { setAdvisorQ(question); setShowAdvisor(true); };
 
   const isAdmin = profile?.role === "admin";
   const name = profile?.username || "Student";
@@ -36,17 +39,18 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const total = useMemo(() => programTotalCredits(major, programCourses), [major, programCourses]);
   const plan = useMemo(() => computePlan(planCourses, completed, lang, t, total), [planCourses, completed, lang, t, total]);
 
-  // everyday nav (trimmed + simple)
+  // everyday nav — calm: just three places. Everything else lives in the
+  // advisor, inside a course, or in the "more" drawer.
   const mainNav: NavDef[] = [
     { key: "dashboard", route: "/dashboard", label: ar ? "الرئيسية" : "Home", icon: "space_dashboard" },
     { key: "courses", route: "/courses", label: ar ? "خطتي" : "My Plan", icon: "map" },
     { key: "calendar", route: "/calendar", label: ar ? "التقويم" : "Calendar", icon: "calendar_month" },
+  ];
+  // secondary (reachable from the drawer, not the everyday bar)
+  const secondaryNav: NavDef[] = [
     { key: "grades", route: "/grades", label: ar ? "درجاتي" : "Grades", icon: "grade" },
     { key: "resources", route: "/resources", label: ar ? "المصادر" : "Resources", icon: "smart_display" },
     { key: "notes", route: "/notes", label: ar ? "ملاحظاتي" : "Notes", icon: "edit_note" },
-  ];
-  // secondary (used less often)
-  const secondaryNav: NavDef[] = [
     { key: "upload", route: "/upload", label: ar ? "رفع الكشف" : "Upload sheet", icon: "upload_file" },
   ];
   if (isAdmin) secondaryNav.push({ key: "admin", route: "/admin", label: ar ? "الإدارة" : "Admin", icon: "admin_panel_settings" });
@@ -65,7 +69,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   };
   const pageTitle = titles[pathname] ?? "UNI Path";
 
-  const mobileNav = ["dashboard", "courses", "calendar", "grades", "notes"].map((k) => mainNav.find((n) => n.key === k)!).filter(Boolean);
+  const mobileNav = ["dashboard", "courses", "calendar"].map((k) => mainNav.find((n) => n.key === k)!).filter(Boolean);
 
   const notifIconStyle: Record<string, [string, string]> = {
     school: ["#E6F2EF", "#1E8378"], event_available: ["#EAF1F7", "#2C6E91"],
@@ -112,6 +116,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   );
 
   return (
+    <AdvisorCtx.Provider value={{ open: openAdvisor }}>
     <div style={{ display: "flex", height: "100dvh", width: "100%", overflow: "hidden", background: "var(--bg)", color: "var(--text)" }}>
       {/* desktop sidebar */}
       {!isMobile && (
@@ -233,7 +238,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       {/* floating AI advisor — available on every page */}
       {pathname !== "/chat" && !showAdvisor && (
         <button
-          onClick={() => setShowAdvisor(true)}
+          onClick={() => openAdvisor()}
           aria-label={ar ? "المرشد الذكي" : "AI Advisor"}
           className="advisor-fab"
           style={{
@@ -261,7 +266,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       {/* advisor popup */}
       {showAdvisor && (
         <div
-          onClick={() => setShowAdvisor(false)}
+          onClick={() => { setShowAdvisor(false); setAdvisorQ(undefined); }}
           style={{ position: "fixed", inset: 0, background: "rgba(16,42,64,.32)", zIndex: 70, display: "flex", alignItems: isMobile ? "stretch" : "flex-end", justifyContent: isMobile ? "stretch" : "flex-end", padding: isMobile ? 0 : 22 }}
         >
           <div
@@ -273,11 +278,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 : { width: 400, maxWidth: "calc(100vw - 44px)", height: 620, maxHeight: "calc(100vh - 44px)", borderRadius: 18, overflow: "hidden", boxShadow: "0 24px 60px rgba(16,42,64,.32)" }
             }
           >
-            <AdvisorChat onClose={() => setShowAdvisor(false)} />
+            <AdvisorChat onClose={() => { setShowAdvisor(false); setAdvisorQ(undefined); }} initialQuestion={advisorQ} />
           </div>
         </div>
       )}
     </div>
+    </AdvisorCtx.Provider>
   );
 }
 

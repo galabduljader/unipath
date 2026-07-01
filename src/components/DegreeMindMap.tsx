@@ -6,7 +6,7 @@ import { useI18n } from "@/lib/i18n";
 import { useData } from "@/lib/data";
 import { Icon } from "@/components/ui";
 import type { CourseTuple } from "@/lib/catalog";
-import { toArabicDigits } from "@/lib/catalog";
+import { toArabicDigits, GRADE_OPTS } from "@/lib/catalog";
 import { videos } from "@/lib/content";
 import {
   buildGraph,
@@ -220,9 +220,11 @@ function CourseDetail({
   onToggleDone: () => void;
 }) {
   const { lang } = useI18n();
+  const { grades, setGrade } = useData();
   const ar = lang === "ar";
   const m = levelMeta(node.level);
   const ss = STATE_STYLE[node.state];
+  const currentGrade = grades[node.code];
   const video = videos(lang).find((v) => v.course === node.code);
   const num = (n: number) => (ar ? toArabicDigits(n) : String(n));
   const prereqNode = node.prereq ? nodeByCode(nodes, node.prereq) : undefined;
@@ -292,6 +294,30 @@ function CourseDetail({
               </div>
               <Icon name="open_in_new" size={17} color="var(--faint)" />
             </a>
+          )}
+
+          {/* grade — folded in here, no separate Grades page needed */}
+          {node.state === "done" && (
+            <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid var(--border)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 9 }}>
+                <Icon name="grade" size={17} color="#B5762E" />
+                <span style={{ fontSize: 12.5, color: "var(--muted)" }}>{ar ? "درجتك (اختياري)" : "Your grade (optional)"}</span>
+              </div>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                {GRADE_OPTS.map((g) => {
+                  const on = currentGrade === g;
+                  return (
+                    <button
+                      key={g}
+                      onClick={() => setGrade(node.code, g, { title: node.title, credits: node.credits })}
+                      style={{ minWidth: 40, padding: "7px 10px", borderRadius: 9, cursor: "pointer", fontSize: 13, fontWeight: 700, borderWidth: 1.5, borderStyle: "solid", borderColor: on ? "#1E8378" : "var(--border)", background: on ? "#1E8378" : "var(--surface)", color: on ? "#fff" : "var(--muted)" }}
+                    >
+                      {g}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           )}
 
           {/* action */}

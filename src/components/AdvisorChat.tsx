@@ -60,7 +60,7 @@ function ruleReply(q: string, lang: Lang, gpaStr: string, credits: number, plan:
   return R[k][lang];
 }
 
-export function AdvisorChat({ onClose }: { onClose?: () => void }) {
+export function AdvisorChat({ onClose, initialQuestion }: { onClose?: () => void; initialQuestion?: string }) {
   const { t, lang } = useI18n();
   const { user, profile } = useAuth();
   const { completed, grades, programCourses } = useData();
@@ -86,7 +86,8 @@ export function AdvisorChat({ onClose }: { onClose?: () => void }) {
   useEffect(() => {
     if (!user) return;
     supabase.from("chat_messages").select("role, content").eq("user_id", user.id).order("created_at").then(({ data }) => {
-      if (data) setMessages(data as ChatMsg[]);
+      // don't clobber a question the student just asked while history loaded
+      if (data && data.length) setMessages((prev) => (prev.length ? prev : (data as ChatMsg[])));
     });
   }, [user, supabase]);
 
@@ -166,6 +167,16 @@ export function AdvisorChat({ onClose }: { onClose?: () => void }) {
       setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
     }
   }
+
+  // if opened with a starting question (e.g. tapped from Home), ask it once
+  const askedRef = useRef(false);
+  useEffect(() => {
+    if (initialQuestion && !askedRef.current) {
+      askedRef.current = true;
+      send(initialQuestion);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialQuestion]);
 
   return (
     <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 18, height: "100%", display: "flex", flexDirection: "column", overflow: "hidden", minHeight: 0 }}>
