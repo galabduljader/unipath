@@ -8,7 +8,8 @@ async function extractPdfText(file: File): Promise<string> {
   // Load the worker from a CDN matching the installed version (bundler-safe).
   pdfjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
   const buf = await file.arrayBuffer();
-  const doc = await pdfjs.getDocument({ data: buf }).promise;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const doc = await pdfjs.getDocument({ data: buf }).promise as any;
   let text = "";
   for (let i = 1; i <= doc.numPages; i++) {
     const page = await doc.getPage(i);
@@ -23,6 +24,30 @@ async function extractPdfText(file: File): Promise<string> {
     }
     const ys = [...rows.keys()].sort((a, b) => b - a);
     text += ys.map((y) => rows.get(y)!.join(" ")).join("\n") + "\n";
+  }
+  // Scanned / image-only PDF (no text layer): fall back to OCR of the pages.
+  if (text.trim().length < 30) return ocrPdfPages(doc);
+  return text;
+}
+
+// Rasterize each PDF page and OCR it — handles photographed or scanned sheets
+// saved as PDFs. Capped to keep it responsive; heavy libs stay lazy.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function ocrPdfPages(doc: any): Promise<string> {
+  const Tesseract = await import("tesseract.js");
+  let text = "";
+  const pages = Math.min(doc.numPages, 6);
+  for (let i = 1; i <= pages; i++) {
+    const page = await doc.getPage(i);
+    const viewport = page.getViewport({ scale: 2 });
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.ceil(viewport.width);
+    canvas.height = Math.ceil(viewport.height);
+    const context = canvas.getContext("2d");
+    if (!context) continue;
+    await page.render({ canvasContext: context, viewport, canvas }).promise;
+    const { data } = await Tesseract.recognize(canvas, "eng");
+    text += data.text + "\n";
   }
   return text;
 }
