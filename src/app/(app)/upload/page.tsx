@@ -68,11 +68,40 @@ export default function UploadPage() {
     const list = good ? courses : catalogList();
     setExtracted(list);
     setFromFile(good);
-    if (good) await setProgramCourses(list);
     if (timer.current) clearInterval(timer.current);
     setProgress(100);
-    setTimeout(() => setStep(2), 450);
+    if (file) {
+      // let the student review & fix the parsed list before it becomes their map
+      setTimeout(() => setStep(3), 450);
+    } else {
+      await setProgramCourses(list);
+      setTimeout(() => setStep(2), 450);
+    }
   }
+
+  // ---- review-step editing ----
+  const updateRow = (i: number, patch: Partial<ExtractedCourse>) =>
+    setExtracted((prev) => prev.map((c, idx) => (idx === i ? { ...c, ...patch } : c)));
+  const removeRow = (i: number) => setExtracted((prev) => prev.filter((_, idx) => idx !== i));
+  const addRow = () => setExtracted((prev) => [...prev, { code: "", title: "", credits: 3 }]);
+
+  async function confirmReview() {
+    const clean = extracted
+      .map((c) => ({
+        code: c.code.trim().toUpperCase().replace(/\s+/g, " "),
+        title: (c.title || "").trim() || c.code.trim().toUpperCase(),
+        credits: Math.max(1, Math.min(6, Math.round(Number(c.credits) || 3))),
+      }))
+      .filter((c) => c.code.length >= 2);
+    const seen = new Set<string>();
+    const out = clean.filter((c) => (seen.has(c.code) ? false : (seen.add(c.code), true)));
+    setExtracted(out);
+    await setProgramCourses(out);
+    pop();
+    setStep(2);
+  }
+
+  const reviewCredits = extracted.reduce((a, c) => a + (Math.round(Number(c.credits)) || 0), 0);
 
   function onPick(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]; e.target.value = "";
@@ -131,6 +160,54 @@ export default function UploadPage() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {step === 3 && (
+        <div style={card} className="fade-up">
+          <div className="serif" style={{ fontSize: 22, fontWeight: 600, color: "var(--ink-strong)" }}>{msg("Review your courses", "راجع موادّك")}</div>
+          <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 5, marginBottom: 8 }}>
+            {fromFile
+              ? msg("We read these from your sheet. Scans aren't always perfect — fix any code, name, or credits that look off, then build your map.", "قرأناها من كشفك. المسح ليس دقيقاً دائماً — صحّح أي رمز أو اسم أو ساعات تبدو خاطئة، ثم أنشئ خريطتك.")
+              : msg("We couldn't read enough from that file, so here's your program's standard plan. Adjust anything, then build your map.", "لم نتمكّن من قراءة ما يكفي من الملف، فهذه خطة برنامجك القياسية. عدّل ما تشاء ثم أنشئ خريطتك.")}
+          </div>
+          {!fromFile && (
+            <div style={{ display: "flex", gap: 9, alignItems: "flex-start", background: "#F6ECD7", border: "1px solid #E8D6AE", borderRadius: 11, padding: "10px 13px", marginBottom: 14, fontSize: 12.5, color: "#7a5a2c" }}>
+              <Icon name="info" size={17} color="#B5762E" style={{ flexShrink: 0, marginTop: 1 }} />
+              {msg("Tip: a clearer, straight, well-lit photo (or a text PDF) reads far better.", "نصيحة: صورة أوضح ومستقيمة وبإضاءة جيدة (أو ملف PDF نصّي) تُقرأ أفضل بكثير.")}
+            </div>
+          )}
+
+          {/* column labels */}
+          <div style={{ display: "flex", gap: 8, padding: "0 4px 6px", fontSize: 11, color: "var(--faint)", fontWeight: 600 }}>
+            <span style={{ width: 96 }}>{msg("Code", "الرمز")}</span>
+            <span style={{ flex: 1 }}>{msg("Course name", "اسم المادة")}</span>
+            <span style={{ width: 52, textAlign: "center" }}>{msg("Cr", "ساعة")}</span>
+            <span style={{ width: 30 }} />
+          </div>
+
+          <div style={{ maxHeight: 340, overflowY: "auto", display: "flex", flexDirection: "column", gap: 7, paddingInlineEnd: 2 }}>
+            {extracted.map((c, i) => (
+              <div key={i} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <input value={c.code} onChange={(e) => updateRow(i, { code: e.target.value })} placeholder="CS 101" style={{ width: 96, border: "1px solid var(--border)", borderRadius: 9, padding: "9px 10px", fontSize: 13, fontWeight: 700, color: "var(--ink-strong)", background: "var(--surface-2)", outline: "none" }} />
+                <input value={c.title} onChange={(e) => updateRow(i, { title: e.target.value })} placeholder={msg("Course name", "اسم المادة")} style={{ flex: 1, minWidth: 0, border: "1px solid var(--border)", borderRadius: 9, padding: "9px 11px", fontSize: 13, color: "var(--text)", background: "var(--surface-2)", outline: "none" }} />
+                <input value={String(c.credits)} onChange={(e) => updateRow(i, { credits: (parseInt(e.target.value.replace(/\D/g, ""), 10) || 0) as number })} inputMode="numeric" style={{ width: 52, textAlign: "center", border: "1px solid var(--border)", borderRadius: 9, padding: "9px 6px", fontSize: 13, color: "var(--text)", background: "var(--surface-2)", outline: "none" }} />
+                <button onClick={() => removeRow(i)} aria-label="Remove" style={{ width: 30, height: 30, flexShrink: 0, border: "1px solid var(--border)", borderRadius: 8, background: "var(--surface)", color: "var(--faint)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}><Icon name="close" size={16} /></button>
+              </div>
+            ))}
+          </div>
+
+          <button onClick={addRow} style={{ marginTop: 10, width: "100%", background: "var(--surface-2)", color: "#2C6E91", border: "1px dashed #C3D3DD", borderRadius: 10, padding: "10px", fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, cursor: "pointer" }}>
+            <Icon name="add" size={18} />{msg("Add a course", "أضف مادة")}
+          </button>
+
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 16, flexWrap: "wrap", gap: 10 }}>
+            <div style={{ fontSize: 12.5, color: "var(--muted)" }}>{extracted.length} {msg("courses", "مادة")} · {reviewCredits} {t.cr}</div>
+            <div style={{ display: "flex", gap: 9 }}>
+              <button onClick={() => { setStep(0); setExtracted([]); }} style={{ background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: 11, padding: "11px 15px", fontWeight: 600, fontSize: 13.5, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}><Icon name="restart_alt" size={17} />{msg("Start over", "ابدأ من جديد")}</button>
+              <button onClick={confirmReview} disabled={extracted.length === 0} style={{ background: "linear-gradient(135deg,#1E8378,#2C6E91)", color: "#fff", border: "none", borderRadius: 11, padding: "11px 18px", fontWeight: 700, fontSize: 13.5, cursor: "pointer", opacity: extracted.length === 0 ? 0.5 : 1, display: "flex", alignItems: "center", gap: 7 }}><Icon name="account_tree" size={18} />{msg("Build my map", "أنشئ خريطتي")}</button>
+            </div>
           </div>
         </div>
       )}
