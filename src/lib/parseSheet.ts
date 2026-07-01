@@ -34,11 +34,26 @@ async function extractDocxText(file: File): Promise<string> {
   return res.value;
 }
 
+// OCR a photo/scan of a sheet (e.g. a phone picture). tesseract.js is heavy,
+// so it's only imported when an image is actually uploaded.
+async function extractImageText(file: File): Promise<string> {
+  const Tesseract = await import("tesseract.js");
+  const { data } = await Tesseract.recognize(file, "eng");
+  return data.text;
+}
+
+const IMAGE_RE = /\.(png|jpe?g|webp|gif|bmp|heic|heif|tiff?)$/i;
+
+export function isImageFile(file: File): boolean {
+  return file.type.startsWith("image/") || IMAGE_RE.test(file.name);
+}
+
 export async function extractText(file: File): Promise<string> {
   const name = file.name.toLowerCase();
   if (name.endsWith(".pdf") || file.type === "application/pdf") return extractPdfText(file);
   if (name.endsWith(".docx") || name.endsWith(".doc") || /word|officedocument|msword/.test(file.type))
     return extractDocxText(file);
+  if (isImageFile(file)) return extractImageText(file);
   // plain text fallback
   return file.text();
 }

@@ -6,9 +6,8 @@ import { useAuth } from "@/lib/auth";
 import { useData } from "@/lib/data";
 import { useIsMobile } from "@/components/ui";
 import { computePlan, resolvePlanCourses, programTotalCredits } from "@/lib/catalog";
-import { DegreeMindMap } from "@/components/DegreeMindMap";
+import { MajorOrgChart } from "@/components/MajorOrgChart";
 import { ScenarioPlanner } from "@/components/ScenarioPlanner";
-import { MajorMap } from "@/components/MajorMap";
 
 export default function CoursesPage() {
   const { t, lang } = useI18n();
@@ -47,10 +46,7 @@ export default function CoursesPage() {
       </div>
 
       {tab === "map" ? (
-        <>
-          <DegreeMindMap planCourses={planCourses} total={total} gradTerm={plan.gradTerm} />
-          <MajorMap major={major} planCourses={planCourses} completed={completed} gradTerm={plan.gradTerm} total={total} />
-        </>
+        <MajorOrgChart planCourses={planCourses} total={total} gradTerm={plan.gradTerm} major={major} />
       ) : (
         <ScenarioPlanner planCourses={planCourses} total={total} />
       )}

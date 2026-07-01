@@ -77,8 +77,8 @@ export default function UploadPage() {
   function onPick(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]; e.target.value = "";
     if (!file) return;
-    const okExt = /\.(pdf|docx?)$/i.test(file.name);
-    if (!(/pdf|word|officedocument|msword/.test(file.type) || okExt)) return setFileError(msg("Please choose a PDF or DOCX file.", "يرجى اختيار ملف PDF أو DOCX."));
+    const okExt = /\.(pdf|docx?|png|jpe?g|webp|heic|heif|bmp|tiff?)$/i.test(file.name);
+    if (!(/pdf|word|officedocument|msword|^image\//.test(file.type) || okExt)) return setFileError(msg("Please choose a PDF, DOCX, or a photo of your sheet.", "يرجى اختيار ملف PDF أو DOCX أو صورة لكشفك."));
     if (file.size > 10 * 1048576) return setFileError(msg("File is over the 10MB limit.", "حجم الملف يتجاوز ١٠ ميجابايت."));
     setFileName(file.name); setFileSize(fmtSize(file.size)); setFileError("");
     runParse(file);
@@ -95,7 +95,7 @@ export default function UploadPage() {
             <div style={{ fontWeight: 600, fontSize: 15, color: "var(--ink-strong)" }}>{t.dropHere}</div>
             <div style={{ fontSize: 12.5, color: "var(--faint)", marginTop: 5 }}>{t.constraints}</div>
             <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 18, flexWrap: "wrap" }}>
-              <input ref={fileInput} type="file" accept=".pdf,.doc,.docx" onChange={onPick} style={{ display: "none" }} />
+              <input ref={fileInput} type="file" accept=".pdf,.doc,.docx,image/*" onChange={onPick} style={{ display: "none" }} />
               <button onClick={() => fileInput.current?.click()} style={{ background: "#1E8378", color: "#fff", border: "none", borderRadius: 10, padding: "11px 18px", fontWeight: 600, fontSize: 13.5, display: "flex", alignItems: "center", gap: 7 }}><Icon name="description" size={18} />{t.browse}</button>
               <button onClick={() => { setFileName("CS_Degree_Plan_2023.pdf"); setFileSize("1.8 MB"); setFileError(""); runParse(null); }} style={{ background: "var(--surface)", color: "var(--text)", border: "1px solid var(--border)", borderRadius: 10, padding: "11px 18px", fontWeight: 600, fontSize: 13.5 }}>{t.useSample}</button>
             </div>
