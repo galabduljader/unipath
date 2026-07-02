@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth";
 import { useData } from "@/lib/data";
 import { useAdvisor } from "@/lib/advisorContext";
 import { Icon } from "@/components/ui";
+import { ProgressPlant } from "@/components/ProgressPlant";
 import { computePlan, computeGpaFrom, resolvePlanCourses, computePace, programTotalCredits, GRAD_MIN_GPA, toArabicDigits } from "@/lib/catalog";
 import { buildGraph, suggestedNext } from "@/lib/graph";
 
@@ -128,17 +129,20 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* quiet progress — one glance */}
-      <button onClick={() => router.push("/courses")} style={{ textAlign: "start", cursor: "pointer", background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, padding: "16px 18px", display: "flex", flexDirection: "column", gap: 10 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-          <span style={{ fontSize: 14, fontWeight: 600, color: "var(--ink-strong)" }}>{ar ? "تقدّمك" : "Your progress"}</span>
-          <span style={{ fontSize: 13, color: "var(--muted)" }}>{numf(plan.doneCredits)} / {numf(total)} · {numf(plan.pct)}%</span>
-        </div>
-        <div style={{ height: 10, borderRadius: 6, background: "var(--track)", overflow: "hidden" }}>
-          <div style={{ height: "100%", borderRadius: 6, background: "linear-gradient(90deg,#1E8378,#2A9D8F)", width: `${plan.pct}%`, transition: "width .6s ease" }} />
-        </div>
-        <div style={{ fontSize: 12.5, color: "var(--muted)", display: "flex", alignItems: "center", gap: 6 }}>
-          <Icon name="school" size={15} color="#2C6E91" />{ar ? `التخرّج المتوقّع ${plan.gradTerm}` : `On track for ${plan.gradTerm}`}
+      {/* quiet progress — a little plant that grows with you */}
+      <button onClick={() => router.push("/courses")} style={{ textAlign: "start", cursor: "pointer", background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, padding: "16px 18px", display: "flex", alignItems: "center", gap: 16 }}>
+        <ProgressPlant pct={plan.pct} size={76} />
+        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+            <span style={{ fontSize: 14, fontWeight: 600, color: "var(--ink-strong)" }}>{ar ? "تقدّمك" : "Your progress"}</span>
+            <span style={{ fontSize: 13, color: "var(--muted)", whiteSpace: "nowrap" }}>{numf(plan.doneCredits)} / {numf(total)} · {numf(plan.pct)}%</span>
+          </div>
+          <div style={{ height: 8, borderRadius: 6, background: "var(--track)", overflow: "hidden" }}>
+            <div style={{ height: "100%", borderRadius: 6, background: "linear-gradient(90deg,#1E8378,#2A9D8F)", width: `${plan.pct}%`, transition: "width .6s ease" }} />
+          </div>
+          <div style={{ fontSize: 12.5, color: "var(--muted)", display: "flex", alignItems: "center", gap: 6 }}>
+            <Icon name="school" size={15} color="#2C6E91" />{ar ? `التخرّج المتوقّع ${plan.gradTerm}` : `On track for ${plan.gradTerm}`}
+          </div>
         </div>
       </button>
 

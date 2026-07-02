@@ -31,29 +31,48 @@ export default function OnboardingPage() {
   const [fileError, setFileError] = useState("");
   const [progress, setProgress] = useState(0);
   const [done, setDone] = useState<Set<string>>(new Set());
-  const [extracted, setExtracted] = useState<ExtractedCourse[]>([]);
-  const [fromFile, setFromFile] = useState(false);
+  const [plan, setPlan] = useState<ExtractedCourse[]>([]); // editable course list saved as the student's plan
+  const [uploadedFile, setUploadedFile] = useState(false); // a real file was chosen (vs. the sample)
+  const [parseWorked, setParseWorked] = useState(false); // the reader actually pulled courses from that file
+  const updateRow = (i: number, patch: Partial<ExtractedCourse>) => setPlan((prev) => prev.map((c, idx) => (idx === i ? { ...c, ...patch } : c)));
+  const removeRow = (i: number) => setPlan((prev) => prev.filter((_, idx) => idx !== i));
+  const addRow = () => setPlan((prev) => [...prev, { code: "", title: "", credits: 3 }]);
   const fileInput = useRef<HTMLInputElement>(null);
   const parseTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     if (loading) return;
+    // ?setup=1 lets an already-onboarded student re-run this to update major /
+    // cohort and re-upload their major sheet.
+    const redo = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("setup") === "1";
     if (!user) router.replace("/login");
-    else if (profile?.onboarded) router.replace("/dashboard");
+    else if (profile?.onboarded && !redo) router.replace("/dashboard");
   }, [user, profile, loading, router]);
+
+  // Prefill from the saved profile when reopening so it reflects the real major /
+  // cohort (avoids silently defaulting to Computer Science).
+  useEffect(() => {
+    if (!profile) return;
+    const pm = profile.major, pc = profile.cohort, pu = profile.university;
+    /* eslint-disable react-hooks/set-state-in-effect -- one-time prefill from async-loaded profile */
+    if (pm) setMajor((m) => m || pm);
+    if (pc) setCohort((c) => c || pc);
+    if (pu) setUniversity((u) => u || pu);
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, [profile]);
 
   const catalogList = (): ExtractedCourse[] =>
     (major ? coursesForMajor(major) : []).map((c) => ({ code: c[0], title: lang === "ar" ? c[2] : c[1], credits: c[3] }));
-  const reviewCourses: ExtractedCourse[] = fromFile && extracted.length ? extracted : catalogList();
+  const reviewCourses: ExtractedCourse[] = plan;
 
   const groups = [t.obProfile, t.obCohortStep, t.obUploadStep, t.obCoursesStep];
   const curGroup = step <= 0 ? 0 : step === 1 ? 1 : step === 2 || step === 3 ? 2 : 3;
   const msg = (en: string, ar: string) => (lang === "ar" ? ar : en);
 
   function validate(file: File): boolean {
-    const okExt = /\.(pdf|docx?)$/i.test(file.name);
-    const okType = /pdf|word|officedocument|msword/.test(file.type) || okExt;
-    if (!okType) { setFileError(msg("Please choose a PDF or DOCX file.", "يرجى اختيار ملف PDF أو DOCX.")); return false; }
+    const okExt = /\.(pdf|docx?|png|jpe?g|webp|heic|heif|bmp|tiff?)$/i.test(file.name);
+    const okType = /pdf|word|officedocument|msword|^image\//.test(file.type) || okExt;
+    if (!okType) { setFileError(msg("Please choose a PDF, DOCX, or a photo of your sheet.", "يرجى اختيار ملف PDF أو DOCX أو صورة لكشفك.")); return false; }
     if (file.size > 10 * 1048576) { setFileError(msg("File is over the 10MB limit.", "حجم الملف يتجاوز ١٠ ميجابايت.")); return false; }
     return true;
   }
@@ -87,9 +106,12 @@ export default function OnboardingPage() {
     parseTimer.current = setInterval(() => setProgress((p) => Math.min(p + 6, 90)), 80);
     let courses: ExtractedCourse[] = [];
     if (file) courses = await parseSheet(file);
-    const good = courses.length >= 3;
-    setExtracted(good ? courses : []);
-    setFromFile(good);
+    const good = courses.length >= 1;
+    setUploadedFile(!!file);
+    setParseWorked(!!file && good);
+    // Seed the editable plan with whatever we read; if nothing parsed, start from
+    // the major's standard plan so the student can adjust it to their real sheet.
+    setPlan(good ? courses : catalogList());
     if (parseTimer.current) clearInterval(parseTimer.current);
     setProgress(100);
     setTimeout(() => setStep(4), 450);
@@ -107,17 +129,29 @@ export default function OnboardingPage() {
       cohort: cohort || "2023",
       onboarded: true,
     }).eq("id", user.id);
-    const codes = [...done];
+    // Persist the student's reviewed/edited course list as their program — this is
+    // what the garden is built from. Clean + dedupe first.
+    const cleaned = plan
+      .map((c) => ({
+        code: c.code.trim().toUpperCase().replace(/\s+/g, " "),
+        title: (c.title || "").trim() || c.code.trim().toUpperCase(),
+        credits: Math.max(1, Math.min(9, Math.round(Number(c.credits) || 3))),
+      }))
+      .filter((c) => c.code.length >= 2);
+    const seen = new Set<string>();
+    const finalPlan = cleaned.filter((c) => (seen.has(c.code) ? false : (seen.add(c.code), true)));
+
+    const codes = [...done].filter((code) => finalPlan.some((c) => c.code === code));
     await supabase.from("completed_courses").delete().eq("user_id", user.id);
     if (codes.length) await supabase.from("completed_courses").insert(codes.map((code) => ({ user_id: user.id, code })));
-    // persist the courses read from the uploaded sheet as the student's program
+
     await supabase.from("program_courses").delete().eq("user_id", user.id);
-    if (fromFile && extracted.length)
+    if (finalPlan.length)
       await supabase.from("program_courses").insert(
-        extracted.map((c, i) => ({ user_id: user.id, code: c.code, title: c.title, credits: c.credits, sort: i }))
+        finalPlan.map((c, i) => ({ user_id: user.id, code: c.code, title: c.title, credits: c.credits, sort: i })),
       );
     await refreshProfile();
-    router.replace("/dashboard");
+    router.replace("/courses");
   }
 
   const obDoneCount = reviewCourses.filter((c) => done.has(c.code)).length;
@@ -203,7 +237,7 @@ export default function OnboardingPage() {
                 <div style={{ fontWeight: 600, fontSize: 15, color: "var(--ink-strong)" }}>{t.dropHere}</div>
                 <div style={{ fontSize: 12.5, color: "var(--faint)", marginTop: 5 }}>{t.constraints}</div>
                 <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 18, flexWrap: "wrap" }}>
-                  <input ref={fileInput} type="file" accept=".pdf,.doc,.docx" onChange={onPick} style={{ display: "none" }} />
+                  <input ref={fileInput} type="file" accept=".pdf,.doc,.docx,image/*" onChange={onPick} style={{ display: "none" }} />
                   <button onClick={() => fileInput.current?.click()} style={{ background: "#1E8378", color: "#fff", border: "none", borderRadius: 10, padding: "11px 18px", fontWeight: 600, fontSize: 13.5, display: "flex", alignItems: "center", gap: 7 }}>
                     <Icon name="description" size={18} />{t.browse}
                   </button>
@@ -253,25 +287,56 @@ export default function OnboardingPage() {
                 <Icon name="fact_check" size={23} color="#1E8378" />
                 <div className="serif" style={{ fontSize: 23, fontWeight: 600, color: "var(--ink-strong)" }}>{t.obCoursesTitle}</div>
               </div>
-              <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 5, marginBottom: 14 }}>{t.obCoursesSub}</div>
+              <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 5, marginBottom: 14 }}>{msg("These are the courses we'll build your garden from. Fix any code, name, or credits that look off, add anything missing, then tick what you've already finished.", "هذه المواد التي ستُبنى منها حديقتك. صحّح أي رمز أو اسم أو ساعات تبدو خاطئة، أضف ما ينقص، ثم علّم ما أنجزته.")}</div>
+              {uploadedFile && !parseWorked && (
+                <div style={{ display: "flex", gap: 9, alignItems: "flex-start", background: "#FBF4E6", border: "1px solid #EBD9AE", borderRadius: 12, padding: "11px 13px", marginBottom: 14, fontSize: 12.5, color: "#7a5a2c" }}>
+                  <Icon name="info" size={17} color="#B5762E" style={{ flexShrink: 0, marginTop: 1 }} />
+                  <span>{msg(`We couldn't read the courses from your file, so this is the standard ${major} plan as a starting point. Edit it to match your sheet — or the garden won't be accurate.`, `تعذّرت قراءة المواد من ملفك، لذا هذه خطة ${major} القياسية كنقطة بداية. عدّلها لتطابق كشفك — وإلا لن تكون الحديقة دقيقة.`)}</span>
+                </div>
+              )}
+              {parseWorked && (
+                <div style={{ display: "flex", gap: 9, alignItems: "center", background: "#F2FAF8", border: "1px solid #CDE6E0", borderRadius: 12, padding: "10px 13px", marginBottom: 14, fontSize: 12.5, color: "#1E6E5F" }}>
+                  <Icon name="check_circle" size={17} color="#1E8378" style={{ flexShrink: 0 }} />
+                  <span>{msg("Read from your sheet — double-check the credits, they're the trickiest to read.", "قُرئت من كشفك — تحقّق من الساعات، فهي الأصعب في القراءة.")}</span>
+                </div>
+              )}
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 12, flexWrap: "wrap" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "#EAF1F7", color: "#2C6E91", border: "1px solid #D5E3EC", borderRadius: 9, padding: "7px 12px", fontSize: 12.5, fontWeight: 600 }}>
-                  <Icon name="school" size={16} />{major}
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "var(--surface-2)", color: "#2C6E91", border: "1px solid var(--border)", borderRadius: 9, padding: "7px 12px", fontSize: 12.5, fontWeight: 600 }}>
+                  <Icon name="school" size={16} />{major} · {plan.length} {msg("courses", "مادة")}
                 </span>
                 <span style={{ fontSize: 12.5, fontWeight: 700, color: "#156B61" }}>{obCountLabel}</span>
               </div>
-              <div style={{ maxHeight: 300, overflowY: "auto", display: "flex", flexDirection: "column", gap: 7, border: "1px solid var(--border)", borderRadius: 12, padding: 10 }}>
-                {reviewCourses.map((c) => {
+
+              {/* column labels */}
+              <div style={{ display: "flex", gap: 8, padding: "0 6px 6px", fontSize: 11, color: "var(--faint)", fontWeight: 600 }}>
+                <span style={{ width: 26 }} />
+                <span style={{ width: 90 }}>{msg("Code", "الرمز")}</span>
+                <span style={{ flex: 1 }}>{msg("Course name", "اسم المادة")}</span>
+                <span style={{ width: 44, textAlign: "center" }}>{t.cr}</span>
+                <span style={{ width: 28 }} />
+              </div>
+
+              <div style={{ maxHeight: 320, overflowY: "auto", display: "flex", flexDirection: "column", gap: 7, border: "1px solid var(--border)", borderRadius: 12, padding: 10 }}>
+                {plan.map((c, i) => {
                   const on = done.has(c.code);
                   return (
-                    <button key={c.code} onClick={() => toggleDone(c.code)} style={{ display: "flex", alignItems: "center", gap: 11, padding: "9px 11px", border: `1px solid ${on ? "#CDE6E0" : "#EEE8DC"}`, borderRadius: 9, background: on ? "#F2FAF8" : "#fff", width: "100%" }}>
-                      <Icon name={on ? "check_circle" : "radio_button_unchecked"} size={20} color={on ? "#1E8378" : "#cdd5d9"} />
-                      <span style={{ flex: 1, textAlign: "start", fontSize: 13, color: "var(--text)" }}>{c.code} · {c.title}</span>
-                      <span style={{ fontSize: 11.5, color: "var(--faint)" }}>{c.credits} {t.cr}</span>
-                    </button>
+                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <button onClick={() => toggleDone(c.code)} aria-label="Toggle completed" title={msg("Mark completed", "علّم كمكتملة")} style={{ width: 26, height: 26, flexShrink: 0, border: "none", background: "none", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+                        <Icon name={on ? "check_circle" : "radio_button_unchecked"} size={22} color={on ? "#1E8378" : "#cdd5d9"} />
+                      </button>
+                      <input value={c.code} onChange={(e) => updateRow(i, { code: e.target.value })} placeholder="CS 101" style={{ width: 90, border: "1px solid var(--border)", borderRadius: 9, padding: "8px 9px", fontSize: 12.5, fontWeight: 700, color: "var(--ink-strong)", background: "var(--surface-2)", outline: "none" }} />
+                      <input value={c.title} onChange={(e) => updateRow(i, { title: e.target.value })} placeholder={msg("Course name", "اسم المادة")} style={{ flex: 1, minWidth: 0, border: "1px solid var(--border)", borderRadius: 9, padding: "8px 10px", fontSize: 12.5, color: "var(--text)", background: "var(--surface-2)", outline: "none" }} />
+                      <input value={String(c.credits)} onChange={(e) => updateRow(i, { credits: (parseInt(e.target.value.replace(/\D/g, ""), 10) || 0) as number })} inputMode="numeric" style={{ width: 44, textAlign: "center", border: "1px solid var(--border)", borderRadius: 9, padding: "8px 4px", fontSize: 12.5, color: "var(--text)", background: "var(--surface-2)", outline: "none" }} />
+                      <button onClick={() => removeRow(i)} aria-label="Remove" style={{ width: 28, height: 28, flexShrink: 0, border: "1px solid var(--border)", borderRadius: 8, background: "var(--surface)", color: "var(--faint)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}><Icon name="close" size={15} /></button>
+                    </div>
                   );
                 })}
+                {plan.length === 0 && <div style={{ fontSize: 12.5, color: "var(--muted)", textAlign: "center", padding: "16px 0" }}>{msg("No courses yet — add your courses below.", "لا مواد بعد — أضف موادّك بالأسفل.")}</div>}
               </div>
+
+              <button onClick={addRow} style={{ marginTop: 10, width: "100%", background: "var(--surface-2)", color: "#2C6E91", border: "1px dashed var(--border)", borderRadius: 10, padding: "10px", fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, cursor: "pointer" }}>
+                <Icon name="add" size={18} />{msg("Add a course", "أضف مادة")}
+              </button>
             </div>
           )}
         </div>

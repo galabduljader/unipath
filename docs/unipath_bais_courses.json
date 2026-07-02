@@ -1,0 +1,1585 @@
+{
+  "program": "Bachelor of BA in Information Systems",
+  "totalCredits": 126,
+  "model": {
+    "prerequisites": "list of AND-groups; each group is a list of OR-alternatives; all groups must be satisfied",
+    "standing": "null | 'junior' | 'senior' (gate, not a course edge)",
+    "external": "true = remedial/placement course, not part of the 126 credits",
+    "alsoIn": "sections where this course is cross-listed"
+  },
+  "requirementGroups": {
+    "gen_ed": "1 - General Education (42)",
+    "college_basic": "2A - Basic Business Administration (24)",
+    "college_advanced": "2B - Advanced Business Administration (12)",
+    "major_required": "3A - Major Required Courses (24)",
+    "major_elective": "3B - Major Elective Courses (12, select 12 cr)",
+    "practical": "4 - Practical Component (6)",
+    "external": "Remedial / placement prerequisites"
+  },
+  "courseCount": 76,
+  "courses": [
+    {
+      "id": "ENGL095",
+      "code": "ENGL 095",
+      "name": "English (remedial)",
+      "nameAr": "انجليزي تأهيلي",
+      "credits": 0,
+      "requirementGroup": "external",
+      "section": "gen_ed_ext",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": true,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "MATH095",
+      "code": "MATH 095",
+      "name": "Math (remedial)",
+      "nameAr": "رياضيات تأهيلي",
+      "credits": 0,
+      "requirementGroup": "external",
+      "section": "gen_ed_ext",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": true,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "ARAB101",
+      "code": "ARAB 101",
+      "name": "Arabic Language 1",
+      "nameAr": "لغة عربية 1",
+      "credits": 3,
+      "requirementGroup": "external",
+      "section": "gen_ed_ext",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "ENGL100",
+      "code": "ENGL 100",
+      "name": "Academic English",
+      "nameAr": "اللغة الإنجليزية الأكاديمية",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1A.comm",
+      "prerequisites": [
+        [
+          "ENGL095"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": "ENGL 095 or English placement test (PT)",
+      "alsoIn": []
+    },
+    {
+      "id": "ENGL110",
+      "code": "ENGL 110",
+      "name": "English Composition 1",
+      "nameAr": "اللغة الإنجليزية 1",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1A.comm",
+      "prerequisites": [
+        [
+          "ENGL100"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": "ENGL 100 or placement test (PT)",
+      "alsoIn": []
+    },
+    {
+      "id": "ENGL120",
+      "code": "ENGL 120",
+      "name": "English Composition 2",
+      "nameAr": "اللغة الإنجليزية 2",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1A.comm",
+      "prerequisites": [
+        [
+          "ENGL110"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "ARAB1OR2",
+      "code": "ARAB ---",
+      "name": "Arabic Language 1 or 2",
+      "nameAr": "لغة عربية 1 أو 2",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1A.comm",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": "Placement determines ARAB 101 or ARAB 102",
+      "alsoIn": []
+    },
+    {
+      "id": "HIST110",
+      "code": "HIST 110",
+      "name": "Islamic and Arab Civilization",
+      "nameAr": "الحضارة الأسلامية والعربية",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1A.islamic",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": "Select any 3 cr from this area",
+      "alsoIn": []
+    },
+    {
+      "id": "ISLM101",
+      "code": "ISLM 101",
+      "name": "Islamic Culture",
+      "nameAr": "الثقافة الأسلامية",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1A.islamic",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": "Select any 3 cr from this area",
+      "alsoIn": []
+    },
+    {
+      "id": "POLS120",
+      "code": "POLS 120",
+      "name": "Kuwait Constitution & Government",
+      "nameAr": "دستور وحكومة الكويت",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1A.kuwait",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": "Select any 3 cr from this area",
+      "alsoIn": []
+    },
+    {
+      "id": "HIST120",
+      "code": "HIST 120",
+      "name": "Kuwait History",
+      "nameAr": "تاريخ الكويت",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1A.kuwait",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": "Select any 3 cr from this area",
+      "alsoIn": []
+    },
+    {
+      "id": "INFS120",
+      "code": "INFS 120",
+      "name": "Intro. to Comp. & Information Sys.",
+      "nameAr": "مقدمة في الكومبيوتر ونظم المعلومات",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1A.infomgmt",
+      "prerequisites": [
+        [
+          "ENGL100"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": "Select any 3 cr from this area",
+      "alsoIn": []
+    },
+    {
+      "id": "COMS131",
+      "code": "COMS 131",
+      "name": "Computers and Problem Solving",
+      "nameAr": "الكومبيوتر وحل المشكلات",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1A.infomgmt",
+      "prerequisites": [
+        [
+          "ENGL100"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": "Select any 3 cr from this area",
+      "alsoIn": []
+    },
+    {
+      "id": "ARAB102",
+      "code": "ARAB 102",
+      "name": "Arabic Language 2",
+      "nameAr": "لغة عربية 2",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1B.humanities",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "ARAB230",
+      "code": "ARAB 230",
+      "name": "Introduction to Arabic Literature",
+      "nameAr": "مدخل الى الأدب العربي",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1B.humanities",
+      "prerequisites": [
+        [
+          "ARAB101"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "ARTH180",
+      "code": "ARTH 180",
+      "name": "Art and Society",
+      "nameAr": "الأداب والمجتمع",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1B.humanities",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "MEDI101",
+      "code": "MEDI 101",
+      "name": "Introduction to Media and Communication",
+      "nameAr": "مقدمة في الإعلام والاتصال",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1B.humanities",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "ARTH190",
+      "code": "ARTH 190",
+      "name": "Kuwait Art",
+      "nameAr": "أداب الكويت",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1B.humanities",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "ENGL205",
+      "code": "ENGL 205",
+      "name": "Introduction to English Literature",
+      "nameAr": "مقدمة في الأدب الإنجليزي",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1B.humanities",
+      "prerequisites": [
+        [
+          "ENGL110"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "HIST251",
+      "code": "HIST 251",
+      "name": "History of Islamic Art & Architecture",
+      "nameAr": "تاريخ الفن والعمارة الإسلامية",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1B.humanities",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "PHIL101",
+      "code": "PHIL 101",
+      "name": "Introduction to Philosophy",
+      "nameAr": "مقدمة في الفلسفة",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1B.humanities",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "PHIL105",
+      "code": "PHIL 105",
+      "name": "Introduction to Ethics",
+      "nameAr": "مقدمة في الأخلاق",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1B.humanities",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "MUSI262",
+      "code": "MUSI 262",
+      "name": "History of Music I",
+      "nameAr": "تاريخ الموسيقى 1",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1B.humanities",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "ARTH110",
+      "code": "ARTH 110",
+      "name": "Introduction to Innovation and Creativity",
+      "nameAr": "مقدمة في الإبداع والإبتكار",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1B.humanities",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "COMM202",
+      "code": "COMM 202",
+      "name": "Introduction to Communication Theory",
+      "nameAr": "مقدمة في نظرية الإتصال",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1B.humanities",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "ANTH202",
+      "code": "ANTH 202",
+      "name": "Intro. to Cultural Anthropology",
+      "nameAr": "مقدمة في ثقافة علم الإنسان",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1C.social",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "ANTH203",
+      "code": "ANTH 203",
+      "name": "Intro. to Archaeology",
+      "nameAr": "مقدمة في علم الإنسان",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1C.social",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "COMM130",
+      "code": "COMM 130",
+      "name": "Introduction to Public Speaking",
+      "nameAr": "مقدمة في التحدث امام الجمهور",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1C.social",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "ECON201",
+      "code": "ECON 201",
+      "name": "Global Economic Concepts",
+      "nameAr": "المفاهيم الإقتصادية العالمية",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1C.social",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "HRMA265",
+      "code": "HRMA 265",
+      "name": "Tourism",
+      "nameAr": "السياحة",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1C.social",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "POLS254",
+      "code": "POLS 254",
+      "name": "Law and Society",
+      "nameAr": "القانون والمجتمع",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1C.social",
+      "prerequisites": [
+        [
+          "POLS120"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "PSYC100",
+      "code": "PSYC 100",
+      "name": "Introduction to Psychology",
+      "nameAr": "مقدمة في علم النفس",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1C.social",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "SOCS100",
+      "code": "SOCS 100",
+      "name": "Intro. to Sociology",
+      "nameAr": "مقدمة في علم الإجتماع",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1C.social",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "TECH113",
+      "code": "TECH 113",
+      "name": "Impact of Modern Tech on Society",
+      "nameAr": "تأثير التكنولوجيا الحديثة على المجتمع",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1C.social",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "BUSG230",
+      "code": "BUSG 230",
+      "name": "Entrepreneurship Principles",
+      "nameAr": "مبادئ ريادة الأعمال",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1C.social",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "MATH110",
+      "code": "MATH 110",
+      "name": "College Algebra",
+      "nameAr": "الجبر",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1D.math",
+      "prerequisites": [
+        [
+          "MATH095"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": "MATH 095 or placement test (PT)",
+      "alsoIn": []
+    },
+    {
+      "id": "MATH114",
+      "code": "MATH 114",
+      "name": "Math for Business",
+      "nameAr": "رياضيات الأعمال",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1D.math",
+      "prerequisites": [
+        [
+          "MATH110"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "BIOL109",
+      "code": "BIOL 109",
+      "name": "Human Genetics and Society",
+      "nameAr": "علم الوراثة البشرية والمجتمع",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1D.science",
+      "prerequisites": [
+        [
+          "ENGL100"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": "Select one science course",
+      "alsoIn": []
+    },
+    {
+      "id": "BIOL110",
+      "code": "BIOL 110",
+      "name": "General Biology 1",
+      "nameAr": "علم الأحياء 1",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1D.science",
+      "prerequisites": [
+        [
+          "ENGL100"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": "Select one science course",
+      "alsoIn": []
+    },
+    {
+      "id": "GEOL102",
+      "code": "GEOL 102",
+      "name": "Intro. to Global Climate Change",
+      "nameAr": "مقدمة في تغير المناخ العالمي",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1D.science",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": "Select one science course",
+      "alsoIn": []
+    },
+    {
+      "id": "GEOL130",
+      "code": "GEOL 130",
+      "name": "Intro. to Environmental Studies",
+      "nameAr": "مقدمة في الدراسات البيئية",
+      "credits": 3,
+      "requirementGroup": "gen_ed",
+      "section": "1D.science",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": "Select one science course",
+      "alsoIn": []
+    },
+    {
+      "id": "BUSG101",
+      "code": "BUSG 101",
+      "name": "Principles of Business Administration",
+      "nameAr": "مبادئ إدارة الأعمال",
+      "credits": 3,
+      "requirementGroup": "college_basic",
+      "section": "2A",
+      "prerequisites": [
+        [
+          "ENGL100"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": "Also listed as a Humanities elective (Intro to Business Administration)",
+      "alsoIn": [
+        "1B.humanities"
+      ]
+    },
+    {
+      "id": "ACCT130",
+      "code": "ACCT 130",
+      "name": "Financial Accounting I",
+      "nameAr": "المحاسبة المالية 1",
+      "credits": 3,
+      "requirementGroup": "college_basic",
+      "section": "2A",
+      "prerequisites": [
+        [
+          "BUSG101",
+          "MATH110"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "ACCT232",
+      "code": "ACCT 232",
+      "name": "Financial Accounting II",
+      "nameAr": "المحاسبة المالية 2",
+      "credits": 3,
+      "requirementGroup": "college_basic",
+      "section": "2A",
+      "prerequisites": [
+        [
+          "ACCT130"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "ECON204",
+      "code": "ECON 204",
+      "name": "Business Economics",
+      "nameAr": "اقتصاد الأعمال",
+      "credits": 3,
+      "requirementGroup": "college_basic",
+      "section": "2A",
+      "prerequisites": [
+        [
+          "BUSG101",
+          "MATH110"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "FINT232",
+      "code": "FINT 232",
+      "name": "Principles of Finance",
+      "nameAr": "مبادئ التمويل",
+      "credits": 3,
+      "requirementGroup": "college_basic",
+      "section": "2A",
+      "prerequisites": [
+        [
+          "ACCT130"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "MARK201",
+      "code": "MARK 201",
+      "name": "Principles of Marketing",
+      "nameAr": "مبادئ التسويق",
+      "credits": 3,
+      "requirementGroup": "college_basic",
+      "section": "2A",
+      "prerequisites": [
+        [
+          "BUSG101"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "STAT231",
+      "code": "STAT 231",
+      "name": "Business Statistics",
+      "nameAr": "احصائيات الأعمال",
+      "credits": 3,
+      "requirementGroup": "college_basic",
+      "section": "2A",
+      "prerequisites": [
+        [
+          "MATH114"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "BUSG250",
+      "code": "BUSG 250",
+      "name": "Business Law",
+      "nameAr": "قانون الأعمال",
+      "credits": 3,
+      "requirementGroup": "college_basic",
+      "section": "2A",
+      "prerequisites": [
+        [
+          "BUSG101"
+        ],
+        [
+          "ACCT130"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "INFS290",
+      "code": "INFS 290",
+      "name": "Management Info. Systems",
+      "nameAr": "إدارة نظم المعلومات",
+      "credits": 3,
+      "requirementGroup": "college_advanced",
+      "section": "2B",
+      "prerequisites": [
+        [
+          "BUSG101"
+        ],
+        [
+          "INFS120"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "MANG301",
+      "code": "MANG 301",
+      "name": "Management & Organizational Behavior",
+      "nameAr": "الإدارة والسلوك التنظيمي",
+      "credits": 3,
+      "requirementGroup": "college_advanced",
+      "section": "2B",
+      "prerequisites": [
+        [
+          "BUSG101"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "MANG485",
+      "code": "MANG 485",
+      "name": "Strategic & Sustainable Management",
+      "nameAr": "الاستراتيجية وإدارة الاستدامة",
+      "credits": 3,
+      "requirementGroup": "college_advanced",
+      "section": "2B",
+      "prerequisites": [
+        [
+          "ACCT130"
+        ],
+        [
+          "FINT232"
+        ],
+        [
+          "MARK201"
+        ]
+      ],
+      "corequisites": [],
+      "standing": "senior",
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "MANG490",
+      "code": "MANG 490",
+      "name": "Leadership & Change Management",
+      "nameAr": "القيادة وإدارة التغيير",
+      "credits": 3,
+      "requirementGroup": "college_advanced",
+      "section": "2B",
+      "prerequisites": [
+        [
+          "MANG301"
+        ]
+      ],
+      "corequisites": [],
+      "standing": "senior",
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "INFS221",
+      "code": "INFS 221",
+      "name": "Business Programming 1",
+      "nameAr": "برمجة الأعمال 1",
+      "credits": 3,
+      "requirementGroup": "major_required",
+      "section": "3A",
+      "prerequisites": [
+        [
+          "MATH110",
+          "INFS290"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "INFS321",
+      "code": "INFS 321",
+      "name": "Business Programming 2",
+      "nameAr": "برمجة الأعمال 2",
+      "credits": 3,
+      "requirementGroup": "major_required",
+      "section": "3A",
+      "prerequisites": [
+        [
+          "INFS221"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "INFS350",
+      "code": "INFS 350",
+      "name": "The Internet and Networks",
+      "nameAr": "الأنترنت والشبكات",
+      "credits": 3,
+      "requirementGroup": "major_required",
+      "section": "3A",
+      "prerequisites": [
+        [
+          "INFS221"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "INFS365",
+      "code": "INFS 365",
+      "name": "Database Management",
+      "nameAr": "إدارة قواعد البيانات",
+      "credits": 3,
+      "requirementGroup": "major_required",
+      "section": "3A",
+      "prerequisites": [
+        [
+          "INFS221"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "INFS380",
+      "code": "INFS 380",
+      "name": "Systems Analysis",
+      "nameAr": "تحليل النظم",
+      "credits": 3,
+      "requirementGroup": "major_required",
+      "section": "3A",
+      "prerequisites": [
+        [
+          "INFS365"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "INFS401",
+      "code": "INFS 401",
+      "name": "Information Security",
+      "nameAr": "أمن المعلومات",
+      "credits": 3,
+      "requirementGroup": "major_required",
+      "section": "3A",
+      "prerequisites": [
+        [
+          "INFS290"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "INFS474",
+      "code": "INFS 474",
+      "name": "IT Project Management",
+      "nameAr": "إدارة مشاريع تكنولوجيا المعلومات",
+      "credits": 3,
+      "requirementGroup": "major_required",
+      "section": "3A",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": "senior",
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "INFS480",
+      "code": "INFS 480",
+      "name": "Systems Design",
+      "nameAr": "تصميم الأنظمة",
+      "credits": 3,
+      "requirementGroup": "major_required",
+      "section": "3A",
+      "prerequisites": [
+        [
+          "INFS380"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "MARK320",
+      "code": "MARK 320",
+      "name": "Marketing Research",
+      "nameAr": "بحوث التسويق",
+      "credits": 3,
+      "requirementGroup": "major_elective",
+      "section": "3B",
+      "prerequisites": [
+        [
+          "MARK201"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "INFS330",
+      "code": "INFS 330",
+      "name": "Human Computer Interaction",
+      "nameAr": "التفاعل بين الإنسان والحاسوب",
+      "credits": 3,
+      "requirementGroup": "major_elective",
+      "section": "3B",
+      "prerequisites": [
+        [
+          "INFS321"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "INFS370",
+      "code": "INFS 370",
+      "name": "Mobile Application",
+      "nameAr": "تطبيق الهاتف المحمول",
+      "credits": 3,
+      "requirementGroup": "major_elective",
+      "section": "3B",
+      "prerequisites": [
+        [
+          "INFS365"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "MANG400",
+      "code": "MANG 400",
+      "name": "Project Management",
+      "nameAr": "إدارة المشاريع",
+      "credits": 3,
+      "requirementGroup": "major_elective",
+      "section": "3B",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": "senior",
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "MARK430",
+      "code": "MARK 430",
+      "name": "Innovation and Entrepreneurship",
+      "nameAr": "الإبتكار وريادة الأعمال",
+      "credits": 3,
+      "requirementGroup": "major_elective",
+      "section": "3B",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": "senior",
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "INFS450",
+      "code": "INFS 450",
+      "name": "E-Commerce Systems",
+      "nameAr": "أنظمة التجارة الإلكترونية",
+      "credits": 3,
+      "requirementGroup": "major_elective",
+      "section": "3B",
+      "prerequisites": [
+        [
+          "INFS380"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "INFS460",
+      "code": "INFS 460",
+      "name": "Business Analytics",
+      "nameAr": "تحليلات الأعمال",
+      "credits": 3,
+      "requirementGroup": "major_elective",
+      "section": "3B",
+      "prerequisites": [
+        [
+          "INFS380"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "MARK465",
+      "code": "MARK 465",
+      "name": "Electronic Commerce",
+      "nameAr": "التجارة الإلكترونية",
+      "credits": 3,
+      "requirementGroup": "major_elective",
+      "section": "3B",
+      "prerequisites": [
+        [
+          "MARK201"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "INFS470",
+      "code": "INFS 470",
+      "name": "Business Intelligence",
+      "nameAr": "ذكاء الأعمال",
+      "credits": 3,
+      "requirementGroup": "major_elective",
+      "section": "3B",
+      "prerequisites": [
+        [
+          "INFS380"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "INFS475",
+      "code": "INFS 475",
+      "name": "Business Process Management",
+      "nameAr": "إدارة العمليات التجارية",
+      "credits": 3,
+      "requirementGroup": "major_elective",
+      "section": "3B",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": "senior",
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "INFS481",
+      "code": "INFS 481",
+      "name": "Cloud Computing",
+      "nameAr": "الحوسبة السحابية",
+      "credits": 3,
+      "requirementGroup": "major_elective",
+      "section": "3B",
+      "prerequisites": [
+        [
+          "INFS365"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "INFS490",
+      "code": "INFS 490",
+      "name": "IS Management and Strategy",
+      "nameAr": "إدارة وإستراتيجيات نظم المعلومات",
+      "credits": 3,
+      "requirementGroup": "major_elective",
+      "section": "3B",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": "senior",
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "INFS495",
+      "code": "INFS 495",
+      "name": "Healthcare Information Systems",
+      "nameAr": "نظم معلومات الرعاية الصحية",
+      "credits": 3,
+      "requirementGroup": "major_elective",
+      "section": "3B",
+      "prerequisites": [
+        [
+          "INFS290"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "BUSG400",
+      "code": "BUSG 400",
+      "name": "Practicum in Business",
+      "nameAr": "التدريب العملي في الأعمال الإدارية",
+      "credits": 3,
+      "requirementGroup": "practical",
+      "section": "4",
+      "prerequisites": [],
+      "corequisites": [],
+      "standing": "junior",
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    },
+    {
+      "id": "BUSG401",
+      "code": "BUSG 401",
+      "name": "Business Internship",
+      "nameAr": "التدريب على الأعمال الإدارية",
+      "credits": 3,
+      "requirementGroup": "practical",
+      "section": "4",
+      "prerequisites": [
+        [
+          "MANG485"
+        ]
+      ],
+      "corequisites": [],
+      "standing": null,
+      "external": false,
+      "note": null,
+      "alsoIn": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "ENGL095",
+      "target": "ENGL100",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ENGL100",
+      "target": "ENGL110",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ENGL110",
+      "target": "ENGL120",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ENGL100",
+      "target": "INFS120",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ENGL100",
+      "target": "COMS131",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ARAB101",
+      "target": "ARAB230",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ENGL110",
+      "target": "ENGL205",
+      "type": "prerequisite"
+    },
+    {
+      "source": "POLS120",
+      "target": "POLS254",
+      "type": "prerequisite"
+    },
+    {
+      "source": "MATH095",
+      "target": "MATH110",
+      "type": "prerequisite"
+    },
+    {
+      "source": "MATH110",
+      "target": "MATH114",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ENGL100",
+      "target": "BIOL109",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ENGL100",
+      "target": "BIOL110",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ENGL100",
+      "target": "BUSG101",
+      "type": "prerequisite"
+    },
+    {
+      "source": "BUSG101",
+      "target": "ACCT130",
+      "type": "alternative"
+    },
+    {
+      "source": "MATH110",
+      "target": "ACCT130",
+      "type": "alternative"
+    },
+    {
+      "source": "ACCT130",
+      "target": "ACCT232",
+      "type": "prerequisite"
+    },
+    {
+      "source": "BUSG101",
+      "target": "ECON204",
+      "type": "alternative"
+    },
+    {
+      "source": "MATH110",
+      "target": "ECON204",
+      "type": "alternative"
+    },
+    {
+      "source": "ACCT130",
+      "target": "FINT232",
+      "type": "prerequisite"
+    },
+    {
+      "source": "BUSG101",
+      "target": "MARK201",
+      "type": "prerequisite"
+    },
+    {
+      "source": "MATH114",
+      "target": "STAT231",
+      "type": "prerequisite"
+    },
+    {
+      "source": "BUSG101",
+      "target": "BUSG250",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ACCT130",
+      "target": "BUSG250",
+      "type": "prerequisite"
+    },
+    {
+      "source": "BUSG101",
+      "target": "INFS290",
+      "type": "prerequisite"
+    },
+    {
+      "source": "INFS120",
+      "target": "INFS290",
+      "type": "prerequisite"
+    },
+    {
+      "source": "BUSG101",
+      "target": "MANG301",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ACCT130",
+      "target": "MANG485",
+      "type": "prerequisite"
+    },
+    {
+      "source": "FINT232",
+      "target": "MANG485",
+      "type": "prerequisite"
+    },
+    {
+      "source": "MARK201",
+      "target": "MANG485",
+      "type": "prerequisite"
+    },
+    {
+      "source": "MANG301",
+      "target": "MANG490",
+      "type": "prerequisite"
+    },
+    {
+      "source": "MATH110",
+      "target": "INFS221",
+      "type": "alternative"
+    },
+    {
+      "source": "INFS290",
+      "target": "INFS221",
+      "type": "alternative"
+    },
+    {
+      "source": "INFS221",
+      "target": "INFS321",
+      "type": "prerequisite"
+    },
+    {
+      "source": "INFS221",
+      "target": "INFS350",
+      "type": "prerequisite"
+    },
+    {
+      "source": "INFS221",
+      "target": "INFS365",
+      "type": "prerequisite"
+    },
+    {
+      "source": "INFS365",
+      "target": "INFS380",
+      "type": "prerequisite"
+    },
+    {
+      "source": "INFS290",
+      "target": "INFS401",
+      "type": "prerequisite"
+    },
+    {
+      "source": "INFS380",
+      "target": "INFS480",
+      "type": "prerequisite"
+    },
+    {
+      "source": "MARK201",
+      "target": "MARK320",
+      "type": "prerequisite"
+    },
+    {
+      "source": "INFS321",
+      "target": "INFS330",
+      "type": "prerequisite"
+    },
+    {
+      "source": "INFS365",
+      "target": "INFS370",
+      "type": "prerequisite"
+    },
+    {
+      "source": "INFS380",
+      "target": "INFS450",
+      "type": "prerequisite"
+    },
+    {
+      "source": "INFS380",
+      "target": "INFS460",
+      "type": "prerequisite"
+    },
+    {
+      "source": "MARK201",
+      "target": "MARK465",
+      "type": "prerequisite"
+    },
+    {
+      "source": "INFS380",
+      "target": "INFS470",
+      "type": "prerequisite"
+    },
+    {
+      "source": "INFS365",
+      "target": "INFS481",
+      "type": "prerequisite"
+    },
+    {
+      "source": "INFS290",
+      "target": "INFS495",
+      "type": "prerequisite"
+    },
+    {
+      "source": "MANG485",
+      "target": "BUSG401",
+      "type": "prerequisite"
+    }
+  ]
+}

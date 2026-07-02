@@ -49,9 +49,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   // secondary (reachable from the drawer, not the everyday bar)
   const secondaryNav: NavDef[] = [
     { key: "grades", route: "/grades", label: ar ? "درجاتي" : "Grades", icon: "grade" },
-    { key: "resources", route: "/resources", label: ar ? "المصادر" : "Resources", icon: "smart_display" },
+    { key: "study", route: "/study", label: ar ? "المذاكرة" : "Study", icon: "auto_stories" },
     { key: "notes", route: "/notes", label: ar ? "ملاحظاتي" : "Notes", icon: "edit_note" },
-    { key: "upload", route: "/upload", label: ar ? "رفع الكشف" : "Upload sheet", icon: "upload_file" },
   ];
   if (isAdmin) secondaryNav.push({ key: "admin", route: "/admin", label: ar ? "الإدارة" : "Admin", icon: "admin_panel_settings" });
 
@@ -59,10 +58,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     "/dashboard": ar ? "لوحة التحكم" : "Dashboard",
     "/courses": ar ? "خطة الدراسة" : "My Plan",
     "/grades": t.title_grades,
-    "/resources": t.title_resources,
+    "/study": ar ? "المذاكرة" : "Study",
     "/notes": t.title_notes,
     "/calendar": ar ? "التقويم" : "Calendar",
-    "/upload": t.title_upload,
     "/chat": ar ? "المرشد الذكي" : "AI Advisor",
     "/notifications": ar ? "الإشعارات" : "Notifications",
     "/admin": t.title_admin,
@@ -134,7 +132,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </aside>
       )}
 
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, borderLeft: "1px solid var(--border)", borderRight: "1px solid var(--border)" }}>
         {/* header */}
         <header style={{ minHeight: 64, flexShrink: 0, background: "var(--surface)", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: 12, paddingInline: 16, paddingTop: "env(safe-area-inset-top)" }}>
           {isMobile && (

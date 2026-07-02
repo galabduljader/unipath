@@ -18,6 +18,10 @@ declare module "d3-org-chart" {
     onNodeClick(fn: (d: unknown) => void): this;
     setActiveNodeCentered(value: boolean): this;
     svgWidth(value: number): this;
+    // Secondary cross-links beyond the tree hierarchy (used to draw the extra
+    // prerequisites, OR-alternatives, and corequisites a single-parent tree can't).
+    connections(value: { from: string; to: string; label?: string }[]): this;
+    connectionsUpdate(fn: (this: SVGPathElement, d: unknown, i: number, arr: unknown) => void): this;
     render(): this;
     fit(): this;
     expandAll(): this;
